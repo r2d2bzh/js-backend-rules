@@ -1,0 +1,37 @@
+{
+  "name": "@r2d2bzh/js-backend-rules",
+  "version": "0.0.0",
+  "description": "enforce r2d2bzh rules for backends developed in javascript",
+  "bin": {
+    "r2d2bzh-js-backend-rules": "./bin.js"
+  },
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "postinstall": "r2d2bzh-js-rules",
+    "lint": "eslint .",
+    "test": "cd test && ../bin.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r2d2bzh/js-backend-rules.git"
+  },
+  "keywords": [
+    "r2d2bzh",
+    "javascript",
+    "backend",
+    "rules"
+  ],
+  "author": "r2d2bzh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/r2d2bzh/js-backend-rules/issues"
+  },
+  "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
+  "dependencies": {
+    "@r2d2bzh/js-rules": "^0.3.2",
+    "filehound": "^1.17.4",
+    "mixin-deep": "^2.0.1",
+    "release-it": "^14.8.0"
+  }
+}

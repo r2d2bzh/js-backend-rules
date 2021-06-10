@@ -1,0 +1,35 @@
+:source-highlighter: highlightjs
+
+= js-backend-rules
+
+The R2D2 product stack is composed of multiple NodeJS micro-services.
+The projects hosting these micro-services need to be structured with the same rules.
+As anyone can easily forget these many rules, `js-backend-rules` comes to the rescue.
+
+[NOTE]
+====
+Some of these rules are already taken care of by https://github.com/r2d2bzh/js-rules[`@r2d2bzh/js-rules`] on which `js-backend-rules` relies.
+It is strongly advised to read the https://github.com/r2d2bzh/js-rules/blob/master/README.adoc[README of `@r2d2bzh/js-rules`].
+====
+
+== Install
+
+You need to add the following NPM development dependency to the project that needs to be checked:
+
+`npm install --save-dev @r2d2bzh/js-backend-rules`
+
+Once installed, `@r2d2bzh/js-rules` provides the `r2d2bzh-js-backend-rules` executable from the https://docs.npmjs.com/cli/v7/configuring-npm/folders#executables[node_modules executables].
+To ensure that the rules are enforced, call this executable with `npx r2d2bzh-js-backend-rules`
+
+To ensure these rules are followed over time, it is best to call `r2d2bzh-js-backend-rules` from the https://docs.npmjs.com/cli/v7/using-npm/scripts[postinstall script] of the `package.json` file of your project:
+
+[source,json]
+----
+{
+  "scripts": {
+    "postinstall": "r2d2bzh-js-backend-rules"
+  }
+}
+----
+
+This also ensures that new rules are enforced when updating `js-backend-rules`.

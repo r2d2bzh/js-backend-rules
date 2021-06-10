@@ -1,0 +1,20 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "This is a test module",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "docker-compose run test",
+    "lint": "eslint .",
+    "release": "release-it",
+    "pretest": "npm run lint",
+    "test:debug": "docker-compose run --publish 9229 test debug",
+    "custom:script": "this is just to test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
