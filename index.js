@@ -38,7 +38,7 @@ const ensureProjectSymlinks = () =>
     [[path('test', '__tests__'), '__tests__']].map(([target, p]) =>
       fs
         .unlink(p)
-        .catch((e) => console.warn(`${p} was not unlinked (${e.message})`)) // path does not exist or is something we do not want to delete (dir...)
+        .catch((e) => console.warn(logPreamble, `${p} was not unlinked (${e.message})`)) // path does not exist or is something we do not want to delete (dir...)
         .then(() => fs.symlink(target, p))
     )
   );
