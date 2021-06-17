@@ -1,22 +1,104 @@
 import { join as path } from 'path';
+import { toMultiline, addHashedHeader } from '@r2d2bzh/js-rules';
+import { readJSONFile, extractField } from '../utils.js';
 
-export default ({ toIgnore, serviceDirs }) =>
-  (config) => ({
+export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
+  const dbdImagePrefix = `${dbnRegistry ? `${dbnRegistry}/` : ''}docker-build-nodejs-`;
+  const dockerfileCommonFormatters = [
+    addWarningHeader,
+    addHashedHeader('The registry where docker-build-nodejs images are located can be set from'),
+    addHashedHeader('{ "dockerBuildNodejs": { "registry": ... } } in the package.json file of the root project'),
+  ];
+  return async (config) => ({
     ...config,
+    ...setDBNVersionInEnv({
+      formatters: [
+        addWarningHeader,
+        addHashedHeader('DOCKER_BUILD_NODEJS_VERSION can be set from { "dockerBuildNodejs": { "version": ... } }'),
+        addHashedHeader(' in the package.json file of the root project'),
+        toMultiline,
+      ].reverse(),
+      dbnVersion,
+    }),
     [path('dev', '.dockerignore')]: {
       configuration: ['*'],
-      formatters: [toIgnore],
+      formatters: [toMultiline, addWarningHeader],
     },
-    ...dockerConfigurationForServices(toIgnore, serviceDirs),
+    [path('dev', 'Dockerfile')]: {
+      configuration: [
+        'ARG DOCKER_BUILD_NODEJS_VERSION',
+        `FROM ${dbdImagePrefix}devenv:\${DOCKER_BUILD_NODEJS_VERSION}`,
+      ],
+      formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
+    },
+    ...(await dockerConfigurationForServices({
+      addWarningHeader,
+      dockerfileCommonFormatters,
+      dbdImagePrefix,
+      serviceDirs,
+    })),
   });
+};
 
-const dockerConfigurationForServices = (toIgnore, serviceDirs) =>
+const setDBNVersionInEnv = ({ formatters, dbnVersion }) =>
+  dbnVersion
+    ? {
+        '.env': {
+          configuration: [`DOCKER_BUILD_NODEJS_VERSION=${dbnVersion}`],
+          formatters,
+        },
+      }
+    : {};
+
+const dockerConfigurationForServices = async ({
+  addWarningHeader,
+  dockerfileCommonFormatters,
+  dbdImagePrefix,
+  serviceDirs,
+}) =>
   Object.fromEntries(
-    serviceDirs.map((context) => [
-      path(context, '.dockerignore'),
-      {
-        configuration: ['node_modules'],
-        formatters: [toIgnore],
-      },
-    ])
+    (
+      await Promise.all(
+        serviceDirs.map(async (context) => {
+          return [
+            [
+              path(context, '.dockerignore'),
+              {
+                configuration: ['node_modules'],
+                formatters: [toMultiline, addWarningHeader],
+              },
+            ],
+            [
+              path(context, 'Dockerfile'),
+              {
+                configuration: [
+                  'ARG DOCKER_BUILD_NODEJS_VERSION',
+                  `FROM ${dbdImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
+                  `FROM ${dbdImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
+                  ...(await getAdditionalCommands(context)),
+                ],
+                formatters: [
+                  ...dockerfileCommonFormatters,
+                  addHashedHeader(
+                    'For additional commands, add { "dockerBuildNodejs": { "dockerfileCommands": [ ... ] } }'
+                  ),
+                  addHashedHeader(`in ${context}/package.json`),
+                  toMultiline,
+                ].reverse(),
+              },
+            ],
+          ];
+        })
+      )
+    ).flat()
   );
+
+const getAdditionalCommands = async (context) => {
+  try {
+    return extractCommandsFrom(await readJSONFile(path(context, 'package.json'))) || [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const extractCommandsFrom = extractField(['dockerBuildNodejs', 'dockerfileCommands']);

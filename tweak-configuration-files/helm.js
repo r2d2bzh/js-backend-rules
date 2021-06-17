@@ -1,12 +1,12 @@
 import { join as path } from 'path';
+import { toYAML } from '@r2d2bzh/js-rules';
 
-export default ({ projectDetails, toYAML }) =>
-  (config) => ({
-    ...config,
-    [path('helm', 'Chart.yaml')]: helmChart({ toYAML, projectDetails }),
-  });
+export default (options) => (config) => ({
+  ...config,
+  [path('helm', 'Chart.yaml')]: helmChart(options),
+});
 
-const helmChart = ({ toYAML, projectDetails: { name, version, description } }) => ({
+const helmChart = ({ addWarningHeader, name, version, description }) => ({
   configuration: {
     apiVersion: 'v1',
     name,
@@ -14,5 +14,5 @@ const helmChart = ({ toYAML, projectDetails: { name, version, description } }) =
     description,
     appVersion: version,
   },
-  formatters: [toYAML],
+  formatters: [toYAML, addWarningHeader],
 });

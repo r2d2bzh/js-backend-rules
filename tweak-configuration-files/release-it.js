@@ -1,6 +1,7 @@
 import { join as path } from 'path';
+import { toYAML } from '@r2d2bzh/js-rules';
 
-export default ({ toYAML, subPackages }) => {
+export default ({ addWarningHeader, subPackages }) => {
   return (config) => ({
     ...config,
     '.release-it.yaml': {
@@ -13,13 +14,13 @@ export default ({ toYAML, subPackages }) => {
           ...subPackages.map((pack) => `(cd ${pack} && release-it --ci \${version})`),
         ],
       },
-      formatters: [toYAML],
+      formatters: [toYAML, addWarningHeader],
     },
-    ...releaseItConfigurationForSubPackages({ toYAML, subPackages }),
+    ...releaseItConfigurationForSubPackages({ addWarningHeader, subPackages }),
   });
 };
 
-const releaseItConfigurationForSubPackages = ({ toYAML, subPackages }) =>
+const releaseItConfigurationForSubPackages = ({ addWarningHeader, subPackages }) =>
   Object.fromEntries(
     subPackages.map((packDir) => [
       path(packDir, '.release-it.yaml'),
@@ -35,7 +36,7 @@ const releaseItConfigurationForSubPackages = ({ toYAML, subPackages }) =>
             push: false,
           },
         },
-        formatters: [toYAML],
+        formatters: [toYAML, addWarningHeader],
       },
     ])
   );

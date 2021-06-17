@@ -6,6 +6,10 @@
   "directories": {
     "test": "test"
   },
+  "dockerBuildNodejs": {
+    "registry": "https://test-registry/fake",
+    "version": "d.b.n"
+  },
   "scripts": {
     "test": "docker-compose run test",
     "lint": "eslint .",
