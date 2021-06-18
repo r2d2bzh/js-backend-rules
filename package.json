@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^0.4.1",
+    "@r2d2bzh/js-rules": "^0.4.2",
     "filehound": "^1.17.4",
     "mixin-deep": "^2.0.1",
     "release-it": "^14.8.0"

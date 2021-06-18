@@ -1,6 +1,6 @@
 import { join as path } from 'path';
-import { toMultiline, addHashedHeader } from '@r2d2bzh/js-rules';
-import { readJSONFile, extractField } from '../utils.js';
+import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
+import { extractField } from '../utils.js';
 
 export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
   const dbdImagePrefix = `${dbnRegistry ? `${dbnRegistry}/` : ''}docker-build-nodejs-`;
