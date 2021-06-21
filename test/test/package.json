@@ -15,5 +15,30 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "type": "module",
+  "c8": {
+    "check-coverage": true,
+    "all": true,
+    "allowExternal": true,
+    "src": [
+      "../service-a",
+      "../service-b"
+    ],
+    "exclude": [
+      "**/__tests__/**",
+      ".release-it.js",
+      "index.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text"
+    ]
+  },
+  "dependencies": {
+    "ava": "^3.15.0",
+    "c8": "^7.7.3",
+    "moleculer": "^0.14.13",
+    "uuid": "^8.3.2"
+  }
 }

@@ -1,10 +1,27 @@
 import { join as path } from 'path';
 import { mixinJSONFile } from './utils.js';
 
-export default (serviceDirs) =>
-  Promise.all(Object.entries(packageScripts(serviceDirs)).map(([pack, scripts]) => mixinJSONFile(pack, scripts)));
+const dependenciesVersions = {
+  '@r2d2bzh/moleculer-healthcheck-middleware': '^0.0.5',
+  '@r2d2bzh/moleculer-start-checker-middleware': '^0.0.2',
+  ava: '^3.15.0',
+  c8: '^7.7.3',
+  moleculer: '^0.14.13',
+  nats: '^1.4.12',
+  nodemon: '2.0.7',
+  uuid: '^8.3.2',
+};
 
-const packageScripts = (serviceDirs) => ({
+export default ({ logPreamble, serviceDirs }) =>
+  Promise.all(
+    Object.entries(packageTweaks(serviceDirs)).map(([pack, tweak]) =>
+      mixinJSONFile(pack, tweak).then(() => {
+        console.log(logPreamble, `${pack} tweaked`);
+      })
+    )
+  );
+
+const packageTweaks = (serviceDirs) => ({
   'package.json': {
     scripts: {
       lint: 'eslint .',
@@ -15,6 +32,7 @@ const packageScripts = (serviceDirs) => ({
     },
   },
   [path('test', 'package.json')]: {
+    type: 'module',
     scripts: {
       checkdeps: serviceDirs.reduce((s, p) => `${s} && (cd "${path('..', p)}" && npm i)`, 'true'),
       precov: 'npm run checkdeps',
@@ -23,5 +41,38 @@ const packageScripts = (serviceDirs) => ({
       nocov: 'ava',
       debug: 'ava debug --host 0.0.0.0',
     },
+    c8: {
+      'check-coverage': true,
+      all: true,
+      allowExternal: true,
+      src: serviceDirs.map((p) => path('..', p)),
+      exclude: ['.release-it.js', 'index.js', '**/__tests__/**'],
+      reporter: ['lcov', 'text'],
+    },
+    dependencies: dependencies(['ava', 'c8', 'moleculer', 'uuid']),
   },
+  ...Object.fromEntries(
+    serviceDirs.map((dir) => [
+      path(dir, 'package.json'),
+      {
+        type: 'module',
+        scripts: {
+          start: 'nodemon --exec "node --inspect=0.0.0.0:9229" .',
+          prestart: 'npm i',
+        },
+        esbuildOptions: {
+          external: ['avsc', 'protobufjs/minimal', 'thrift'],
+        },
+        dependencies: dependencies([
+          '@r2d2bzh/moleculer-healthcheck-middleware',
+          '@r2d2bzh/moleculer-start-checker-middleware',
+          'moleculer',
+          'nats',
+        ]),
+        devDependencies: dependencies(['nodemon']),
+      },
+    ])
+  ),
 });
+
+const dependencies = (depList) => depList.reduce((deps, dep) => ({ ...deps, [dep]: dependenciesVersions[dep] }), {});

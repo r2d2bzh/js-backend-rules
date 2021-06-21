@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import FileHound from 'filehound';
-import mixin from 'mixin-deep';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
 export const findDirWith = async (glob) =>
@@ -36,4 +35,26 @@ export const extractFieldAs = (path, name) => {
     const fieldValue = extractFieldFrom(object);
     return fieldValue ? { [name]: fieldValue } : {};
   };
+};
+
+const mixin = (original, ...alternates) =>
+  alternates.reduce((result, alternate) => mixinTwo(result, alternate), original);
+
+const mixinTwo = (original, alternate) => {
+  try {
+    return original.constructor.name === alternate.constructor.name ? mixinSame(original, alternate) : alternate;
+  } catch (e) {
+    return alternate;
+  }
+};
+
+const mixinSame = (original, alternate) => {
+  switch (original.constructor.name) {
+    case 'Object':
+      return Object.entries(alternate).reduce((o, [k, v]) => ({ ...o, [k]: mixinTwo(o[k], v) }), original);
+    case 'Array':
+      return Array.from(new Set(original.concat(alternate))).sort();
+    default:
+      return alternate;
+  }
 };

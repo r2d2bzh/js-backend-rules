@@ -48,7 +48,10 @@ const tweakFiles = async (logPreamble, editWarning) => {
   const serviceDirs = packages.filter((p) => dockerContexts.includes(p));
   const subPackages = packages.filter((p) => p !== '.');
 
-  const [projectDetails] = await Promise.all([readJSONFile('package.json'), tweakPackageJSON(serviceDirs)]);
+  const [projectDetails] = await Promise.all([
+    readJSONFile('package.json'),
+    tweakPackageJSON({ logPreamble, serviceDirs }),
+  ]);
   await jsRules({
     logPreamble,
     editWarning,
