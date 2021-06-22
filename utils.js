@@ -1,7 +1,18 @@
+import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
 import FileHound from 'filehound';
 import { readJSONFile } from '@r2d2bzh/js-rules';
+
+export const npm =
+  (...args) =>
+  (cwd) =>
+    new Promise((resolve, reject) =>
+      spawn('npm', args, { cwd }).on('close', (code) => {
+        const commandDesc = `'npm${args.reduce((s, a) => `${s} ${a}`, '')}' in ${cwd}`;
+        return code === 0 ? resolve(`${commandDesc} succeeded`) : reject(new Error(`${commandDesc} failed (${code})`));
+      })
+    );
 
 export const findDirWith = async (glob) =>
   (await FileHound.create().path('.').discard('.*/node_modules/.*').match(glob).find()).map((p) => path.dirname(p));
