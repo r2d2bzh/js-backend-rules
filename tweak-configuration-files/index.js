@@ -4,6 +4,7 @@ import addGitConfig from './git.js';
 import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
 import addHelmConfig from './helm.js';
+import addJenkinsConfig from './jenkins.js';
 
 const extractDBNRegistryFrom = extractFieldAs(['dockerBuildNodejs', 'registry'], 'dbnRegistry');
 const extractDBNVersionFrom = extractFieldAs(['dockerBuildNodejs', 'version'], 'dbnVersion');
@@ -22,5 +23,6 @@ export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
       ...extractDBNVersionFrom(projectDetails),
     }),
     addHelmConfig({ addWarningHeader, name, version, description }),
+    addJenkinsConfig({ name, editWarning, serviceDirs }),
   ]);
 };
