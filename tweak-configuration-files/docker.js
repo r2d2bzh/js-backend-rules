@@ -15,7 +15,7 @@ export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
       formatters: [
         addWarningHeader,
         addHashedHeader('DOCKER_BUILD_NODEJS_VERSION can be set from { "dockerBuildNodejs": { "version": ... } }'),
-        addHashedHeader(' in the package.json file of the root project'),
+        addHashedHeader('in the package.json file of the root project'),
         toMultiline,
       ].reverse(),
       dbnVersion,
