@@ -6,9 +6,9 @@
   "directories": {
     "test": "test"
   },
-  "dockerBuildNodejs": {
-    "registry": "https://test-registry/fake",
-    "version": "d.b.n"
+  "r2d2bzh": {
+    "dockerRegistry": "https://test-registry/fake",
+    "dockerBuildNodejsVersion": "d.b.n"
   },
   "scripts": {
     "test": "docker-compose run test",

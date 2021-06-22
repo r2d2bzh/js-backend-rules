@@ -3,18 +3,20 @@ import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractField } from '../utils.js';
 
 export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
-  const dbdImagePrefix = `${dbnRegistry ? `${dbnRegistry}/` : ''}docker-build-nodejs-`;
+  const dbdImagePrefix = path(dbnRegistry || '', 'docker-build-nodejs-');
   const dockerfileCommonFormatters = [
     addWarningHeader,
     addHashedHeader('The registry where docker-build-nodejs images are located can be set from'),
-    addHashedHeader('{ "dockerBuildNodejs": { "registry": ... } } in the package.json file of the root project'),
+    addHashedHeader('{ "r2d2bzh": { "dockerRegistry": ... } } in the package.json file of the root project'),
   ];
   return async (config) => ({
     ...config,
     ...setDBNVersionInEnv({
       formatters: [
         addWarningHeader,
-        addHashedHeader('DOCKER_BUILD_NODEJS_VERSION can be set from { "dockerBuildNodejs": { "version": ... } }'),
+        addHashedHeader(
+          'DOCKER_BUILD_NODEJS_VERSION can be set from { "r2d2bzh": { "dockerBuildNodejsVersion": ... } }'
+        ),
         addHashedHeader('in the package.json file of the root project'),
         toMultiline,
       ].reverse(),
@@ -79,9 +81,7 @@ const dockerConfigurationForServices = async ({
                 ],
                 formatters: [
                   ...dockerfileCommonFormatters,
-                  addHashedHeader(
-                    'For additional commands, add { "dockerBuildNodejs": { "dockerfileCommands": [ ... ] } }'
-                  ),
+                  addHashedHeader('For additional commands, add { "r2d2bzh": { "dockerfileCommands": [ ... ] } }'),
                   addHashedHeader(`in ${context}/package.json`),
                   toMultiline,
                 ].reverse(),
@@ -101,4 +101,4 @@ const getAdditionalCommands = async (context) => {
   }
 };
 
-const extractCommandsFrom = extractField(['dockerBuildNodejs', 'dockerfileCommands']);
+const extractCommandsFrom = extractField(['r2d2bzh', 'dockerfileCommands']);

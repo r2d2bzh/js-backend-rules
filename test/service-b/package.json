@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "dockerBuildNodejs": {
+  "r2d2bzh": {
     "dockerfileCommands": [
       "COPY fake /fake",
       "RUN ls /"

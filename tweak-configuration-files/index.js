@@ -1,3 +1,4 @@
+import { join as path } from 'path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractFieldAs } from '../utils.js';
 import addGitConfig from './git.js';
@@ -6,8 +7,10 @@ import addDockerConfig from './docker.js';
 import addHelmConfig from './helm.js';
 import addJenkinsConfig from './jenkins.js';
 
-const extractDBNRegistryFrom = extractFieldAs(['dockerBuildNodejs', 'registry'], 'dbnRegistry');
-const extractDBNVersionFrom = extractFieldAs(['dockerBuildNodejs', 'version'], 'dbnVersion');
+const extractDBNRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'dbnRegistry', (r) =>
+  path(r || '', 'tools')
+);
+const extractDBNVersionFrom = extractFieldAs(['r2d2bzh', 'dockerBuildNodejsVersion'], 'dbnVersion');
 
 export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
   const addWarningHeader = addHashedHeader(editWarning);

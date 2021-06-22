@@ -40,11 +40,11 @@ const compose = (g) => (f) => async (x) => f(await g(x));
 export const extractField = (path) => (object) =>
   path.reduce((value, current) => (value ? value[current] : value), object);
 
-export const extractFieldAs = (path, name) => {
+export const extractFieldAs = (path, name, mapper = (v) => v) => {
   const extractFieldFrom = extractField(path);
   return (object) => {
     const fieldValue = extractFieldFrom(object);
-    return fieldValue ? { [name]: fieldValue } : {};
+    return fieldValue ? { [name]: mapper(fieldValue) } : {};
   };
 };
 
