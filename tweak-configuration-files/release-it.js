@@ -1,8 +1,8 @@
 import { join as path } from 'path';
 import { toYAML } from '@r2d2bzh/js-rules';
 
-export default ({ addWarningHeader, subPackages }) => {
-  return (config) => ({
+export default ({ addWarningHeader, subPackages }) =>
+  (config) => ({
     ...config,
     '.release-it.yaml': {
       configuration: {
@@ -18,7 +18,6 @@ export default ({ addWarningHeader, subPackages }) => {
     },
     ...releaseItConfigurationForSubPackages({ addWarningHeader, subPackages }),
   });
-};
 
 const releaseItConfigurationForSubPackages = ({ addWarningHeader, subPackages }) =>
   Object.fromEntries(
