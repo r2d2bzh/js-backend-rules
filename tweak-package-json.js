@@ -20,6 +20,8 @@ const packageTweaks = (serviceDirs) => ({
   'package.json': {
     ...commonPackageOptions,
     scripts: {
+      r2d2: 'r2d2bzh-js-backend-rules',
+      postinstall: 'npm run r2d2',
       lint: 'eslint .',
       release: 'release-it',
       pretest: 'npm run lint',

@@ -23,22 +23,21 @@ It is strongly advised to read the https://github.com/r2d2bzh/js-rules/blob/mast
 
 == Install
 
-You need to add the following NPM development dependency to the project that needs to be checked:
+You need to add the following NPM development dependency to the project that needs to be ruled (which means here skaffolded/structured/checked/...):
 
 `npm install --save-dev @r2d2bzh/js-backend-rules`
 
 Once installed, `@r2d2bzh/js-rules` provides the `r2d2bzh-js-backend-rules` executable from the https://docs.npmjs.com/cli/v7/configuring-npm/folders#executables[node_modules executables].
-To ensure that the rules are enforced, call this executable with `npx r2d2bzh-js-backend-rules`
+To ensure that the rules are enforced, call this executable by issuing `npx r2d2bzh-js-backend-rules`, this will:
 
-To ensure these rules are followed over time, it is best to call `r2d2bzh-js-backend-rules` from the https://docs.npmjs.com/cli/v7/using-npm/scripts[postinstall script] of the `package.json` file of your project:
+* ensure that the rules are enforced over time by launching `r2d2bzh-js-backend-rules` during the `postinstall` step of npm
+* immediately apply all the rules to the whole project
 
-[source,json]
-----
-{
-  "scripts": {
-    "postinstall": "r2d2bzh-js-backend-rules"
-  }
-}
-----
+CAUTION: You should preferably commit your project's current content to ensure nothing is loss in the process.
 
-This also ensures that new rules are enforced when updating `js-backend-rules`.
+== Adding a new service
+
+Once installed, `js-backend-rules` provides the `r2d2` npm script.
+
+To add a new service in the project, issue the following command from the project's root: +
+`npm run r2d2 add <newServiceName>`
