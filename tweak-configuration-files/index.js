@@ -1,6 +1,7 @@
 import { join as path } from 'path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractFieldAs } from '../utils.js';
+import tweakEslintConfig from './eslint.js';
 import addGitConfig from './git.js';
 import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
@@ -13,6 +14,7 @@ export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
   const { name, version, description } = projectDetails;
 
   return pipe([
+    tweakEslintConfig(),
     addGitConfig({ addWarningHeader }),
     addReleaseItConfig({ addWarningHeader, subPackages }),
     addDockerConfig({
