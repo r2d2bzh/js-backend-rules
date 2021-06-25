@@ -1,0 +1,102 @@
+services:
+  _test:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    depends_on:
+      mongo:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/test/fake:/fake:rw
+    - /home/hostuser/project/test:/home/user/dev:rw
+    - /home/hostuser/project/service-a:/home/user/service-a:rw
+    - /home/hostuser/project/service-b:/home/user/service-b:rw
+  mongo:
+    image: mongo:4.4.6
+  nats:
+    image: https:/test-registry/fake/thirdparties/nats:1.1.3
+  service-a:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - npm
+    - start
+    depends_on:
+      nats:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/service-a:/home/user/dev:rw
+  service-a.rel:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+      context: /home/hostuser/project/service-a
+    depends_on:
+      nats:
+        condition: service_started
+    image: https:/test-registry/fake/webservices/api-service-a:dev
+  service-b:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - npm
+    - start
+    depends_on:
+      mongo:
+        condition: service_started
+      nats:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/service-b:/home/user/dev:rw
+  service-b.rel:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+      context: /home/hostuser/project/service-b
+    depends_on:
+      mongo:
+        condition: service_started
+      nats:
+        condition: service_started
+    image: https:/test-registry/fake/webservices/api-service-b:dev
+  test:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - cov
+    depends_on:
+      mongo:
+        condition: service_started
+    entrypoint:
+    - npm
+    - run
+    profiles:
+    - test
+    volumes:
+    - /home/hostuser/project/test/fake:/fake:rw
+    - /home/hostuser/project/test:/home/user/dev:rw
+    - /home/hostuser/project/service-a:/home/user/service-a:rw
+    - /home/hostuser/project/service-b:/home/user/service-b:rw
+version: '3.9'
+

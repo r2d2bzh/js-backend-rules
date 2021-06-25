@@ -10,7 +10,7 @@
   "scripts": {
     "postinstall": "r2d2bzh-js-rules",
     "lint": "eslint .",
-    "test": "cd test && ../bin.js"
+    "test": "cd test && ../bin.js && docker-compose config | sed \"s/ID: '[0-9]*'/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
   },
   "repository": {
     "type": "git",

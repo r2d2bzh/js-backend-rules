@@ -1,8 +1,9 @@
 import { join as path } from 'path';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractField } from '../utils.js';
+import { docker as versions } from '../versions.js';
 
-export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
+export default ({ addWarningHeader, serviceDirs, dbnRegistry }) => {
   const dbdImagePrefix = path(dbnRegistry || '', 'docker-build-nodejs-');
   const dockerfileCommonFormatters = [
     addWarningHeader,
@@ -11,17 +12,10 @@ export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
   ];
   return async (config) => ({
     ...config,
-    ...setDBNVersionInEnv({
-      formatters: [
-        addWarningHeader,
-        addHashedHeader(
-          'DOCKER_BUILD_NODEJS_VERSION can be set from { "r2d2bzh": { "dockerBuildNodejsVersion": ... } }'
-        ),
-        addHashedHeader('in the package.json file of the root project'),
-        toMultiline,
-      ].reverse(),
-      dbnVersion,
-    }),
+    '.env': {
+      configuration: [`DOCKER_BUILD_NODEJS_VERSION=${versions.local.dockerBuildNodejs}`],
+      formatters: [toMultiline, addWarningHeader],
+    },
     [path('dev', '.dockerignore')]: {
       configuration: ['*'],
       formatters: [toMultiline, addWarningHeader],
@@ -41,16 +35,6 @@ export default ({ addWarningHeader, serviceDirs, dbnRegistry, dbnVersion }) => {
     })),
   });
 };
-
-const setDBNVersionInEnv = ({ formatters, dbnVersion }) =>
-  dbnVersion
-    ? {
-        '.env': {
-          configuration: [`DOCKER_BUILD_NODEJS_VERSION=${dbnVersion}`],
-          formatters,
-        },
-      }
-    : {};
 
 const dockerConfigurationForServices = async ({
   addWarningHeader,

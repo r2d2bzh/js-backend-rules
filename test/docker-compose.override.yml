@@ -1,0 +1,27 @@
+x-mongo-depends: &mongo
+  depends_on:
+    - mongo
+
+x-test-defaults: &test
+  <<: *mongo
+  volumes:
+    - ./test/fake:/fake
+  depends_on:
+    - mongo
+
+services:
+
+  service-b:
+    <<: *mongo
+
+  service-b.rel:
+    <<: *mongo
+
+  test:
+    <<: *test
+
+  _test:
+    <<: *test
+
+  mongo:
+    image: mongo:4.4.6

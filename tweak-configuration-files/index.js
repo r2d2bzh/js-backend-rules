@@ -4,13 +4,9 @@ import { pipe, extractFieldAs } from '../utils.js';
 import addGitConfig from './git.js';
 import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
+import addDockerComposeConfig from './docker-compose.js';
 import addHelmConfig from './helm.js';
 import addJenkinsConfig from './jenkins.js';
-
-const extractDBNRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'dbnRegistry', (r) =>
-  path(r || '', 'tools')
-);
-const extractDBNVersionFrom = extractFieldAs(['r2d2bzh', 'dockerBuildNodejsVersion'], 'dbnVersion');
 
 export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
   const addWarningHeader = addHashedHeader(editWarning);
@@ -23,9 +19,24 @@ export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
       addWarningHeader,
       serviceDirs,
       ...extractDBNRegistryFrom(projectDetails),
-      ...extractDBNVersionFrom(projectDetails),
+    }),
+    addDockerComposeConfig({
+      addWarningHeader,
+      serviceDirs,
+      ...extractNatsRegistryFrom(projectDetails),
+      ...extractWebservicesRegistryFrom(projectDetails),
     }),
     addHelmConfig({ addWarningHeader, name, version, description }),
     addJenkinsConfig({ name, editWarning, serviceDirs }),
   ]);
 };
+
+const extractDBNRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'dbnRegistry', (r) =>
+  path(r || '', 'tools')
+);
+const extractNatsRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'natsRegistry', (r) =>
+  path(r || '', 'thirdparties')
+);
+const extractWebservicesRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'webservicesRegistry', (r) =>
+  path(r || '', 'webservices')
+);
