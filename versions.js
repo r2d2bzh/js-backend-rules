@@ -1,3 +1,7 @@
+// NodeJS version constraint, WARNING:
+// Ensure that docker-build-nodejs uses a compliant NodeJS engine
+export const nodejs = '>=14.16.1';
+
 export const docker = {
   hub: {
     nats: '2.2.6-alpine3.13',

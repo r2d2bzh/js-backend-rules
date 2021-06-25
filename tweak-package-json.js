@@ -1,18 +1,24 @@
 import { join as path } from 'path';
 import { mixinJSONFile } from './utils.js';
-import { npm as dependenciesVersions } from './versions.js';
+import { npm as dependenciesVersions, nodejs as minimalNodeJS } from './versions.js';
 
 export default ({ logPreamble, serviceDirs }) =>
   Promise.all(
     Object.entries(packageTweaks(serviceDirs)).map(([pack, tweak]) =>
-      mixinJSONFile(pack, tweak).then(() => {
-        console.log(logPreamble, `${pack} tweaked`);
-      })
+      mixinJSONFile(pack, tweak).then(() => console.log(logPreamble, `${pack} tweaked`))
     )
   );
 
+const commonPackageOptions = {
+  type: 'module',
+  engines: {
+    node: minimalNodeJS,
+  },
+};
+
 const packageTweaks = (serviceDirs) => ({
   'package.json': {
+    ...commonPackageOptions,
     scripts: {
       lint: 'eslint .',
       release: 'release-it',
@@ -22,7 +28,7 @@ const packageTweaks = (serviceDirs) => ({
     },
   },
   [path('test', 'package.json')]: {
-    type: 'module',
+    ...commonPackageOptions,
     scripts: {
       checkdeps: serviceDirs.reduce((s, p) => `${s} && (cd "${path('..', p)}" && npm i)`, 'true'),
       precov: 'npm run checkdeps',
@@ -45,7 +51,7 @@ const packageTweaks = (serviceDirs) => ({
     serviceDirs.map((dir) => [
       path(dir, 'package.json'),
       {
-        type: 'module',
+        ...commonPackageOptions,
         scripts: {
           start: 'nodemon --exec "node --inspect=0.0.0.0:9229" .',
           prestart: 'npm i',

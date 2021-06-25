@@ -9,24 +9,24 @@ services:
     build: &ref_0
       context: ./dev
       args:
-        UID: '${UID}'
-        GID: '${GID}'
-        DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}'
+        UID: ${UID}
+        GID: ${GID}
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
     depends_on:
       - nats
     volumes:
-      - './service-a:/home/user/dev'
+      - ./service-a:/home/user/dev
     command:
       - npm
       - start
     ports:
       - 9229
   service-a.rel:
-    image: 'https:/test-registry/fake/webservices/api-service-a:${VERSION:-dev}'
+    image: https:/test-registry/fake/webservices/api-service-a:${VERSION:-dev}
     build:
       context: ./service-a
       args:
-        DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}'
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
     depends_on:
       - nats
   service-b:
@@ -34,26 +34,26 @@ services:
     depends_on:
       - nats
     volumes:
-      - './service-b:/home/user/dev'
+      - ./service-b:/home/user/dev
     command:
       - npm
       - start
     ports:
       - 9229
   service-b.rel:
-    image: 'https:/test-registry/fake/webservices/api-service-b:${VERSION:-dev}'
+    image: https:/test-registry/fake/webservices/api-service-b:${VERSION:-dev}
     build:
       context: ./service-b
       args:
-        DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}'
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
     depends_on:
       - nats
   test:
     build: *ref_0
     volumes: &ref_1
-      - './test:/home/user/dev'
-      - './service-a:/home/user/service-a'
-      - './service-b:/home/user/service-b'
+      - ./test:/home/user/dev
+      - ./service-a:/home/user/service-a
+      - ./service-b:/home/user/service-b
     profiles:
       - test
     entrypoint:
@@ -67,4 +67,4 @@ services:
     ports:
       - 9229
   nats:
-    image: 'https:/test-registry/fake/thirdparties/nats:1.1.3'
+    image: https:/test-registry/fake/thirdparties/nats:1.1.3

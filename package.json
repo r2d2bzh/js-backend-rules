@@ -7,6 +7,9 @@
   },
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=12.9.0"
+  },
   "scripts": {
     "postinstall": "r2d2bzh-js-rules",
     "lint": "eslint .",
@@ -29,7 +32,7 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^0.4.2",
+    "@r2d2bzh/js-rules": "^0.5.0",
     "filehound": "^1.17.4",
     "release-it": "^14.8.0"
   }

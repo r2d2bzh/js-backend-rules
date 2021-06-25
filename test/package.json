@@ -20,5 +20,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": ">=14.16.1"
+  }
 }

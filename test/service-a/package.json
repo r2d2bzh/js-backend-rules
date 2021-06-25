@@ -28,5 +28,8 @@
       "protobufjs/minimal",
       "thrift"
     ]
+  },
+  "engines": {
+    "node": ">=14.16.1"
   }
 }
