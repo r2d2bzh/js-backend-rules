@@ -11,7 +11,7 @@ endif::[]
 
 = js-backend-rules
 
-The R2D2 product stack is composed of multiple NodeJS micro-services.
+The r2d2bzh product stack is composed of multiple NodeJS micro-services.
 The projects hosting these micro-services need to be structured with the same rules.
 As anyone can easily forget these many rules, `js-backend-rules` comes to the rescue.
 
@@ -39,5 +39,5 @@ CAUTION: You should preferably commit your project's current content to ensure n
 
 Once installed, `js-backend-rules` provides the `r2d2` npm script.
 
-To add a new service in the project, issue the following command from the project's root: +
+To add a new service to the project, issue the following command from the project's root directory: +
 `npm run r2d2 add <newServiceName>`
