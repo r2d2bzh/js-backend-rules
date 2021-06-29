@@ -15,7 +15,7 @@ export const npm =
     );
 
 export const findDirWith = async (glob) =>
-  (await FileHound.create().path('.').discard('.*/node_modules/.*').match(glob).find()).map((p) => path.dirname(p));
+  (await FileHound.create().path('.').discard('(^|.*/)node_modules/.*').match(glob).find()).map((p) => path.dirname(p));
 
 export const writeJSONFile = async (path, content) => {
   try {
