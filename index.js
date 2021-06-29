@@ -6,7 +6,6 @@ import tweakConfigurationFiles from './tweak-configuration-files/index.js';
 import { findDirWith, spawn } from './utils.js';
 
 export const install = async (options = {}) => {
-  console.log(options);
   const { logPreamble, ...projectData } = await gatherProjectData();
   try {
     await _install({ logPreamble, ...projectData, ...options });
