@@ -39,7 +39,7 @@ const _install = async ({ logPreamble, editWarning, serviceDirs, subPackages, np
   await structureProject(logPreamble);
   await tweakFiles({ logPreamble, editWarning, serviceDirs, subPackages });
   if (npmInstall) {
-    await dockerNpmInstall(logPreamble)(['test', ...serviceDirs]);
+    await dockerNpmInstall(logPreamble)(['_test', ...serviceDirs]);
   }
 };
 
