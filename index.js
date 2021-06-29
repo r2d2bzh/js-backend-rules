@@ -3,12 +3,13 @@ import { join as path } from 'path';
 import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bzh/js-rules';
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
-import { findDirWith, npm } from './utils.js';
+import { findDirWith, spawn } from './utils.js';
 
-export const install = async () => {
+export const install = async (options = {}) => {
+  console.log(options);
   const { logPreamble, ...projectData } = await gatherProjectData();
   try {
-    await _install({ logPreamble, ...projectData });
+    await _install({ logPreamble, ...projectData, ...options });
     console.log(logPreamble, 'successfully deployed');
   } catch (e) {
     console.error(logPreamble, 'deployment failure -', e);
@@ -35,10 +36,12 @@ const findComponents = async () => {
   };
 };
 
-const _install = async ({ logPreamble, editWarning, serviceDirs, subPackages }) => {
+const _install = async ({ logPreamble, editWarning, serviceDirs, subPackages, npmInstall = true }) => {
   await structureProject(logPreamble);
   await tweakFiles({ logPreamble, editWarning, serviceDirs, subPackages });
-  await npmInstall(logPreamble)(subPackages);
+  if (npmInstall) {
+    await dockerNpmInstall(logPreamble)(['test', ...serviceDirs]);
+  }
 };
 
 const structureProject = async (logPreamble) => {
@@ -62,7 +65,7 @@ const ensureProjectSymlinks = (logPreamble) =>
     )
   );
 
-const ensurePackageJSONfiles = () => Promise.all(['test'].map(npm('init', '-y')));
+const ensurePackageJSONfiles = () => Promise.all(['test'].map(spawn('npm', 'init', '-y')));
 
 const tweakFiles = async ({ logPreamble, editWarning, serviceDirs, subPackages }) => {
   const [projectDetails] = await Promise.all([
@@ -85,13 +88,20 @@ const tweakFiles = async ({ logPreamble, editWarning, serviceDirs, subPackages }
   });
 };
 
-const npmInstall = (logPreamble) => async (dirs) => {
+const dockerNpmInstall = (logPreamble) => async (services) => {
   const results = await Promise.allSettled(
-    dirs
-      .map(npm('install'))
-      .map((p) => p.then((l) => console.log(logPreamble, l)).catch((e) => console.error(logPreamble, e.message)))
+    services
+      .map((service) => spawn('docker-compose', 'run', '--rm', service, 'npm', 'install'))
+      .map((spawnInstall) =>
+        spawnInstall()
+          .then((l) => console.log(logPreamble, l))
+          .catch((e) => {
+            console.error(logPreamble, e.message);
+            throw e;
+          })
+      )
   );
   if (results.filter((r) => r.status === 'rejected').length > 0) {
-    throw new Error('npm install failed for some packages');
+    throw new Error('npm install failed for some containers');
   }
 };

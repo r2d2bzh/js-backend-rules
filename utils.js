@@ -1,15 +1,15 @@
-import { spawn } from 'child_process';
+import { spawn as childSpawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
 import FileHound from 'filehound';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
-export const npm =
-  (...args) =>
-  (cwd) =>
+export const spawn =
+  (exec, ...args) =>
+  (cwd = '.') =>
     new Promise((resolve, reject) =>
-      spawn('npm', args, { cwd }).on('close', (code) => {
-        const commandDesc = `'npm${args.reduce((s, a) => `${s} ${a}`, '')}' in ${cwd}`;
+      childSpawn(exec, args, { cwd, stdio: ['ignore', 'ignore', 'inherit'] }).on('close', (code) => {
+        const commandDesc = `'${exec} ${args.join(' ')}' in ${cwd}`;
         return code === 0 ? resolve(`${commandDesc} succeeded`) : reject(new Error(`${commandDesc} failed (${code})`));
       })
     );
