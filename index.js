@@ -88,19 +88,15 @@ const tweakFiles = async ({ logPreamble, editWarning, serviceDirs, subPackages }
 };
 
 const dockerNpmInstall = (logPreamble) => async (services) => {
-  const results = await Promise.allSettled(
-    services
-      .map((service) => spawn('docker-compose', 'run', '--rm', service, 'npm', 'install'))
-      .map((spawnInstall) =>
-        spawnInstall()
-          .then((l) => console.log(logPreamble, l))
-          .catch((e) => {
-            console.error(logPreamble, e.message);
-            throw e;
-          })
-      )
-  );
-  if (results.filter((r) => r.status === 'rejected').length > 0) {
-    throw new Error('npm install failed for some containers');
-  }
+  // We cannot operate parallel docker-compose runs for now:
+  // https://github.com/docker/compose/issues/1516
+  await services.reduce(async (before, service) => {
+    await before;
+    try {
+      console.log(logPreamble, await spawn('docker-compose', 'run', '--rm', service, 'npm', 'install')());
+    } catch (e) {
+      console.error(logPreamble, e.message);
+      throw e;
+    }
+  }, Promise.resolve());
 };
