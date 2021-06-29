@@ -6,12 +6,12 @@
   "dependencies": {
     "@r2d2bzh/moleculer-healthcheck-middleware": "^0.0.5",
     "@r2d2bzh/moleculer-start-checker-middleware": "^0.0.2",
-    "moleculer": "^0.14.13",
-    "nats": "^1.4.12",
+    "moleculer": "^0.14.14",
+    "nats": "^2.0.8",
     "semver": "^7.3.5"
   },
   "devDependencies": {
-    "nodemon": "2.0.7"
+    "nodemon": "^2.0.8"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
