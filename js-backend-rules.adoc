@@ -1,0 +1,56 @@
+# This project is ruled by `@r2d2bzh/js-backend-rules`
+
+This project is https://moleculer.services/[Moleculer]-based and most of the boilerplate of the project is handled by https://github.com/r2d2bzh/js-backend-rules[`@r2d2bzh/js-backend-rules`].
+
+Keep in mind that the root `package.json` is *only* used for development tooling and checking purposes.
+This means that before modifying the project, ensure you have run `npm install` at the *root* of the project so that all checking tools and hooks are deployed.
+
+CAUTION: Do *NOT* use `npm` commands directly in sub-directories of this project, these are to be run in the container managing each sub-service: `docker-compose run <service> npm ...`
+
+The following describes all the facilities provided by `js-backend-rules` and how they are intended to be used.
+
+## Starting and stopping services locally
+
+To start all the *development* services, simply execute `docker-compose up -d` from the command line.
+This will *only* start the development versions of all available services.
+
+You have to execute `docker-compose up -d --profile rel` in order to start the release versions of all services.
+
+[CAUTION]
+====
+`docker-compose up` will *NOT* ensure that your release services images are up to date.
+To ensure this you have to execute `docker-compose build --profile=rel` from the command line.
+
+The same applies for development images, but you only need to rebuild these images when bumping the version of the `@r2d2bzh/js-backend-rules` dependency.
+In this case, simply execute `docker-compose build`.
+====
+
+To stop all services, execute `docker-compose down`.
+
+## Unit testing
+
+Execute `npm test` to pass the linting process and the whole unit tests plan.
+This will also check for no regression in test coverage.
+
+CAUTION: If you have improved the unit tests coverage, you *MUST* update accordingly the `branches`, `functions`, `lines` and `statements` keys of the `c8` object available in `test/package.json`.
+
+You can also execute:
+
+* `docker-compose run test` to pass the whole test plan without checking for lint errors
+* `docker-compose run test nocov` to pass the whole test plan without checking neither for lint errors nor the unit tests coverage
+
+All these commands can be used in combination with https://github.com/avajs/ava/blob/main/docs/05-command-line.md[AVA command line options] (you might have to insert `--` twice before these options to ensure that they are neither passed to `docker-compose` nor to `npm`).
+
+If you have to debug one particular test case:
+
+. Insert a https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger[`debugger;` line] at the beginning of the test case to debug
+. Execute `npm run test:debug \\__test__/<path to the file containing the test case>` from the root of the project (path completion should work)
+. Use `docker-compose ps` to find the host port where the port 9229 is published for the newly started test container
+. Open `chrome://inspect` in your Chrome browser and open the dedicated Devtools for Node
+. Connect the Chrome Devtools to the port found on step 3
+
+## Releasing the project
+
+Once all developments have been merged on the main branch, simply execute `npm run release` from the command line and follow the instructions.
+
+You might also want to use the command line options provided by https://github.com/release-it/release-it[`release-it`] (you might have to use `--` before these options to avoid them being taken into account by `npm`).

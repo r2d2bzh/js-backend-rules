@@ -1,5 +1,5 @@
 import { promises as fs } from 'fs';
-import { join as path } from 'path';
+import { join as path, dirname, relative } from 'path';
 import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bzh/js-rules';
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
@@ -56,7 +56,13 @@ const ensureProjectDirectories = () =>
 
 const ensureProjectSymlinks = (logPreamble) =>
   Promise.all(
-    [[path('test', '__tests__'), '__tests__']].map(([target, p]) =>
+    [
+      [path('test', '__tests__'), '__tests__'],
+      [
+        path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
+        'js-backend-rules.adoc',
+      ],
+    ].map(([target, p]) =>
       fs
         .unlink(p)
         .catch((e) => console.warn(logPreamble, `${p} was not unlinked (${e.message})`)) // path does not exist or is something we do not want to delete (dir...)
