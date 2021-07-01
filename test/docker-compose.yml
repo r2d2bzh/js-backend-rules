@@ -29,6 +29,8 @@ services:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
     depends_on:
       - nats
+    profiles:
+      - rel
   service-b:
     build: *ref_0
     depends_on:
@@ -48,6 +50,8 @@ services:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
     depends_on:
       - nats
+    profiles:
+      - rel
   test:
     build: *ref_0
     volumes: &ref_1

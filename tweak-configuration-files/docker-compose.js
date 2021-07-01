@@ -68,5 +68,6 @@ const addServiceToConfiguration = (webservicesRegistry) => (configuration, servi
       },
     },
     depends_on: ['nats'],
+    profiles: ['rel'],
   },
 });

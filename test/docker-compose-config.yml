@@ -46,6 +46,8 @@ services:
       nats:
         condition: service_started
     image: https:/test-registry/fake/webservices/api-service-a:dev
+    profiles:
+    - rel
   service-b:
     build:
       args:
@@ -76,6 +78,8 @@ services:
       nats:
         condition: service_started
     image: https:/test-registry/fake/webservices/api-service-b:dev
+    profiles:
+    - rel
   test:
     build:
       args:
