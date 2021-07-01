@@ -23,10 +23,11 @@ const packageTweaks = (serviceDirs) => ({
       r2d2: 'r2d2bzh-js-backend-rules',
       postinstall: 'npm run r2d2',
       lint: 'eslint .',
-      release: 'release-it',
       pretest: 'npm run lint',
       test: 'docker-compose run test',
       'test:debug': 'docker-compose run --publish 9229 test debug',
+      prerelease: 'npm run test',
+      release: 'release-it',
     },
   },
   [path('test', 'package.json')]: {
