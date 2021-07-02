@@ -14,12 +14,12 @@ The following describes all the facilities provided by `js-backend-rules` and ho
 To start all the *development* services, simply execute `docker-compose up -d` from the command line.
 This will *only* start the development versions of all available services.
 
-You have to execute `docker-compose up -d --profile rel` in order to start the release versions of all services.
+You have to execute `docker-compose --profile rel up -d` in order to start the release versions of all services.
 
 [CAUTION]
 ====
 `docker-compose up` will *NOT* ensure that your release services images are up to date.
-To ensure this you have to execute `docker-compose build --profile=rel` from the command line.
+To ensure this you have to execute `docker-compose --profile=rel build` from the command line.
 
 The same applies for development images, but you only need to rebuild these images when bumping the version of the `@r2d2bzh/js-backend-rules` dependency.
 In this case, simply execute `docker-compose build`.
