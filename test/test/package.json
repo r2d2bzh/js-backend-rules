@@ -5,12 +5,13 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "checkdeps": "true && (cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i)",
-    "precov": "npm run checkdeps",
+    "precov": "npm install",
     "cov": "c8 ava",
-    "prenocov": "npm run checkdeps",
+    "prenocov": "npm install",
     "nocov": "ava",
-    "debug": "ava debug --host 0.0.0.0"
+    "debug": "ava debug --host 0.0.0.0",
+    "postinstall": "true && (cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i)",
+    "predebug": "npm install"
   },
   "keywords": [],
   "author": "",

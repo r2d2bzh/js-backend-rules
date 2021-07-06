@@ -33,11 +33,12 @@ const packageTweaks = (serviceDirs) => ({
   [path('test', 'package.json')]: {
     ...commonPackageOptions,
     scripts: {
-      checkdeps: serviceDirs.reduce((s, p) => `${s} && (cd "${path('..', p)}" && npm i)`, 'true'),
-      precov: 'npm run checkdeps',
+      postinstall: serviceDirs.reduce((s, p) => `${s} && (cd "${path('..', p)}" && npm i)`, 'true'),
+      precov: 'npm install',
       cov: 'c8 ava',
-      prenocov: 'npm run checkdeps',
+      prenocov: 'npm install',
       nocov: 'ava',
+      predebug: 'npm install',
       debug: 'ava debug --host 0.0.0.0',
     },
     c8: {
