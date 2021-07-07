@@ -46,7 +46,16 @@ const _install = async ({ logPreamble, editWarning, serviceDirs, subPackages, np
 const structureProject = async (logPreamble) => {
   await ensureProjectDirectories();
   await ensurePackageJSONfiles();
-  await ensureProjectSymlinks(logPreamble);
+  await ensureProjectSymlinks([[path('test', '__tests__'), '__tests__']], logPreamble);
+  await ensureProjectFiles(
+    [
+      [
+        path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
+        'js-backend-rules.adoc',
+      ],
+    ],
+    logPreamble
+  );
 };
 
 const ensureProjectDirectories = () =>
@@ -54,23 +63,21 @@ const ensureProjectDirectories = () =>
     ['dev', path('helm', 'templates'), path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true }))
   );
 
-const ensureProjectSymlinks = (logPreamble) =>
+const ensurePackageJSONfiles = () => Promise.all(['test'].map(spawn('npm', 'init', '-y')));
+
+const ensureProjectItems = (addItem) => (items, logPreamble) =>
   Promise.all(
-    [
-      [path('test', '__tests__'), '__tests__'],
-      [
-        path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
-        'js-backend-rules.adoc',
-      ],
-    ].map(([target, p]) =>
+    items.map(([src, dest]) =>
       fs
-        .unlink(p)
-        .catch((e) => console.warn(logPreamble, `${p} was not unlinked (${e.message})`)) // path does not exist or is something we do not want to delete (dir...)
-        .then(() => fs.symlink(target, p))
+        .unlink(dest)
+        .catch((e) => console.warn(logPreamble, `${dest} was not unlinked (${e.message})`)) // path does not exist or is something we do not want to delete (dir...)
+        .then(() => addItem(src, dest))
     )
   );
 
-const ensurePackageJSONfiles = () => Promise.all(['test'].map(spawn('npm', 'init', '-y')));
+const ensureProjectSymlinks = ensureProjectItems(fs.symlink);
+
+const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 
 const tweakFiles = async ({ logPreamble, editWarning, serviceDirs, subPackages }) => {
   const [projectDetails] = await Promise.all([
