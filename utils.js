@@ -19,7 +19,7 @@ export const findDirWith = async (glob) =>
 
 export const writeJSONFile = async (path, content) => {
   try {
-    await fs.writeFile(path, JSON.stringify(content, null, 2), { encoding: 'utf8' });
+    await fs.writeFile(path, `${JSON.stringify(content, null, 2)}\n`, { encoding: 'utf8' });
   } catch (e) {
     throw new Error(`failed to write JSON to ${path} (${e.message})`);
   }
