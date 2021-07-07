@@ -9,10 +9,12 @@ export default ({ addWarningHeader, subPackages }) =>
         npm: {
           publish: false,
         },
-        'before:bump': [
-          "sed -i -e 's/${latestVersion}/${version}/g' helm/Chart.yaml",
-          ...subPackages.map((pack) => `(cd ${pack} && release-it --ci \${version})`),
-        ],
+        hooks: {
+          'before:bump': [
+            "sed -i -e 's/${latestVersion}/${version}/g' helm/Chart.yaml",
+            ...subPackages.map((pack) => `(cd ${pack} && release-it --ci \${version})`),
+          ],
+        },
       },
       formatters: [toYAML, addWarningHeader],
     },
