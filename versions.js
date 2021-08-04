@@ -16,9 +16,9 @@ export const npm = {
   '@r2d2bzh/moleculer-healthcheck-middleware': '^0.0.5',
   '@r2d2bzh/moleculer-start-checker-middleware': '^0.0.2',
   ava: '^3.15.0',
-  c8: '^7.7.3',
-  moleculer: '^0.14.14',
-  nats: '^2.0.8',
-  nodemon: '^2.0.8',
+  c8: '^7.8.0',
+  moleculer: '^0.14.16',
+  nats: '^2.1.0',
+  nodemon: '^2.0.12',
   uuid: '^8.3.2',
 };

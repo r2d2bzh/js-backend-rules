@@ -10,7 +10,7 @@
     "prenocov": "npm install",
     "nocov": "ava",
     "debug": "ava debug --host 0.0.0.0",
-    "postinstall": "true && (cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i)",
+    "postinstall": "true && (cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i) && (cd \"../service-c\" && npm i) && (cd \"../service-d\" && npm i) && (cd \"../service-e\" && npm i)",
     "predebug": "npm install"
   },
   "keywords": [],
@@ -23,7 +23,10 @@
     "allowExternal": true,
     "src": [
       "../service-a",
-      "../service-b"
+      "../service-b",
+      "../service-c",
+      "../service-d",
+      "../service-e"
     ],
     "exclude": [
       "**/__tests__/**",
@@ -37,8 +40,8 @@
   },
   "dependencies": {
     "ava": "^3.15.0",
-    "c8": "^7.7.3",
-    "moleculer": "^0.14.14",
+    "c8": "^7.8.0",
+    "moleculer": "^0.14.16",
     "uuid": "^8.3.2"
   },
   "engines": {

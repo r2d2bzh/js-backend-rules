@@ -1,22 +1,15 @@
 {
-  "name": "service-b",
+  "name": "service-d",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "r2d2bzh": {
-    "dockerfileCommands": [
-      "COPY fake /fake",
-      "RUN ls /"
-    ]
-  },
-  "dependencies": {
-    "@r2d2bzh/moleculer-healthcheck-middleware": "^0.0.5",
-    "@r2d2bzh/moleculer-start-checker-middleware": "^0.0.2",
-    "moleculer": "^0.14.16",
-    "nats": "^2.1.0"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.12"
+    "dockerfileCommands": {
+      "builder": [
+        "COPY fake /fake",
+        "RUN ls /"
+      ]
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -27,6 +20,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "engines": {
+    "node": ">=14.16.1"
+  },
   "esbuildOptions": {
     "external": [
       "avsc",
@@ -34,7 +30,13 @@
       "thrift"
     ]
   },
-  "engines": {
-    "node": ">=14.16.1"
+  "dependencies": {
+    "@r2d2bzh/moleculer-healthcheck-middleware": "^0.0.5",
+    "@r2d2bzh/moleculer-start-checker-middleware": "^0.0.2",
+    "moleculer": "^0.14.16",
+    "nats": "^2.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }

@@ -16,6 +16,9 @@ services:
     - /home/hostuser/project/test:/home/user/dev:rw
     - /home/hostuser/project/service-a:/home/user/service-a:rw
     - /home/hostuser/project/service-b:/home/user/service-b:rw
+    - /home/hostuser/project/service-c:/home/user/service-c:rw
+    - /home/hostuser/project/service-d:/home/user/service-d:rw
+    - /home/hostuser/project/service-e:/home/user/service-e:rw
   mongo:
     image: mongo:4.4.6
   nats:
@@ -80,6 +83,90 @@ services:
     image: https:/test-registry/fake/webservices/api-service-b:dev
     profiles:
     - rel
+  service-c:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - npm
+    - start
+    depends_on:
+      nats:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/service-c:/home/user/dev:rw
+  service-c.rel:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+      context: /home/hostuser/project/service-c
+    depends_on:
+      nats:
+        condition: service_started
+    image: https:/test-registry/fake/webservices/api-service-c:dev
+    profiles:
+    - rel
+  service-d:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - npm
+    - start
+    depends_on:
+      nats:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/service-d:/home/user/dev:rw
+  service-d.rel:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+      context: /home/hostuser/project/service-d
+    depends_on:
+      nats:
+        condition: service_started
+    image: https:/test-registry/fake/webservices/api-service-d:dev
+    profiles:
+    - rel
+  service-e:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+      context: /home/hostuser/project/dev
+    command:
+    - npm
+    - start
+    depends_on:
+      nats:
+        condition: service_started
+    ports:
+    - target: 9229
+    volumes:
+    - /home/hostuser/project/service-e:/home/user/dev:rw
+  service-e.rel:
+    build:
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: 2.2.1
+      context: /home/hostuser/project/service-e
+    depends_on:
+      nats:
+        condition: service_started
+    image: https:/test-registry/fake/webservices/api-service-e:dev
+    profiles:
+    - rel
   test:
     build:
       args:
@@ -102,5 +189,8 @@ services:
     - /home/hostuser/project/test:/home/user/dev:rw
     - /home/hostuser/project/service-a:/home/user/service-a:rw
     - /home/hostuser/project/service-b:/home/user/service-b:rw
+    - /home/hostuser/project/service-c:/home/user/service-c:rw
+    - /home/hostuser/project/service-d:/home/user/service-d:rw
+    - /home/hostuser/project/service-e:/home/user/service-e:rw
 version: '3.9'
 

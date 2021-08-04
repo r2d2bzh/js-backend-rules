@@ -1,4 +1,5 @@
 import { join as path } from 'path';
+import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractField } from '../utils.js';
 import { docker as versions } from '../versions.js';
@@ -60,13 +61,18 @@ const dockerConfigurationForServices = async ({
                 configuration: [
                   'ARG DOCKER_BUILD_NODEJS_VERSION',
                   `FROM ${dbdImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
+                  ...(await getAdditionalBuilderCommands(context)),
                   `FROM ${dbdImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
-                  ...(await getAdditionalCommands(context)),
+                  ...(await getAdditionalRuntimeCommands(context)),
                 ],
                 formatters: [
                   ...dockerfileCommonFormatters,
-                  addHashedHeader('For additional commands, add { "r2d2bzh": { "dockerfileCommands": [ ... ] } }'),
+                  addHashedHeader(
+                    'For additional runtime commands, add { "r2d2bzh": { "dockerfileCommands": [ ... ] } }'
+                  ),
                   addHashedHeader(`in ${context}/package.json`),
+                  addHashedHeader('For additional builder commands, you can also use the following syntax:'),
+                  addHashedHeader('{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ...] } } }'),
                   toMultiline,
                 ].reverse(),
               },
@@ -77,12 +83,24 @@ const dockerConfigurationForServices = async ({
     ).flat()
   );
 
-const getAdditionalCommands = async (context) => {
+const getAdditionalBuilderCommands = async (context) => {
   try {
-    return extractCommandsFrom(await readJSONFile(path(context, 'package.json'))) || [];
+    const commands = await getCommands(path(context, 'package.json'));
+    return commands instanceof Array ? [] : commands.builder ? commands.builder : [];
   } catch (e) {
     return [];
   }
 };
+
+const getAdditionalRuntimeCommands = async (context) => {
+  try {
+    const commands = await getCommands(path(context, 'package.json'));
+    return commands instanceof Array ? commands : commands.runtime ? commands.runtime : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const getCommands = pMemoize(async (filePath) => extractCommandsFrom(await readJSONFile(filePath)));
 
 const extractCommandsFrom = extractField(['r2d2bzh', 'dockerfileCommands']);

@@ -52,12 +52,78 @@ services:
       - nats
     profiles:
       - rel
+  service-c:
+    build: *ref_0
+    depends_on:
+      - nats
+    volumes:
+      - ./service-c:/home/user/dev
+    command:
+      - npm
+      - start
+    ports:
+      - 9229
+  service-c.rel:
+    image: https:/test-registry/fake/webservices/api-service-c:${VERSION:-dev}
+    build:
+      context: ./service-c
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+    depends_on:
+      - nats
+    profiles:
+      - rel
+  service-d:
+    build: *ref_0
+    depends_on:
+      - nats
+    volumes:
+      - ./service-d:/home/user/dev
+    command:
+      - npm
+      - start
+    ports:
+      - 9229
+  service-d.rel:
+    image: https:/test-registry/fake/webservices/api-service-d:${VERSION:-dev}
+    build:
+      context: ./service-d
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+    depends_on:
+      - nats
+    profiles:
+      - rel
+  service-e:
+    build: *ref_0
+    depends_on:
+      - nats
+    volumes:
+      - ./service-e:/home/user/dev
+    command:
+      - npm
+      - start
+    ports:
+      - 9229
+  service-e.rel:
+    image: https:/test-registry/fake/webservices/api-service-e:${VERSION:-dev}
+    build:
+      context: ./service-e
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+    depends_on:
+      - nats
+    profiles:
+      - rel
   test:
     build: *ref_0
     volumes: &ref_1
       - ./test:/home/user/dev
       - ./service-a:/home/user/service-a
       - ./service-b:/home/user/service-b
+      - ./service-c:/home/user/service-c
+      - ./service-d:/home/user/service-d
+      - ./service-e:/home/user/service-e
     profiles:
       - test
     entrypoint:
