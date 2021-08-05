@@ -4,8 +4,11 @@ import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bz
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
 import { findDirWith, spawn } from './utils.js';
+import colorizeConsole from './colorizeConsole.js';
 
 const discardedServiceDirs = ['.', 'dev', 'test'];
+
+colorizeConsole();
 
 export const install = async (options = {}) => {
   const { logPreamble, ...projectData } = await gatherProjectData();
