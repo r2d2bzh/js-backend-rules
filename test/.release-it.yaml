@@ -4,6 +4,7 @@ npm:
 hooks:
   before:bump:
     - sed -i -e 's/${latestVersion}/${version}/g' helm/Chart.yaml
+    - (cd deep/deep-service && release-it --ci ${version})
     - (cd service-a && release-it --ci ${version})
     - (cd service-b && release-it --ci ${version})
     - (cd service-c && release-it --ci ${version})
