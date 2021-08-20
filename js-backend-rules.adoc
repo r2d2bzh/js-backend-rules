@@ -44,7 +44,7 @@ All these commands can be used in combination with https://github.com/avajs/ava/
 If you have to debug one particular test case:
 
 . Insert a https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger[`debugger;` line] at the beginning of the test case to debug
-. Execute `npm run test:debug \\__test__/<path to the file containing the test case>` from the root of the project (path completion should work)
+. Execute `npm run test:debug \\__tests__/<path to the file containing the test case>` from the root of the project (path completion should work)
 . Use `docker-compose ps` to find the host port where the port 9229 is published for the newly started test container
 . Open `chrome://inspect` in your Chrome browser and open the dedicated Devtools for Node
 . Connect the Chrome Devtools to the port found on step 3
