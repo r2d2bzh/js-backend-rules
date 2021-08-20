@@ -39,7 +39,13 @@ You can also execute:
 * `docker-compose run test` to pass the whole test plan without checking for lint errors
 * `docker-compose run test nocov` to pass the whole test plan without checking neither for lint errors nor the unit tests coverage
 
-All these commands can be used in combination with https://github.com/avajs/ava/blob/main/docs/05-command-line.md[AVA command line options] (you might have to insert `--` twice before these options to ensure that they are neither passed to `docker-compose` nor to `npm`).
+This can be used in combination with https://github.com/avajs/ava/blob/main/docs/05-command-line.md[AVA command line options]:
+
+* `docker-compose run test nocov \\__tests__/<path to test file>`
+* `docker-compose run test nocov \-- -- -m 'test title with or without glob pattern'`
+* `docker-compose run test cov \-- -- --verbose`
+
+TIP: You have to insert `--` twice (`-- --`) before AVA options to ensure that they are neither passed to `docker-compose` nor to `npm`.
 
 If you have to debug one particular test case:
 
