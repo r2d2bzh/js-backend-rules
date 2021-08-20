@@ -2,11 +2,11 @@ import { join as path } from 'path';
 import { mixinJSONFile } from './utils.js';
 import { npm as dependenciesVersions, nodejs as minimalNodeJS } from './versions.js';
 
-export default ({ logPreamble, serviceDirs }) =>
+export default ({ logPreamble, serviceDirs, subPackages }) =>
   Promise.all(
-    Object.entries(packageTweaks(serviceDirs)).map(([pack, tweak]) =>
-      mixinJSONFile(pack, tweak).then(() => console.log(logPreamble, `${pack} tweaked`))
-    )
+    Object.entries(
+      packageTweaks({ serviceDirs, alienPackages: subPackages.filter((p) => !['test', ...serviceDirs].includes(p)) })
+    ).map(([pack, tweak]) => mixinJSONFile(pack, tweak).then(() => console.log(logPreamble, `${pack} tweaked`)))
   );
 
 const commonPackageOptions = {
@@ -16,7 +16,7 @@ const commonPackageOptions = {
   },
 };
 
-const packageTweaks = (serviceDirs) => ({
+const packageTweaks = ({ serviceDirs, alienPackages }) => ({
   'package.json': {
     ...commonPackageOptions,
     scripts: {
@@ -73,6 +73,7 @@ const packageTweaks = (serviceDirs) => ({
       },
     ])
   ),
+  ...Object.fromEntries(alienPackages.map((p) => [path(p, 'package.json'), commonPackageOptions])),
 });
 
 const dependencies = (depList) => depList.reduce((deps, dep) => ({ ...deps, [dep]: dependenciesVersions[dep] }), {});

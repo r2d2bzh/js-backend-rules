@@ -111,7 +111,7 @@ const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 const tweakFiles = async ({ logPreamble, editWarning, serviceDirs, subPackages }) => {
   const [projectDetails] = await Promise.all([
     readJSONFile('package.json'),
-    tweakPackageJSON({ logPreamble, serviceDirs }),
+    tweakPackageJSON({ logPreamble, serviceDirs, subPackages }),
   ]);
   await jsRules({
     logPreamble,
