@@ -1,6 +1,6 @@
 {
   "name": "@r2d2bzh/js-backend-rules",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "enforce r2d2bzh rules for backends developed in javascript",
   "bin": {
     "r2d2bzh-js-backend-rules": "./bin.js"
@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^0.6.3",
+    "@r2d2bzh/js-rules": "^0.7.0",
     "filehound": "^1.17.4",
     "kleur": "^4.1.4",
     "p-memoize": "^4.0.1",

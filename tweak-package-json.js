@@ -76,4 +76,5 @@ const packageTweaks = ({ serviceDirs, alienPackages }) => ({
   ...Object.fromEntries(alienPackages.map((p) => [path(p, 'package.json'), commonPackageOptions])),
 });
 
+// eslint-disable-next-line security/detect-object-injection
 const dependencies = (depList) => depList.reduce((deps, dep) => ({ ...deps, [dep]: dependenciesVersions[dep] }), {});

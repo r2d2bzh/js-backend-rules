@@ -1,3 +1,5 @@
+/* eslint-disable security/detect-object-injection */
+
 import { green, yellow, red } from 'kleur/colors';
 
 const colors = {

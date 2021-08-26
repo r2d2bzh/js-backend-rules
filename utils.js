@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-non-literal-fs-filename, security/detect-object-injection */
 import { spawn as childSpawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
