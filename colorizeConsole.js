@@ -6,8 +6,8 @@ const colors = {
   error: red,
 };
 
-export default () =>
+export default (logger = console) =>
   Object.entries(colors).forEach(([level, color]) => {
-    const consoleFunction = console[level].bind(console);
-    console[level] = (...args) => consoleFunction(color(args.join(' ')));
+    const consoleFunction = logger[level].bind(console);
+    logger[level] = (...args) => consoleFunction(color(args.join(' ')));
   });

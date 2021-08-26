@@ -1,0 +1,5 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+
+npx --no-install r2d2bzh-js-rules isWip || npx --no-install eslint . && npm test
