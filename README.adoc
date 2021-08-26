@@ -23,7 +23,7 @@ It is strongly advised to read the https://github.com/r2d2bzh/js-rules/blob/mast
 
 == Install
 
-You need to add the following NPM development dependency to the project that needs to be ruled (which means here skaffolded/structured/checked/...):
+You need to add the following NPM development dependency to the project that needs to be ruled (which means here scaffolded/structured/checked/...):
 
 `npm install --save-dev @r2d2bzh/js-backend-rules`
 
