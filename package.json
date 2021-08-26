@@ -8,7 +8,10 @@
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node": ">=12.9.0"
+    " tag::engines[] ": "",
+    "node": ">=14",
+    "npm": ">=7",
+    " end::engines[] ": ""
   },
   "publishConfig": {
     "access": "public"

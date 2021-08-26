@@ -11,6 +11,16 @@ endif::[]
 
 = js-backend-rules
 
+[WARNING]
+====
+This project requires the following minimal engines versions:
+
+[source,json]
+----
+include::package.json[tag=engines,indent=0]
+----
+====
+
 The r2d2bzh product stack is composed of multiple NodeJS micro-services.
 The projects hosting these micro-services need to be structured with the same rules.
 As anyone can easily forget these many rules, `js-backend-rules` comes to the rescue.
