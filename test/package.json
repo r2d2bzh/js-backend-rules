@@ -14,7 +14,7 @@
     "test": "docker-compose run test",
     "lint": "eslint .",
     "release": "release-it",
-    "pretest": "npm run lint",
+    "pretest": "true # pretest is disabled since js-backend-rules 0.1.0",
     "test:debug": "docker-compose run --publish 9229 test debug",
     "custom:script": "this is just to test",
     "r2d2": "r2d2bzh-js-backend-rules",
