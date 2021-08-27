@@ -20,7 +20,15 @@ yargs(hideBin(process.argv))
   .command(
     ['install', '$0'],
     'install the ruler and immediately apply all the rules',
-    (yargs) => yargs.options(commonYargsOptions),
+    (yargs) =>
+      yargs.options({
+        ...commonYargsOptions,
+        'git-parent': {
+          describe: 'execute in the closest git parent folder instead of the current working directory',
+          type: 'boolean',
+          default: false,
+        },
+      }),
     install
   )
   .command(

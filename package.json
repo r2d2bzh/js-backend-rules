@@ -17,9 +17,12 @@
     "access": "public"
   },
   "scripts": {
-    "postinstall": "r2d2bzh-js-rules",
+    "postinstall": "[ \"$(dirname \"${npm_package_json}\")\" = \"${INIT_CWD}\" ] && r2d2bzh-js-rules || r2d2bzh-js-backend-rules --git-parent",
     "lint": "eslint .",
-    "test": "cd test && ../bin.js --no-npm-install && docker-compose config | sed \"s/ID: '[0-9]*'/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
+    "test": "npm run testCWD && npm run testGitParent && npm run testCompose",
+    "testCWD": "cd test && ../bin.js --no-npm-install",
+    "testGitParent": "cd test/dev && ../../bin.js --no-npm-install --git-parent",
+    "testCompose": "cd test && docker-compose config | sed \"s/ID: '[0-9]*'/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
   },
   "repository": {
     "type": "git",
@@ -40,6 +43,7 @@
   "dependencies": {
     "@r2d2bzh/js-rules": "^0.7.0",
     "filehound": "^1.17.4",
+    "find-up": "^6.0.0",
     "kleur": "^4.1.4",
     "p-memoize": "^4.0.1",
     "release-it": "^14.11.1",

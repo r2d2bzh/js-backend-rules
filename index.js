@@ -2,6 +2,8 @@
 
 import { promises as fs } from 'fs';
 import { join as path, dirname, relative } from 'path';
+import process from 'process';
+import { findUp } from 'find-up';
 import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bzh/js-rules';
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
@@ -13,13 +15,48 @@ const discardedServiceDirs = ['.', 'dev', 'test'];
 colorizeConsole();
 
 export const install = async ({ logger = console, ...options } = {}) => {
-  const { logPreamble, ...projectData } = await gatherProjectData(logger);
-  try {
+  const { logPreamble, ...projectData } = await logOnFail('JS-BACKEND-RULES INIT:')(logger, async () => {
+    if (options.gitParent) {
+      await cwdToGitParent();
+    }
+    return gatherProjectData(logger);
+  })();
+  await logOnFail(logPreamble)(logger, async () => {
     await _install({ logger, logPreamble, ...projectData, ...options });
     logger.log(logPreamble, 'successfully deployed');
-  } catch (e) {
-    logger.error(logPreamble, 'deployment failure -', e);
-    throw e;
+  })();
+};
+
+const logOnFail =
+  (logPreamble) =>
+  (logger, fn) =>
+  async (...args) => {
+    try {
+      return await fn(...args);
+    } catch (e) {
+      logger.error(logPreamble, 'deployment failure -', e);
+      throw e;
+    }
+  };
+
+const cwdToGitParent = async () => {
+  const gitParent = await findUp(
+    async (dir) => {
+      try {
+        const gitStat = await fs.stat(path(dir, '.git'));
+        return gitStat.isDirectory() && dir;
+      } catch (e) {
+        return;
+      }
+    },
+    {
+      type: 'directory',
+    }
+  );
+  if (gitParent) {
+    process.chdir(gitParent);
+  } else {
+    throw new Error('no git parent directory found');
   }
 };
 
