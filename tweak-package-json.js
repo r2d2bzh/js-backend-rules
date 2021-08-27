@@ -21,7 +21,7 @@ const packageTweaks = ({ serviceDirs, alienPackages }) => ({
     ...commonPackageOptions,
     scripts: {
       r2d2: 'r2d2bzh-js-backend-rules',
-      postinstall: 'npm run r2d2',
+      postinstall: 'true # postinstall is disabled since js-backend-rules 0.1.2',
       lint: 'eslint .',
       pretest: 'true # pretest is disabled since js-backend-rules 0.1.0',
       test: 'docker-compose run test',
