@@ -3,5 +3,5 @@
 
 
 # tag::commands[]
-npx --no-install r2d2bzh-js-rules isWip || npx --no-install eslint . && npm test
+npx --no-install r2d2bzh-js-rules isWIP || npx --no-install eslint . && npm test
 # end::commands[]
