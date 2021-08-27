@@ -3,6 +3,7 @@ import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractFieldAs } from '../utils.js';
 import tweakEslintConfig from './eslint.js';
 import addGitConfig from './git.js';
+import addNpmConfig from './npm.js';
 import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
 import addDockerComposeConfig from './docker-compose.js';
@@ -16,6 +17,7 @@ export default ({ projectDetails, editWarning, subPackages, serviceDirs }) => {
   return pipe([
     tweakEslintConfig(),
     addGitConfig({ addWarningHeader }),
+    addNpmConfig({ addWarningHeader }),
     addReleaseItConfig({ addWarningHeader, subPackages }),
     addDockerConfig({
       addWarningHeader,
