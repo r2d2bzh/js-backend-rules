@@ -45,11 +45,11 @@ You can also execute:
 
 This can be used in combination with https://github.com/avajs/ava/blob/main/docs/05-command-line.md[AVA command line options]:
 
-* `docker-compose run test nocov \\__tests__/<path to test file>`
-* `docker-compose run test nocov \-- -- -m 'test title with or without glob pattern'`
-* `docker-compose run test cov \-- -- --verbose`
+* `npm t nocov \\__tests__/<path to test file>`
+* `npm t nocov \-- -- -m 'test title with or without glob pattern'`
+* `npm t cov \-- -- --verbose`
 
-TIP: You have to insert `--` twice (`-- --`) before AVA options to ensure that they are neither passed to `docker-compose` nor to `npm`.
+TIP: You have to insert `--` twice (`-- --`) before AVA options to ensure that they are neither passed to `npm` nor to `docker-compose`.
 
 ## Unit test debugging
 
