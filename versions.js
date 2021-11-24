@@ -13,12 +13,12 @@ export const docker = {
 };
 
 export const npm = {
-  '@r2d2bzh/moleculer-healthcheck-middleware': '^0.0.5',
-  '@r2d2bzh/moleculer-start-checker-middleware': '^0.0.2',
+  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.1',
+  '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.0',
   ava: '^3.15.0',
-  c8: '^7.8.0',
-  moleculer: '^0.14.16',
+  c8: '^7.10.0',
+  moleculer: '^0.14.18',
   nats: '^2.1.0',
-  nodemon: '^2.0.12',
+  nodemon: '^2.0.15',
   uuid: '^8.3.2',
 };

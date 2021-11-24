@@ -31,12 +31,12 @@
     ]
   },
   "dependencies": {
-    "@r2d2bzh/moleculer-healthcheck-middleware": "^0.0.5",
-    "@r2d2bzh/moleculer-start-checker-middleware": "^0.0.2",
-    "moleculer": "^0.14.16",
+    "@r2d2bzh/moleculer-healthcheck-middleware": "^1.0.1",
+    "@r2d2bzh/moleculer-start-checker-middleware": "^1.0.0",
+    "moleculer": "^0.14.18",
     "nats": "^2.1.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.15"
   }
 }
