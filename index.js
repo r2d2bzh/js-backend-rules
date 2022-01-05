@@ -182,7 +182,10 @@ const dockerNpmInstall = (logPreamble, logger) => async (services) => {
   await services.reduce(async (before, service) => {
     await before;
     try {
-      logger.log(logPreamble, await spawn('docker-compose', 'run', '--rm', service, 'npm', 'install')());
+      logger.log(
+        logPreamble,
+        await spawn('docker-compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')()
+      );
     } catch (e) {
       logger.error(logPreamble, e.message);
       throw e;
