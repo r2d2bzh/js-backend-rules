@@ -11,8 +11,8 @@ const build = {
   },
 };
 
-export default ({ addWarningHeader, serviceDirs, natsRegistry, webservicesRegistry }) => {
-  const services = serviceDirs.reduce(addServiceToConfiguration(webservicesRegistry), {});
+export default ({ addWarningHeader, serviceDirs, natsRegistry, releaseImagePath }) => {
+  const services = serviceDirs.reduce(addServiceToConfiguration(releaseImagePath), {});
   const testVolumes = ['./test:/home/user/dev', ...serviceDirs.map((dir) => `./${dir}:/home/user/${dir}`)];
   return (config) => ({
     ...config,
@@ -50,7 +50,7 @@ export default ({ addWarningHeader, serviceDirs, natsRegistry, webservicesRegist
   });
 };
 
-const addServiceToConfiguration = (webservicesRegistry) => (configuration, serviceDir) => ({
+const addServiceToConfiguration = (releaseImagePath) => (configuration, serviceDir) => ({
   ...configuration,
   [serviceDir]: {
     build,
@@ -60,7 +60,7 @@ const addServiceToConfiguration = (webservicesRegistry) => (configuration, servi
     ports: [9229],
   },
   [`${serviceDir}.rel`]: {
-    image: `${webservicesRegistry}/api-${serviceDir}:\${VERSION:-dev}`,
+    image: `${releaseImagePath}/${serviceDir}:\${VERSION:-dev}`,
     build: {
       context: `./${serviceDir}`,
       args: {

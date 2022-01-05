@@ -44,6 +44,7 @@
     "@r2d2bzh/js-rules": "^0.7.1",
     "filehound": "^1.17.5",
     "find-up": "^6.1.0",
+    "git-remote-origin-url": "^4.0.0",
     "kleur": "^4.1.4",
     "p-memoize": "^5.0.0",
     "release-it": "^14.11.6",

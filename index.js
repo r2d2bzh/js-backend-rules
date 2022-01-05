@@ -7,7 +7,7 @@ import { findUp } from 'find-up';
 import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bzh/js-rules';
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
-import { findDirWith, spawn } from './utils.js';
+import { findDirWith, getProjectPath, spawn } from './utils.js';
 import colorizeConsole from './colorizeConsole.js';
 
 const discardedServiceDirs = ['.', 'dev', 'test'];
@@ -155,7 +155,8 @@ const ensureProjectSymlinks = ensureProjectItems(fs.symlink);
 const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 
 const tweakFiles = async ({ logger, logPreamble, editWarning, serviceDirs, subPackages }) => {
-  const [projectDetails] = await Promise.all([
+  const [projectPath, projectDetails] = await Promise.all([
+    getProjectPath(),
     readJSONFile('package.json'),
     tweakPackageJSON({ logger, logPreamble, serviceDirs, subPackages }),
   ]);
@@ -164,6 +165,7 @@ const tweakFiles = async ({ logger, logPreamble, editWarning, serviceDirs, subPa
     logPreamble,
     editWarning,
     tweakConfigurationFiles: tweakConfigurationFiles({
+      projectPath,
       projectDetails,
       editWarning,
       subPackages,

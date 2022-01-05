@@ -2,7 +2,9 @@
 import { spawn as childSpawn } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { URL } from 'url';
 import FileHound from 'filehound';
+import gitRemoteOriginUrl from 'git-remote-origin-url';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
 export const spawn =
@@ -49,6 +51,9 @@ export const extractFieldAs = (path, name, mapper = (v) => v) => {
   };
 };
 
+export const getProjectPath = async () =>
+  pipe([sanitizeGitURL, getURLPathname, removeDotGit])(await gitRemoteOriginUrl());
+
 const mixin = (original, ...alternates) =>
   alternates.reduce((result, alternate) => mixinTwo(result, alternate), original);
 
@@ -70,3 +75,13 @@ const mixinSame = (original, alternate) => {
       return alternate;
   }
 };
+
+const sanitizeGitURL = (url) =>
+  url.startsWith('git@') ? `git+ssh://${url.replace(/:([^:]*)$/, (match, p) => `/${p}`)}` : url;
+
+const getURLPathname = (url) => {
+  const { pathname } = new URL(url);
+  return pathname;
+};
+
+const removeDotGit = (url) => (url.endsWith('.git') ? url.slice(0, -4) : url);
