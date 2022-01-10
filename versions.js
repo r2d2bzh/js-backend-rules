@@ -8,7 +8,7 @@ export const docker = {
   },
   local: {
     dockerBuildNodejs: '3.0.0',
-    nats: '2.3.0',
+    nats: '1.3.0',
   },
 };
 
