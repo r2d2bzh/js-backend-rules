@@ -12,6 +12,7 @@ deploy:
   provider: npm
   email: gautaz@users.noreply.github.com
   on:
+    all_branches: true
     tags: true
     repo: r2d2bzh/js-backend-rules
   skip_cleanup: 'true'
