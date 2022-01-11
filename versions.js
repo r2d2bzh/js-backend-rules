@@ -1,6 +1,6 @@
 // NodeJS version constraint, WARNING:
 // Ensure that docker-build-nodejs uses a compliant NodeJS engine
-export const nodejs = '>=14.16.1';
+export const nodejs = '>=16.0.0';
 
 export const docker = {
   hub: {
