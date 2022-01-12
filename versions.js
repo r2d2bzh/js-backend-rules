@@ -3,13 +3,8 @@
 export const nodejs = '>=16.0.0';
 
 export const docker = {
-  hub: {
-    nats: '2.6.6-alpine3.14',
-  },
-  local: {
-    dockerBuildNodejs: '3.0.0',
-    nats: '1.3.0',
-  },
+  dockerBuildNodeJS: 'main',
+  nats: '2.6.6-alpine3.14',
 };
 
 export const npm = {

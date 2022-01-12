@@ -2,19 +2,21 @@ import { join as path } from 'path';
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractField } from '../utils.js';
-import { docker as versions } from '../versions.js';
 
-export default ({ addWarningHeader, serviceDirs, dbnRegistry }) => {
-  const dbdImagePrefix = path(dbnRegistry || '', 'docker-build-nodejs-');
+export default ({ addWarningHeader, serviceDirs, dbnImagePrefix, dbnImageVersion }) => {
   const dockerfileCommonFormatters = [
     addWarningHeader,
-    addHashedHeader('The registry where docker-build-nodejs images are located can be set from'),
-    addHashedHeader('{ "r2d2bzh": { "dockerRegistry": ... } } in the package.json file of the root project'),
+    addHashedHeader('The location from where docker-build-nodejs images are pulled'),
+    addHashedHeader('can be set in the package.json file of the root project:'),
+    addHashedHeader('{ "r2d2bzh": { "dockerBuildNodeJS": {'),
+    addHashedHeader('  "imagePrefix": ...,'),
+    addHashedHeader('  "imageVersion": ...,'),
+    addHashedHeader('} } }'),
   ];
   return async (config) => ({
     ...config,
     '.env': {
-      configuration: [`DOCKER_BUILD_NODEJS_VERSION=${versions.local.dockerBuildNodejs}`],
+      configuration: [`DOCKER_BUILD_NODEJS_VERSION=${dbnImageVersion}`],
       formatters: [toMultiline, addWarningHeader],
     },
     [path('dev', '.dockerignore')]: {
@@ -24,14 +26,14 @@ export default ({ addWarningHeader, serviceDirs, dbnRegistry }) => {
     [path('dev', 'Dockerfile')]: {
       configuration: [
         'ARG DOCKER_BUILD_NODEJS_VERSION',
-        `FROM ${dbdImagePrefix}devenv:\${DOCKER_BUILD_NODEJS_VERSION}`,
+        `FROM ${dbnImagePrefix}devenv:\${DOCKER_BUILD_NODEJS_VERSION}`,
       ],
       formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
     },
     ...(await dockerConfigurationForServices({
       addWarningHeader,
       dockerfileCommonFormatters,
-      dbdImagePrefix,
+      dbnImagePrefix,
       serviceDirs,
     })),
   });
@@ -40,7 +42,7 @@ export default ({ addWarningHeader, serviceDirs, dbnRegistry }) => {
 const dockerConfigurationForServices = async ({
   addWarningHeader,
   dockerfileCommonFormatters,
-  dbdImagePrefix,
+  dbnImagePrefix,
   serviceDirs,
 }) =>
   Object.fromEntries(
@@ -60,9 +62,9 @@ const dockerConfigurationForServices = async ({
               {
                 configuration: [
                   'ARG DOCKER_BUILD_NODEJS_VERSION',
-                  `FROM ${dbdImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
+                  `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
                   ...(await getAdditionalBuilderCommands(context)),
-                  `FROM ${dbdImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
+                  `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
                   ...(await getAdditionalRuntimeCommands(context)),
                 ],
                 formatters: [

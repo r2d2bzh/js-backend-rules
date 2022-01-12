@@ -46,8 +46,8 @@ export const extractField = (path) => (object) =>
 export const extractFieldAs = (path, name, mapper = (v) => v) => {
   const extractFieldFrom = extractField(path);
   return (object) => {
-    const fieldValue = extractFieldFrom(object);
-    return fieldValue ? { [name]: mapper(fieldValue) } : {};
+    const fieldValue = mapper(extractFieldFrom(object));
+    return fieldValue ? { [name]: fieldValue } : {};
   };
 };
 

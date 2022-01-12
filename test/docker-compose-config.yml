@@ -2,7 +2,7 @@ services:
   _test:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -22,11 +22,11 @@ services:
   mongo:
     image: mongo:4.4.6
   nats:
-    image: https:/test-registry/fake/thirdparties/nats:1.3.0
+    image: nats:2.6.6-alpine3.14
   service-a:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -43,18 +43,18 @@ services:
   service-a.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
       context: /home/hostuser/project/service-a
     depends_on:
       nats:
         condition: service_started
-    image: https:/test-registry/fake/r2d2bzh/js-backend-rules/service-a:dev
+    image: test-registry/fake/r2d2bzh/js-backend-rules/service-a:dev
     profiles:
     - rel
   service-b:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -73,20 +73,20 @@ services:
   service-b.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
       context: /home/hostuser/project/service-b
     depends_on:
       mongo:
         condition: service_started
       nats:
         condition: service_started
-    image: https:/test-registry/fake/r2d2bzh/js-backend-rules/service-b:dev
+    image: test-registry/fake/r2d2bzh/js-backend-rules/service-b:dev
     profiles:
     - rel
   service-c:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -103,18 +103,18 @@ services:
   service-c.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
       context: /home/hostuser/project/service-c
     depends_on:
       nats:
         condition: service_started
-    image: https:/test-registry/fake/r2d2bzh/js-backend-rules/service-c:dev
+    image: test-registry/fake/r2d2bzh/js-backend-rules/service-c:dev
     profiles:
     - rel
   service-d:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -131,18 +131,18 @@ services:
   service-d.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
       context: /home/hostuser/project/service-d
     depends_on:
       nats:
         condition: service_started
-    image: https:/test-registry/fake/r2d2bzh/js-backend-rules/service-d:dev
+    image: test-registry/fake/r2d2bzh/js-backend-rules/service-d:dev
     profiles:
     - rel
   service-e:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -159,18 +159,18 @@ services:
   service-e.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
       context: /home/hostuser/project/service-e
     depends_on:
       nats:
         condition: service_started
-    image: https:/test-registry/fake/r2d2bzh/js-backend-rules/service-e:dev
+    image: test-registry/fake/r2d2bzh/js-backend-rules/service-e:dev
     profiles:
     - rel
   test:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: main
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev

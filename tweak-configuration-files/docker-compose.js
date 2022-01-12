@@ -1,5 +1,4 @@
-import { join as path } from 'path';
-import { addHashedHeader, toYAML } from '@r2d2bzh/js-rules';
+import { addHeader, addHashedHeader, toYAML } from '@r2d2bzh/js-rules';
 import { docker as versions } from '../versions.js';
 
 const build = {
@@ -11,7 +10,7 @@ const build = {
   },
 };
 
-export default ({ addWarningHeader, serviceDirs, natsRegistry, releaseImagePath }) => {
+export default ({ addWarningHeader, serviceDirs, releaseImagePath }) => {
   const services = serviceDirs.reduce(addServiceToConfiguration(releaseImagePath), {});
   const testVolumes = ['./test:/home/user/dev', ...serviceDirs.map((dir) => `./${dir}:/home/user/${dir}`)];
   return (config) => ({
@@ -33,13 +32,19 @@ export default ({ addWarningHeader, serviceDirs, natsRegistry, releaseImagePath 
             ports: [9229],
           },
           nats: {
-            image: `${path(natsRegistry || '', 'nats')}:${versions[natsRegistry ? 'local' : 'hub'].nats}`,
+            image: `nats:${versions.nats}`,
           },
         },
       },
       formatters: [
         addWarningHeader,
-        addHashedHeader('If you need to customize the compose configuration, please use docker-compose.override.yml'),
+        addHashedHeader('To customize the registry path of the released images, the following'),
+        addHashedHeader('setting is available in the package.json file of the root project:'),
+        addHashedHeader('{ "r2d2bzh": { "dockerRegistry": ... } }'),
+        addHeader('#')(''),
+        addHashedHeader('If you need to customize the compose configuration any further,'),
+        addHashedHeader('please use docker-compose.override.yml'),
+        addHeader('#')(''),
         addHashedHeader('More details are available here:'),
         addHashedHeader('- https://docs.docker.com/compose/reference/#specifying-multiple-compose-files'),
         addHashedHeader('- https://docs.docker.com/compose/extends/#adding-and-overriding-configuration'),

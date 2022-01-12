@@ -7,26 +7,27 @@
     "test": "test"
   },
   "r2d2bzh": {
-    "dockerRegistry": "https://test-registry/fake",
+    "dockerRegistry": "test-registry/fake",
     "dockerBuildNodejsVersion": "d.b.n"
   },
   "scripts": {
     "test": "docker-compose run test",
     "lint": "eslint .",
     "release": "release-it",
-    "pretest": "true # pretest is disabled since js-backend-rules 0.1.0",
+    "pretest": "docker-compose build test",
     "test:debug": "docker-compose run --publish 9229 test debug",
     "custom:script": "this is just to test",
     "r2d2": "r2d2bzh-js-backend-rules",
     "postinstall": "true # postinstall is disabled since js-backend-rules 0.1.2",
     "testr2d2": "../bin.js",
-    "prerelease": "npm run test"
+    "prerelease": "npm run test",
+    "pretest:debug": "npm run pretest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=14.16.1"
+    "node": ">=16.0.0"
   }
 }

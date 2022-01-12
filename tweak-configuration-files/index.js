@@ -1,6 +1,7 @@
 import { join as path } from 'path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractField, extractFieldAs } from '../utils.js';
+import { docker as versions } from '../versions.js';
 import tweakEslintConfig from './eslint.js';
 import addGitConfig from './git.js';
 import addNpmConfig from './npm.js';
@@ -22,12 +23,12 @@ export default ({ projectPath, projectDetails, editWarning, subPackages, service
     addDockerConfig({
       addWarningHeader,
       serviceDirs,
-      ...extractDBNRegistryFrom(projectDetails),
+      ...extractDBNImagePrefixFrom(projectDetails),
+      ...extractDBNImageVersionFrom(projectDetails),
     }),
     addDockerComposeConfig({
       addWarningHeader,
       serviceDirs,
-      ...extractNatsRegistryFrom(projectDetails),
       releaseImagePath: path(extractField(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
     }),
     addHelmConfig({ addWarningHeader, name, version, description }),
@@ -35,10 +36,14 @@ export default ({ projectPath, projectDetails, editWarning, subPackages, service
   ]);
 };
 
-const extractDBNRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'dbnRegistry', (r) =>
-  path(r || '', 'tools')
+const extractDBNImagePrefixFrom = extractFieldAs(
+  ['r2d2bzh', 'dockerBuildNodeJS', 'imagePrefix'],
+  'dbnImagePrefix',
+  (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-'
 );
 
-const extractNatsRegistryFrom = extractFieldAs(['r2d2bzh', 'dockerRegistry'], 'natsRegistry', (r) =>
-  path(r || '', 'thirdparties')
+const extractDBNImageVersionFrom = extractFieldAs(
+  ['r2d2bzh', 'dockerBuildNodeJS', 'imageVersion'],
+  'dbnImageVersion',
+  (r) => r || versions.dockerBuildNodeJS
 );
