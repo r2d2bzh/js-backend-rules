@@ -1,4 +1,5 @@
 import { join as path } from 'path';
+// eslint-disable-next-line import/no-unresolved
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractField } from '../utils.js';
