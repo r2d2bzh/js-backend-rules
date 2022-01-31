@@ -1,12 +1,15 @@
-import { join as path } from 'path';
-import { mixinJSONFile } from './utils.js';
+import { join as path } from 'node:path';
+import { mergeInJSONFile } from './utils.js';
 import { npm as dependenciesVersions, nodejs as minimalNodeJS } from './versions.js';
 
-export default ({ logger, logPreamble, serviceDirs, subPackages }) =>
+export default ({ logger, serviceDirectories, subPackages }) =>
   Promise.all(
     Object.entries(
-      packageTweaks({ serviceDirs, alienPackages: subPackages.filter((p) => !['test', ...serviceDirs].includes(p)) })
-    ).map(([pack, tweak]) => mixinJSONFile(pack, tweak).then(() => logger.log(logPreamble, `${pack} tweaked`)))
+      packageTweaks({
+        serviceDirectories,
+        alienPackages: subPackages.filter((p) => !['test', ...serviceDirectories].includes(p)),
+      })
+    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`)))
   );
 
 const commonPackageOptions = {
@@ -16,7 +19,7 @@ const commonPackageOptions = {
   },
 };
 
-const packageTweaks = ({ serviceDirs, alienPackages }) => ({
+const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
   'package.json': {
     ...commonPackageOptions,
     scripts: {
@@ -34,7 +37,7 @@ const packageTweaks = ({ serviceDirs, alienPackages }) => ({
   [path('test', 'package.json')]: {
     ...commonPackageOptions,
     scripts: {
-      postinstall: serviceDirs.reduce((s, p) => `${s} && (cd "${path('..', p)}" && npm i)`, 'true'),
+      postinstall: serviceDirectories.map((directory) => `(cd "${path('..', directory)}" && npm i)`).join(' && '),
       precov: 'npm install',
       cov: 'c8 ava',
       prenocov: 'npm install',
@@ -46,15 +49,15 @@ const packageTweaks = ({ serviceDirs, alienPackages }) => ({
       'check-coverage': true,
       all: true,
       allowExternal: true,
-      src: serviceDirs.map((p) => path('..', p)),
+      src: serviceDirectories.map((p) => path('..', p)),
       exclude: ['.release-it.js', 'index.js', '**/__tests__/**'],
       reporter: ['lcov', 'text'],
     },
     dependencies: dependencies(['ava', 'c8', 'moleculer', 'uuid']),
   },
   ...Object.fromEntries(
-    serviceDirs.map((dir) => [
-      path(dir, 'package.json'),
+    serviceDirectories.map((directory) => [
+      path(directory, 'package.json'),
       {
         ...commonPackageOptions,
         scripts: {
@@ -78,4 +81,4 @@ const packageTweaks = ({ serviceDirs, alienPackages }) => ({
 });
 
 // eslint-disable-next-line security/detect-object-injection
-const dependencies = (depList) => depList.reduce((deps, dep) => ({ ...deps, [dep]: dependenciesVersions[dep] }), {});
+const dependencies = (depList) => Object.fromEntries(depList.map((dep) => [dep, dependenciesVersions[dep]]));

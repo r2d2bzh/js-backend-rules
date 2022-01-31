@@ -5,10 +5,8 @@
 #   "imagePrefix": ...,
 #   "imageVersion": ...,
 # } } }
-# For additional runtime commands, add { "r2d2bzh": { "dockerfileCommands": [ ... ] } }
-# in service-d/package.json
-# For additional builder commands, you can also use the following syntax:
-# { "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ...] } } }
+# For additional builder and runtime commands, add the following in service-d/package.json
+# { "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }
 ARG DOCKER_BUILD_NODEJS_VERSION
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} as builder
 COPY fake /fake

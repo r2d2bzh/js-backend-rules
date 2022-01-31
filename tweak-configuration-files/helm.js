@@ -1,4 +1,4 @@
-import { join as path } from 'path';
+import { join as path } from 'node:path';
 import { toYAML } from '@r2d2bzh/js-rules';
 
 export default (options) => (config) => ({

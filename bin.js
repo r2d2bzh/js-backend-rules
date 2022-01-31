@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { join as path } from 'path';
-import { promises as fs } from 'fs';
+import { join as path } from 'node:path';
+import { promises as fs } from 'node:fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { install } from './index.js';
@@ -11,6 +11,11 @@ import { spawn } from './utils.js';
 const commonYargsOptions = {
   'npm-install': {
     describe: 'operate an npm install for test and for each service',
+    type: 'boolean',
+    default: true,
+  },
+  color: {
+    describe: 'enable output colorization',
     type: 'boolean',
     default: true,
   },
@@ -47,12 +52,12 @@ yargs(hideBin(process.argv))
 const ensureFile = async (file) => {
   try {
     await fs.stat(file);
-  } catch (e) {
-    if (e.code === 'ENOENT') {
+  } catch (error) {
+    if (error.code === 'ENOENT') {
       const fh = await fs.open(file, 'w');
       await fh.close();
     } else {
-      throw e;
+      throw error;
     }
   }
 };

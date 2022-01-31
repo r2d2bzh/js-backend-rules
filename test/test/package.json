@@ -10,7 +10,7 @@
     "prenocov": "npm install",
     "nocov": "ava",
     "debug": "ava debug --host 0.0.0.0",
-    "postinstall": "true && (cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i) && (cd \"../service-c\" && npm i) && (cd \"../service-d\" && npm i) && (cd \"../service-e\" && npm i)",
+    "postinstall": "(cd \"../service-a\" && npm i) && (cd \"../service-b\" && npm i) && (cd \"../service-c\" && npm i) && (cd \"../service-d\" && npm i) && (cd \"../service-e\" && npm i)",
     "predebug": "npm install"
   },
   "keywords": [],

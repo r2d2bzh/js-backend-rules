@@ -1,78 +1,105 @@
 /* eslint-disable security/detect-non-literal-fs-filename, security/detect-object-injection */
-import { spawn as childSpawn } from 'child_process';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { URL } from 'url';
+import { spawn as childSpawn } from 'node:child_process';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import { URL } from 'node:url';
 import FileHound from 'filehound';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
 export const spawn =
-  (exec, ...args) =>
+  (exec, ...arguments_) =>
   (cwd = '.') =>
     new Promise((resolve, reject) =>
-      childSpawn(exec, args, { cwd, stdio: ['ignore', 'ignore', 'inherit'] }).on('close', (code) => {
-        const commandDesc = `'${exec} ${args.join(' ')}' in ${cwd}`;
+      childSpawn(exec, arguments_, { cwd, stdio: ['ignore', 'ignore', 'inherit'] }).on('close', (code) => {
+        const commandDesc = `'${exec} ${arguments_.join(' ')}' in ${cwd}`;
         return code === 0 ? resolve(`${commandDesc} succeeded`) : reject(new Error(`${commandDesc} failed (${code})`));
       })
     );
 
-export const findDirWith = async (glob) =>
-  (await FileHound.create().path('.').discard('(^|.*/)node_modules/.*').match(glob).find()).map((p) => path.dirname(p));
+export const findDirectoriesWith = async (glob) => {
+  const findGlobNotInNodeModules = await FileHound.create()
+    .path('.')
+    .discard('(^|.*/)node_modules/.*')
+    .match(glob)
+    .find();
+  return findGlobNotInNodeModules.map((p) => path.dirname(p));
+};
 
 export const writeJSONFile = async (path, content) => {
   try {
-    await fs.writeFile(path, `${JSON.stringify(content, null, 2)}\n`, { encoding: 'utf8' });
-  } catch (e) {
-    throw new Error(`failed to write JSON to ${path} (${e.message})`);
+    await fs.writeFile(path, `${JSON.stringify(content, undefined, 2)}\n`, { encoding: 'utf8' });
+  } catch (error) {
+    throw new Error(`failed to write JSON to ${path} (${error.message})`);
   }
 };
 
-export const mixinJSONFile = async (path, ...objects) => {
+export const mergeInJSONFile = async (path, ...objects) => {
   const original = await readJSONFile(path);
-  return writeJSONFile(path, mixin(original, ...objects));
+  return writeJSONFile(path, merge(original, ...objects));
 };
 
-export const pipe = (functions) =>
-  functions.reduce(
-    (comp, func) => compose(comp)(func),
-    (x) => x
-  );
+const identity = (x) => x;
+export const pipe = (functions) => {
+  let pipe = identity;
+  for (const function_ of functions) {
+    pipe = compose(pipe)(function_);
+  }
+  return pipe;
+};
 const compose = (g) => (f) => async (x) => f(await g(x));
 
-export const extractField = (path) => (object) =>
-  path.reduce((value, current) => (value ? value[current] : value), object);
+export const extractValue = (path) => (object) => {
+  let extractedValue = object;
+  for (const field of path) {
+    extractedValue = extractedValue?.[field];
+    if (extractedValue === undefined) {
+      return;
+    }
+  }
+  return extractedValue;
+};
 
-export const extractFieldAs = (path, name, mapper = (v) => v) => {
-  const extractFieldFrom = extractField(path);
+export const extractValueAs = (path, key, mapper = (v) => v) => {
+  const extractValueFrom = extractValue(path);
   return (object) => {
-    const fieldValue = mapper(extractFieldFrom(object));
-    return fieldValue ? { [name]: fieldValue } : {};
+    const value = mapper(extractValueFrom(object));
+    return value ? { [key]: value } : {};
   };
 };
 
 export const getProjectPath = async () =>
   pipe([sanitizeGitURL, getURLPathname, removeDotGit])(await gitRemoteOriginUrl());
 
-const mixin = (original, ...alternates) =>
-  alternates.reduce((result, alternate) => mixinTwo(result, alternate), original);
+const merge = (original, ...overrides) => {
+  let merge = original;
+  for (const override of overrides) {
+    merge = mergeTwo(merge, override);
+  }
+  return merge;
+};
 
-const mixinTwo = (original, alternate) => {
+const mergeTwo = (original, override) => {
   try {
-    return original.constructor.name === alternate.constructor.name ? mixinSame(original, alternate) : alternate;
-  } catch (e) {
-    return alternate;
+    return original.constructor.name === override.constructor.name ? mergeSameType(original, override) : override;
+  } catch {
+    return override;
   }
 };
 
-const mixinSame = (original, alternate) => {
+const mergeSameType = (original, override) => {
   switch (original.constructor.name) {
-    case 'Object':
-      return Object.entries(alternate).reduce((o, [k, v]) => ({ ...o, [k]: mixinTwo(o[k], v) }), original);
+    case 'Object': {
+      const merge = { ...original };
+      for (const [key, value] of Object.entries(override)) {
+        merge[key] = mergeTwo(original[key], value);
+      }
+      return merge;
+    }
     case 'Array':
-      return Array.from(new Set(original.concat(alternate))).sort();
+      return [...new Set([...original, ...override])].sort();
     default:
-      return alternate;
+      return override;
   }
 };
 

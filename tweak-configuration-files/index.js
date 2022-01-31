@@ -1,6 +1,6 @@
-import { join as path } from 'path';
+import { join as path } from 'node:path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
-import { pipe, extractField, extractFieldAs } from '../utils.js';
+import { pipe, extractValue, extractValueAs } from '../utils.js';
 import { docker as versions } from '../versions.js';
 import tweakEslintConfig from './eslint.js';
 import addGitConfig from './git.js';
@@ -11,7 +11,7 @@ import addDockerComposeConfig from './docker-compose.js';
 import addHelmConfig from './helm.js';
 import addJenkinsConfig from './jenkins.js';
 
-export default ({ projectPath, projectDetails, editWarning, subPackages, serviceDirs }) => {
+export default ({ logger, projectPath, projectDetails, editWarning, subPackages, serviceDirectories }) => {
   const addWarningHeader = addHashedHeader(editWarning);
   const { name, version, description } = projectDetails;
 
@@ -21,28 +21,29 @@ export default ({ projectPath, projectDetails, editWarning, subPackages, service
     addNpmConfig({ addWarningHeader }),
     addReleaseItConfig({ addWarningHeader, subPackages }),
     addDockerConfig({
+      logger,
       addWarningHeader,
-      serviceDirs,
+      serviceDirectories,
       ...extractDBNImagePrefixFrom(projectDetails),
       ...extractDBNImageVersionFrom(projectDetails),
     }),
     addDockerComposeConfig({
       addWarningHeader,
-      serviceDirs,
-      releaseImagePath: path(extractField(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
+      serviceDirectories,
+      releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
     }),
     addHelmConfig({ addWarningHeader, name, version, description }),
-    addJenkinsConfig({ name, editWarning, serviceDirs }),
+    addJenkinsConfig({ name, editWarning, serviceDirectories }),
   ]);
 };
 
-const extractDBNImagePrefixFrom = extractFieldAs(
+const extractDBNImagePrefixFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imagePrefix'],
   'dbnImagePrefix',
   (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-'
 );
 
-const extractDBNImageVersionFrom = extractFieldAs(
+const extractDBNImageVersionFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imageVersion'],
   'dbnImageVersion',
   (r) => r || versions.dockerBuildNodeJS

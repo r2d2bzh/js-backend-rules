@@ -1,18 +1,20 @@
-import { join as path } from 'path';
+import { join as path } from 'node:path';
 // eslint-disable-next-line import/no-unresolved
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
-import { extractField } from '../utils.js';
+import { extractValue } from '../utils.js';
 
-export default ({ addWarningHeader, serviceDirs, dbnImagePrefix, dbnImageVersion }) => {
+export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, dbnImageVersion }) => {
   const dockerfileCommonFormatters = [
     addWarningHeader,
-    addHashedHeader('The location from where docker-build-nodejs images are pulled'),
-    addHashedHeader('can be set in the package.json file of the root project:'),
-    addHashedHeader('{ "r2d2bzh": { "dockerBuildNodeJS": {'),
-    addHashedHeader('  "imagePrefix": ...,'),
-    addHashedHeader('  "imageVersion": ...,'),
-    addHashedHeader('} } }'),
+    addHashedHeader([
+      'The location from where docker-build-nodejs images are pulled',
+      'can be set in the package.json file of the root project:',
+      '{ "r2d2bzh": { "dockerBuildNodeJS": {',
+      '  "imagePrefix": ...,',
+      '  "imageVersion": ...,',
+      '} } }',
+    ]),
   ];
   return async (config) => ({
     ...config,
@@ -32,78 +34,76 @@ export default ({ addWarningHeader, serviceDirs, dbnImagePrefix, dbnImageVersion
       formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
     },
     ...(await dockerConfigurationForServices({
+      logger,
       addWarningHeader,
       dockerfileCommonFormatters,
       dbnImagePrefix,
-      serviceDirs,
+      serviceDirectories,
     })),
   });
 };
 
 const dockerConfigurationForServices = async ({
+  logger,
   addWarningHeader,
   dockerfileCommonFormatters,
   dbnImagePrefix,
-  serviceDirs,
-}) =>
-  Object.fromEntries(
-    (
-      await Promise.all(
-        serviceDirs.map(async (context) => {
-          return [
-            [
-              path(context, '.dockerignore'),
-              {
-                configuration: ['node_modules'],
-                formatters: [toMultiline, addWarningHeader],
-              },
+  serviceDirectories,
+}) => {
+  const additionalCommands = getAdditionalCommands(logger);
+  const servicesConfiguration = await Promise.all(
+    serviceDirectories.map(async (context) => {
+      return [
+        [
+          path(context, '.dockerignore'),
+          {
+            configuration: ['node_modules'],
+            formatters: [toMultiline, addWarningHeader],
+          },
+        ],
+        [
+          path(context, 'Dockerfile'),
+          {
+            configuration: [
+              'ARG DOCKER_BUILD_NODEJS_VERSION',
+              `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
+              ...(await additionalCommands('builder', context)),
+              `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
+              ...(await additionalCommands('runtime', context)),
             ],
-            [
-              path(context, 'Dockerfile'),
-              {
-                configuration: [
-                  'ARG DOCKER_BUILD_NODEJS_VERSION',
-                  `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
-                  ...(await getAdditionalBuilderCommands(context)),
-                  `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
-                  ...(await getAdditionalRuntimeCommands(context)),
-                ],
-                formatters: [
-                  ...dockerfileCommonFormatters,
-                  addHashedHeader(
-                    'For additional runtime commands, add { "r2d2bzh": { "dockerfileCommands": [ ... ] } }'
-                  ),
-                  addHashedHeader(`in ${context}/package.json`),
-                  addHashedHeader('For additional builder commands, you can also use the following syntax:'),
-                  addHashedHeader('{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ...] } } }'),
-                  toMultiline,
-                ].reverse(),
-              },
-            ],
-          ];
-        })
-      )
-    ).flat()
+            formatters: [
+              ...dockerfileCommonFormatters,
+              addHashedHeader([
+                `For additional builder and runtime commands, add the following in ${context}/package.json`,
+                '{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }',
+              ]),
+              toMultiline,
+            ].reverse(),
+          },
+        ],
+      ];
+    })
   );
-
-const getAdditionalBuilderCommands = async (context) => {
-  try {
-    const commands = await getCommands(path(context, 'package.json'));
-    return commands instanceof Array ? [] : commands.builder ? commands.builder : [];
-  } catch (e) {
-    return [];
-  }
+  return Object.fromEntries(servicesConfiguration.flat());
 };
 
-const getAdditionalRuntimeCommands = async (context) => {
+const getAdditionalCommands = (logger) => async (step, context) => {
   try {
     const commands = await getCommands(path(context, 'package.json'));
-    return commands instanceof Array ? commands : commands.runtime ? commands.runtime : [];
-  } catch (e) {
+    if (Symbol.iterator in new Object(commands)) {
+      logger.error(`ignored old additional commands syntax, check ${path(context, 'Dockerfile')}`);
+      return [];
+    }
+    // step is not a user input
+    // eslint-disable-next-line security/detect-object-injection
+    const stepCommands = commands?.[step];
+    return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
+  } catch (error) {
+    logger.error(`failed to retrieve additional ${step} Dockerfile commands (${error.message})`);
     return [];
   }
 };
 
 const getCommands = pMemoize(async (filePath) => extractCommandsFrom(await readJSONFile(filePath)));
 
-const extractCommandsFrom = extractField(['r2d2bzh', 'dockerfileCommands']);
+const extractCommandsFrom = extractValue(['r2d2bzh', 'dockerfileCommands']);

@@ -1,4 +1,4 @@
-import { addHeader, addHashedHeader, toYAML } from '@r2d2bzh/js-rules';
+import { addHashedHeader, toYAML } from '@r2d2bzh/js-rules';
 import { docker as versions } from '../versions.js';
 
 const build = {
@@ -10,9 +10,12 @@ const build = {
   },
 };
 
-export default ({ addWarningHeader, serviceDirs, releaseImagePath }) => {
-  const services = serviceDirs.reduce(addServiceToConfiguration(releaseImagePath), {});
-  const testVolumes = ['./test:/home/user/dev', ...serviceDirs.map((dir) => `./${dir}:/home/user/${dir}`)];
+export default ({ addWarningHeader, serviceDirectories, releaseImagePath }) => {
+  const services = Object.fromEntries(serviceDirectories.flatMap(addServiceToConfiguration(releaseImagePath)));
+  const testVolumes = [
+    './test:/home/user/dev',
+    ...serviceDirectories.map((directory) => `./${directory}:/home/user/${directory}`),
+  ];
   return (config) => ({
     ...config,
     'docker-compose.yml': {
@@ -38,41 +41,49 @@ export default ({ addWarningHeader, serviceDirs, releaseImagePath }) => {
       },
       formatters: [
         addWarningHeader,
-        addHashedHeader('To customize the registry path of the released images, the following'),
-        addHashedHeader('setting is available in the package.json file of the root project:'),
-        addHashedHeader('{ "r2d2bzh": { "dockerRegistry": ... } }'),
-        addHeader('#')(''),
-        addHashedHeader('If you need to customize the compose configuration any further,'),
-        addHashedHeader('please use docker-compose.override.yml'),
-        addHeader('#')(''),
-        addHashedHeader('More details are available here:'),
-        addHashedHeader('- https://docs.docker.com/compose/reference/#specifying-multiple-compose-files'),
-        addHashedHeader('- https://docs.docker.com/compose/extends/#adding-and-overriding-configuration'),
-        addHashedHeader('- https://github.com/compose-spec/compose-spec/blob/master/spec.md'),
+        addHashedHeader([
+          'To customize the registry path of the released images, the following',
+          'setting is available in the package.json file of the root project:',
+          '{ "r2d2bzh": { "dockerRegistry": ... } }',
+          '',
+          'If you need to customize the compose configuration any further,',
+          'please use docker-compose.override.yml',
+          '',
+          'More details are available here:',
+          '- https://docs.docker.com/compose/reference/#specifying-multiple-compose-files',
+          '- https://docs.docker.com/compose/extends/#adding-and-overriding-configuration',
+          '- https://github.com/compose-spec/compose-spec/blob/master/spec.md',
+        ]),
         toYAML,
       ].reverse(),
     },
   });
 };
 
-const addServiceToConfiguration = (releaseImagePath) => (configuration, serviceDir) => ({
-  ...configuration,
-  [serviceDir]: {
-    build,
-    depends_on: ['nats'],
-    volumes: [`./${serviceDir}:/home/user/dev`],
-    command: ['npm', 'start'],
-    ports: [9229],
-  },
-  [`${serviceDir}.rel`]: {
-    image: `${releaseImagePath}/${serviceDir}:\${VERSION:-dev}`,
-    build: {
-      context: `./${serviceDir}`,
-      args: {
-        DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
+const addServiceToConfiguration = (releaseImagePath) => (serviceDirectory) =>
+  [
+    [
+      serviceDirectory,
+      {
+        build,
+        depends_on: ['nats'],
+        volumes: [`./${serviceDirectory}:/home/user/dev`],
+        command: ['npm', 'start'],
+        ports: [9229],
       },
-    },
-    depends_on: ['nats'],
-    profiles: ['rel'],
-  },
-});
+    ],
+    [
+      `${serviceDirectory}.rel`,
+      {
+        image: `${releaseImagePath}/${serviceDirectory}:\${VERSION:-dev}`,
+        build: {
+          context: `./${serviceDirectory}`,
+          args: {
+            DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
+          },
+        },
+        depends_on: ['nats'],
+        profiles: ['rel'],
+      },
+    ],
+  ];
