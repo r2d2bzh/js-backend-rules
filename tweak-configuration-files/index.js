@@ -22,7 +22,7 @@ export default ({
   serviceDirectories,
 }) => {
   const addWarningHeader = addHashedHeader(editWarning);
-  const { name, version, description } = projectDetails;
+  const { name, version, description, r2d2bzh: { helm: { chart: helmChartOverride = {} } = {} } = {} } = projectDetails;
 
   return pipe([
     tweakEslintConfig(),
@@ -41,7 +41,14 @@ export default ({
       serviceDirectories,
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
     }),
-    addHelmConfig({ helmChart, scaffolderName, name, version, description }),
+    addHelmConfig({
+      helmChart,
+      helmChartOverride,
+      scaffolderName,
+      name,
+      version,
+      description,
+    }),
     addJenkinsConfig({ name, editWarning, serviceDirectories }),
   ]);
 };

@@ -8,7 +8,12 @@
   },
   "r2d2bzh": {
     "dockerRegistry": "test-registry/fake",
-    "dockerBuildNodejsVersion": "d.b.n"
+    "dockerBuildNodejsVersion": "d.b.n",
+    "helm": {
+      "chart": {
+        "apiVersion": "v2"
+      }
+    }
   },
   "scripts": {
     "test": "docker-compose run test",
