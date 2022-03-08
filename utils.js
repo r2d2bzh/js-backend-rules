@@ -5,6 +5,7 @@ import path from 'node:path';
 import { URL } from 'node:url';
 import FileHound from 'filehound';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
+import yaml from 'js-yaml';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
 export const spawn =
@@ -70,6 +71,25 @@ export const extractValueAs = (path, key, mapper = (v) => v) => {
 
 export const getProjectPath = async () =>
   pipe([sanitizeGitURL, getURLPathname, removeDotGit])(await gitRemoteOriginUrl());
+
+export const emptyObjectOnException = async (_function) => {
+  try {
+    return await _function();
+  } catch {
+    return {};
+  }
+};
+
+export const readYAMLFile = async (path) => {
+  try {
+    // The purpose of this library is to scaffold based on existing project content
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    const document = await fs.readFile(path);
+    return yaml.load(document);
+  } catch (error) {
+    throw new Error(`failed to extract YAML from ${path} (${error.message})`);
+  }
+};
 
 const merge = (original, ...overrides) => {
   let merge = original;

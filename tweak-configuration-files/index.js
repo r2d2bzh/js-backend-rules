@@ -11,7 +11,16 @@ import addDockerComposeConfig from './docker-compose.js';
 import addHelmConfig from './helm.js';
 import addJenkinsConfig from './jenkins.js';
 
-export default ({ logger, projectPath, projectDetails, editWarning, subPackages, serviceDirectories }) => {
+export default ({
+  logger,
+  projectPath,
+  projectDetails,
+  helmChart,
+  editWarning,
+  scaffolderName,
+  subPackages,
+  serviceDirectories,
+}) => {
   const addWarningHeader = addHashedHeader(editWarning);
   const { name, version, description } = projectDetails;
 
@@ -32,7 +41,7 @@ export default ({ logger, projectPath, projectDetails, editWarning, subPackages,
       serviceDirectories,
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
     }),
-    addHelmConfig({ addWarningHeader, name, version, description }),
+    addHelmConfig({ helmChart, scaffolderName, name, version, description }),
     addJenkinsConfig({ name, editWarning, serviceDirectories }),
   ]);
 };
