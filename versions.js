@@ -3,12 +3,12 @@
 export const nodejs = '>=16.0.0';
 
 export const docker = {
-  dockerBuildNodeJS: '1.0.1',
-  nats: '2.6.6-alpine3.14',
+  dockerBuildNodeJS: '1.0.3',
+  nats: '2.7.4-alpine3.15',
 };
 
 export const npm = {
-  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.3',
+  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.2',
   '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.0',
   ava: '^4.1.0',
   c8: '^7.11.0',
