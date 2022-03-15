@@ -1,7 +1,7 @@
 const addEslintConfiguration = ({ '.eslintignore': eslintIgnore, ...config }) => ({
   ...config,
   '.eslintignore': {
-    configuration: [...eslintIgnore.configuration, '/__tests__'],
+    configuration: [...eslintIgnore.configuration, '/__tests__', '**/coverage'],
     formatters: eslintIgnore.formatters,
   },
 });
