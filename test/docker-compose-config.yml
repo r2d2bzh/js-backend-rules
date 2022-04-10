@@ -2,7 +2,7 @@ services:
   _test:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -26,7 +26,7 @@ services:
   service-a:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -43,7 +43,7 @@ services:
   service-a.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
       context: /home/hostuser/project/service-a
     depends_on:
       nats:
@@ -54,7 +54,7 @@ services:
   service-b:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -73,7 +73,7 @@ services:
   service-b.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
       context: /home/hostuser/project/service-b
     depends_on:
       mongo:
@@ -86,7 +86,7 @@ services:
   service-c:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -103,7 +103,7 @@ services:
   service-c.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
       context: /home/hostuser/project/service-c
     depends_on:
       nats:
@@ -114,7 +114,7 @@ services:
   service-d:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -131,7 +131,7 @@ services:
   service-d.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
       context: /home/hostuser/project/service-d
     depends_on:
       nats:
@@ -142,7 +142,7 @@ services:
   service-e:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
@@ -159,7 +159,7 @@ services:
   service-e.rel:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
       context: /home/hostuser/project/service-e
     depends_on:
       nats:
@@ -170,7 +170,7 @@ services:
   test:
     build:
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 1.0.3
+        DOCKER_BUILD_NODEJS_VERSION: 1.1.1
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
       context: /home/hostuser/project/dev
