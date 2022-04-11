@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^0.8.0",
+    "@r2d2bzh/js-rules": "^0.8.1",
     "filehound": "^1.17.5",
     "find-up": "^6.3.0",
     "git-remote-origin-url": "^4.0.0",
