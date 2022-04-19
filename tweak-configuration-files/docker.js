@@ -50,9 +50,9 @@ const dockerConfigurationForServices = async ({
   dbnImagePrefix,
   serviceDirectories,
 }) => {
-  const additionalCommands = getAdditionalCommands(logger);
   const servicesConfiguration = await Promise.all(
     serviceDirectories.map(async (context) => {
+      const { commands, share } = await getCustomSettings(context, logger);
       return [
         [
           path(context, '.dockerignore'),
@@ -66,16 +66,19 @@ const dockerConfigurationForServices = async ({
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
+              `FROM ${share} as share`,
               `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
-              ...(await additionalCommands('builder', context)),
+              ...commands('builder'),
               `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
-              ...(await additionalCommands('runtime', context)),
+              ...commands('runtime'),
             ],
             formatters: [
               ...dockerfileCommonFormatters,
               addHashedHeader([
-                `For additional builder and runtime commands, add the following in ${context}/package.json`,
+                `For additional builder and runtime commands, add the following in ${context}/package.json:`,
                 '{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }',
+                `To modify the share image, add the following in ${context}/package.json:`,
+                '{ "r2d2bzh": { "dockerfileShare": "imageTag" } }',
               ]),
               toMultiline,
             ].reverse(),
@@ -87,23 +90,43 @@ const dockerConfigurationForServices = async ({
   return Object.fromEntries(servicesConfiguration.flat());
 };
 
-const getAdditionalCommands = (logger) => async (step, context) => {
+const getCustomSettings = async (context, logger) => {
   try {
-    const commands = await getCommands(path(context, 'package.json'));
-    if (Symbol.iterator in new Object(commands)) {
-      logger.error(`ignored old additional commands syntax, check ${path(context, 'Dockerfile')}`);
-      return [];
-    }
-    // step is not a user input
-    // eslint-disable-next-line security/detect-object-injection
-    const stepCommands = commands?.[step];
-    return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
+    const { commands, share } = await getCustomSettingsFrom(path(context, 'package.json'));
+    return {
+      commands: (step) => {
+        try {
+          if (Symbol.iterator in new Object(commands)) {
+            logger.error(`ignored old additional commands syntax, check ${path(context, 'Dockerfile')}`);
+            return [];
+          }
+          // step is not a user input
+          // eslint-disable-next-line security/detect-object-injection
+          const stepCommands = commands?.[step];
+          return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
+        } catch (error) {
+          logger.error(`failed to retrieve additional ${step} Dockerfile commands (${error.message})`);
+          return [];
+        }
+      },
+      share,
+    };
   } catch (error) {
-    logger.error(`failed to retrieve additional ${step} Dockerfile commands (${error.message})`);
-    return [];
+    logger.error(`failed to retrieve custom Dockerfile settings (${error.message})`);
+    return {
+      commands: () => [],
+      share: 'scratch',
+    };
   }
 };
 
-const getCommands = pMemoize(async (filePath) => extractCommandsFrom(await readJSONFile(filePath)));
+const getCustomSettingsFrom = pMemoize(async (filePath) => {
+  const settings = await readJSONFile(filePath);
+  return {
+    commands: extractCommandsFrom(settings),
+    share: extractShareFrom(settings) || 'scratch',
+  };
+});
 
 const extractCommandsFrom = extractValue(['r2d2bzh', 'dockerfileCommands']);
+const extractShareFrom = extractValue(['r2d2bzh', 'dockerfileShare']);

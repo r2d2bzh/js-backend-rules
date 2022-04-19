@@ -9,7 +9,8 @@
         "COPY fake /fake",
         "RUN ls /"
       ]
-    }
+    },
+    "dockerfileShare": "fakeAssets"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
