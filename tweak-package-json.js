@@ -70,6 +70,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
         dependencies: dependencies([
           '@r2d2bzh/moleculer-healthcheck-middleware',
           '@r2d2bzh/moleculer-start-checker-middleware',
+          '@r2d2bzh/yac',
           'moleculer',
           'nats',
         ]),
