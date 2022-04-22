@@ -22,6 +22,9 @@ export const findDirectoriesWith = async (glob) => {
   const findGlobNotInNodeModules = await FileHound.create()
     .path('.')
     .discard('(^|.*/)node_modules/.*')
+    // The following rule is currently needed because of share symbolic links that are followed by filehound:
+    // https://github.com/nspragg/filehound/issues/77#issuecomment-1106130404
+    .discard('.*/share/.*')
     .match(glob)
     .find();
   return findGlobNotInNodeModules.map((p) => path.dirname(p));

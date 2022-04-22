@@ -9,6 +9,7 @@ export default ({ name, editWarning, serviceDirectories }) =>
         'buildOctoHecker {',
         `    serviceName = "${serviceDirectories.map((service) => `${service}.rel`).join(' ')}"`,
         `    releaseName = "${name}"`,
+        '    customBuildSteps = "docker-compose build share"',
         '    testCommand = "docker-compose run test"',
         '    testTeardown = "docker-compose down"',
         '    sonarCheck = true',

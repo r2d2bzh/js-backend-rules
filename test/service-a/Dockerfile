@@ -10,6 +10,7 @@
 # To modify the share image, add the following in service-a/package.json:
 # { "r2d2bzh": { "dockerfileShare": "imageTag" } }
 ARG DOCKER_BUILD_NODEJS_VERSION
-FROM scratch as share
+ARG SHARE=scratch
+FROM ${SHARE} as share
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} as builder
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-runtime:${DOCKER_BUILD_NODEJS_VERSION}

@@ -10,7 +10,7 @@ import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
 import { emptyObjectOnException, findDirectoriesWith, getProjectPath, readYAMLFile, spawn } from './utils.js';
 
-const discardedServiceDirectories = new Set(['.', 'dev', 'test']);
+const discardedServiceDirectories = new Set(['.', 'dev', 'share', 'test']);
 
 export const install = async ({ logger = console, ...options } = {}) => {
   const colorizedLogger = options.color
@@ -129,34 +129,42 @@ const _install = async ({
   subPackages,
   npmInstall = true,
 }) => {
-  await structureProject(logger);
+  await structureProject({ logger, serviceDirectories });
   await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages });
   if (npmInstall) {
     await dockerNpmInstall(logger)(['_test', ...serviceDirectories]);
   }
 };
 
-const structureProject = async (logger) => {
+const structureProject = async ({ logger, serviceDirectories }) => {
   await ensureProjectDirectories();
-  await ensurePackageJSONfiles();
-  await ensureProjectSymlinks([[path('test', '__tests__'), '__tests__']], logger);
-  await ensureProjectFiles(
-    [
+  await Promise.all([
+    ensurePackageJSONfiles(),
+    ensureProjectSymlinks(
       [
-        path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
-        'js-backend-rules.adoc',
+        [path('test', '__tests__'), '__tests__'],
+        ...serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')]),
       ],
-    ],
-    logger
-  );
+      logger
+    ),
+    ensureProjectFiles(
+      [
+        [
+          path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
+          'js-backend-rules.adoc',
+        ],
+      ],
+      logger
+    ),
+  ]);
 };
 
 const ensureProjectDirectories = () =>
   Promise.all(
-    ['dev', path('helm', 'templates'), path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true }))
+    ['dev', path('helm', 'templates'), 'share', path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true }))
   );
 
-const ensurePackageJSONfiles = () => Promise.all(['test'].map(spawn('npm', 'init', '-y')));
+const ensurePackageJSONfiles = () => Promise.all(['share', 'test'].map(spawn('npm', 'init', '-y')));
 
 const ensureProjectItems = (addItem) => (items, logger) =>
   Promise.all(

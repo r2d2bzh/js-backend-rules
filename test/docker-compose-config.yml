@@ -19,6 +19,7 @@ services:
     - /home/hostuser/project/service-c:/home/user/service-c:rw
     - /home/hostuser/project/service-d:/home/user/service-d:rw
     - /home/hostuser/project/service-e:/home/user/service-e:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   mongo:
     image: mongo:4.4.6
   nats:
@@ -40,10 +41,12 @@ services:
     - target: 9229
     volumes:
     - /home/hostuser/project/service-a:/home/user/dev:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   service-a.rel:
     build:
       args:
         DOCKER_BUILD_NODEJS_VERSION: 2.0.0
+        SHARE: test-share:dev
       context: /home/hostuser/project/service-a
     depends_on:
       nats:
@@ -70,10 +73,12 @@ services:
     - target: 9229
     volumes:
     - /home/hostuser/project/service-b:/home/user/dev:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   service-b.rel:
     build:
       args:
         DOCKER_BUILD_NODEJS_VERSION: 2.0.0
+        SHARE: test-share:dev
       context: /home/hostuser/project/service-b
     depends_on:
       mongo:
@@ -100,10 +105,12 @@ services:
     - target: 9229
     volumes:
     - /home/hostuser/project/service-c:/home/user/dev:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   service-c.rel:
     build:
       args:
         DOCKER_BUILD_NODEJS_VERSION: 2.0.0
+        SHARE: test-share:dev
       context: /home/hostuser/project/service-c
     depends_on:
       nats:
@@ -128,10 +135,12 @@ services:
     - target: 9229
     volumes:
     - /home/hostuser/project/service-d:/home/user/dev:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   service-d.rel:
     build:
       args:
         DOCKER_BUILD_NODEJS_VERSION: 2.0.0
+        SHARE: test-share:dev
       context: /home/hostuser/project/service-d
     depends_on:
       nats:
@@ -156,10 +165,12 @@ services:
     - target: 9229
     volumes:
     - /home/hostuser/project/service-e:/home/user/dev:rw
+    - /home/hostuser/project/share:/home/user/share:rw
   service-e.rel:
     build:
       args:
         DOCKER_BUILD_NODEJS_VERSION: 2.0.0
+        SHARE: test-share:dev
       context: /home/hostuser/project/service-e
     depends_on:
       nats:
@@ -167,6 +178,10 @@ services:
     image: test-registry/fake/r2d2bzh/js-backend-rules/service-e:dev
     profiles:
     - rel
+  share:
+    build:
+      context: /home/hostuser/project/share
+    image: test-share:dev
   test:
     build:
       args:
@@ -192,5 +207,6 @@ services:
     - /home/hostuser/project/service-c:/home/user/service-c:rw
     - /home/hostuser/project/service-d:/home/user/service-d:rw
     - /home/hostuser/project/service-e:/home/user/service-e:rw
+    - /home/hostuser/project/share:/home/user/share:rw
 version: '3.9'
 
