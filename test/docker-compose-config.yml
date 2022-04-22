@@ -182,6 +182,8 @@ services:
     build:
       context: /home/hostuser/project/share
     image: test-share:dev
+    profiles:
+    - share
   test:
     build:
       args:

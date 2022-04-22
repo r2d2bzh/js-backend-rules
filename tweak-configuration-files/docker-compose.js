@@ -30,6 +30,7 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
             build: {
               context: './share',
             },
+            profiles: ['share'],
           },
           ...services,
           test: {
