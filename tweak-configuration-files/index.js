@@ -40,6 +40,7 @@ export default ({
       addWarningHeader,
       serviceDirectories,
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
+      projectName: name,
     }),
     addHelmConfig({
       helmChart,

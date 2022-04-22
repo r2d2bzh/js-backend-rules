@@ -33,6 +33,10 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
       ],
       formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
     },
+    [path('share', 'Dockerfile')]: {
+      configuration: ['FROM scratch', 'COPY . /share/'],
+      formatters: [addWarningHeader, toMultiline].reverse(),
+    },
     ...(await dockerConfigurationForServices({
       logger,
       addWarningHeader,
@@ -52,12 +56,12 @@ const dockerConfigurationForServices = async ({
 }) => {
   const servicesConfiguration = await Promise.all(
     serviceDirectories.map(async (context) => {
-      const { commands, share } = await getCustomSettings(context, logger);
+      const { commands } = await getCustomSettings(context, logger);
       return [
         [
           path(context, '.dockerignore'),
           {
-            configuration: ['node_modules'],
+            configuration: ['node_modules', 'share'],
             formatters: [toMultiline, addWarningHeader],
           },
         ],
@@ -66,7 +70,8 @@ const dockerConfigurationForServices = async ({
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
-              `FROM ${share} as share`,
+              'ARG SHARE=scratch',
+              `FROM \${SHARE} as share`,
               `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
               ...commands('builder'),
               `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
@@ -92,7 +97,7 @@ const dockerConfigurationForServices = async ({
 
 const getCustomSettings = async (context, logger) => {
   try {
-    const { commands, share } = await getCustomSettingsFrom(path(context, 'package.json'));
+    const { commands } = await getCustomSettingsFrom(path(context, 'package.json'));
     return {
       commands: (step) => {
         try {
@@ -109,13 +114,11 @@ const getCustomSettings = async (context, logger) => {
           return [];
         }
       },
-      share,
     };
   } catch (error) {
     logger.error(`failed to retrieve custom Dockerfile settings (${error.message})`);
     return {
       commands: () => [],
-      share: 'scratch',
     };
   }
 };
@@ -124,9 +127,7 @@ const getCustomSettingsFrom = pMemoize(async (filePath) => {
   const settings = await readJSONFile(filePath);
   return {
     commands: extractCommandsFrom(settings),
-    share: extractShareFrom(settings) || 'scratch',
   };
 });
 
 const extractCommandsFrom = extractValue(['r2d2bzh', 'dockerfileCommands']);
-const extractShareFrom = extractValue(['r2d2bzh', 'dockerfileShare']);

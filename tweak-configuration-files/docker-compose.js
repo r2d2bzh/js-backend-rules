@@ -10,10 +10,14 @@ const build = {
   },
 };
 
-export default ({ addWarningHeader, serviceDirectories, releaseImagePath }) => {
-  const services = Object.fromEntries(serviceDirectories.flatMap(addServiceToConfiguration(releaseImagePath)));
+export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName }) => {
+  const shareImageName = `${projectName}-share:\${VERSION:-dev}`;
+  const services = Object.fromEntries(
+    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName }))
+  );
   const testVolumes = [
     './test:/home/user/dev',
+    './share:/home/user/share',
     ...serviceDirectories.map((directory) => `./${directory}:/home/user/${directory}`),
   ];
   return (config) => ({
@@ -21,6 +25,12 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath }) => {
     'docker-compose.yml': {
       configuration: {
         services: {
+          share: {
+            image: shareImageName,
+            build: {
+              context: './share',
+            },
+          },
           ...services,
           test: {
             build,
@@ -60,30 +70,33 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath }) => {
   });
 };
 
-const addServiceToConfiguration = (releaseImagePath) => (serviceDirectory) =>
-  [
+const addServiceToConfiguration =
+  ({ releaseImagePath, shareImageName }) =>
+  (serviceDirectory) =>
     [
-      serviceDirectory,
-      {
-        build,
-        depends_on: ['nats'],
-        volumes: [`./${serviceDirectory}:/home/user/dev`],
-        command: ['npm', 'start'],
-        ports: [9229],
-      },
-    ],
-    [
-      `${serviceDirectory}.rel`,
-      {
-        image: `${releaseImagePath}/${serviceDirectory}:\${VERSION:-dev}`,
-        build: {
-          context: `./${serviceDirectory}`,
-          args: {
-            DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
-          },
+      [
+        serviceDirectory,
+        {
+          build,
+          depends_on: ['nats'],
+          volumes: [`./${serviceDirectory}:/home/user/dev`, './share:/home/user/share'],
+          command: ['npm', 'start'],
+          ports: [9229],
         },
-        depends_on: ['nats'],
-        profiles: ['rel'],
-      },
-    ],
-  ];
+      ],
+      [
+        `${serviceDirectory}.rel`,
+        {
+          image: `${releaseImagePath}/${serviceDirectory}:\${VERSION:-dev}`,
+          build: {
+            context: `./${serviceDirectory}`,
+            args: {
+              DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
+              SHARE: shareImageName,
+            },
+          },
+          depends_on: ['nats'],
+          profiles: ['rel'],
+        },
+      ],
+    ];

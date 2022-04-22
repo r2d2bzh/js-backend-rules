@@ -11,6 +11,10 @@
 # - https://docs.docker.com/compose/extends/#adding-and-overriding-configuration
 # - https://github.com/compose-spec/compose-spec/blob/master/spec.md
 services:
+  share:
+    image: test-share:${VERSION:-dev}
+    build:
+      context: ./share
   service-a:
     build: &ref_0
       context: ./dev
@@ -22,6 +26,7 @@ services:
       - nats
     volumes:
       - ./service-a:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -33,6 +38,7 @@ services:
       context: ./service-a
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -43,6 +49,7 @@ services:
       - nats
     volumes:
       - ./service-b:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -54,6 +61,7 @@ services:
       context: ./service-b
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -64,6 +72,7 @@ services:
       - nats
     volumes:
       - ./service-c:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -75,6 +84,7 @@ services:
       context: ./service-c
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -85,6 +95,7 @@ services:
       - nats
     volumes:
       - ./service-d:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -96,6 +107,7 @@ services:
       context: ./service-d
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -106,6 +118,7 @@ services:
       - nats
     volumes:
       - ./service-e:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -117,6 +130,7 @@ services:
       context: ./service-e
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
+        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -125,6 +139,7 @@ services:
     build: *ref_0
     volumes: &ref_1
       - ./test:/home/user/dev
+      - ./share:/home/user/share
       - ./service-a:/home/user/service-a
       - ./service-b:/home/user/service-b
       - ./service-c:/home/user/service-c
