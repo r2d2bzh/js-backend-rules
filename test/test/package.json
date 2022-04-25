@@ -26,12 +26,14 @@
       "../service-b",
       "../service-c",
       "../service-d",
-      "../service-e"
+      "../service-e",
+      "../share"
     ],
     "exclude": [
       "**/__tests__/**",
       ".release-it.js",
-      "index.js"
+      "index.js",
+      "share/**"
     ],
     "reporter": [
       "lcov",
