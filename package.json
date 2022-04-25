@@ -42,13 +42,13 @@
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
     "@r2d2bzh/js-rules": "^0.8.1",
-    "filehound": "^1.17.5",
+    "filehound": "^1.17.6",
     "find-up": "^6.3.0",
     "git-remote-origin-url": "^4.0.0",
     "js-yaml": "^4.1.0",
     "kleur": "^4.1.4",
     "p-memoize": "^6.0.1",
-    "release-it": "^14.14.1",
+    "release-it": "^14.14.2",
     "yargs": "^17.4.1"
   }
 }
