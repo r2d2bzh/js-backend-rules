@@ -19,6 +19,7 @@
   "scripts": {
     "postinstall": "[ \"$(dirname \"${npm_package_json}\")\" = \"${INIT_CWD}\" ] && r2d2bzh-js-rules || r2d2bzh-js-backend-rules --git-parent",
     "lint": "eslint .",
+    "pretest": "mkdir -p test/.git",
     "test": "npm run testCWD && npm run testGitParent && npm run testCompose",
     "testCWD": "cd test && ../bin.js --no-npm-install",
     "testGitParent": "cd test/dev && ../../bin.js --no-color --no-npm-install --git-parent",
