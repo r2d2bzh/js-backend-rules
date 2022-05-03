@@ -8,13 +8,13 @@ export const docker = {
 };
 
 export const npm = {
-  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.2',
-  '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.0',
-  '@r2d2bzh/yac': '^1.0.0',
+  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.4',
+  '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.1',
+  '@r2d2bzh/yac': '^1.0.1',
   ava: '^4.2.0',
   c8: '^7.11.2',
-  moleculer: '^0.14.20',
+  moleculer: '^0.14.21',
   nats: '^2.6.1',
-  nodemon: '^2.0.15',
+  nodemon: '^2.0.16',
   uuid: '^8.3.2',
 };
