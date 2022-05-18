@@ -10,8 +10,10 @@ const build = {
   },
 };
 
+const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replace(/[^\w./-]/gi, '');
+
 export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName }) => {
-  const shareImageName = `${projectName}-share:\${VERSION:-dev}`;
+  const shareImageName = `${sanitizeImageName(projectName)}-share:\${VERSION:-dev}`;
   const services = Object.fromEntries(
     serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName }))
   );
@@ -88,7 +90,7 @@ const addServiceToConfiguration =
       [
         `${serviceDirectory}.rel`,
         {
-          image: `${releaseImagePath}/${serviceDirectory}:\${VERSION:-dev}`,
+          image: `${sanitizeImageName(`${releaseImagePath}/${serviceDirectory}`)}:\${VERSION:-dev}`,
           build: {
             context: `./${serviceDirectory}`,
             args: {
