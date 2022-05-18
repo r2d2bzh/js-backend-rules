@@ -134,4 +134,4 @@ const getURLPathname = (url) => {
   return pathname;
 };
 
-const removeDotGit = (url) => (url.endsWith('.git') ? url.slice(0, -4) : url);
+const removeDotGit = (string) => (string.endsWith('.git') ? string.slice(0, -4) : string);
