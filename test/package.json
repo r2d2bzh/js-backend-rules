@@ -7,7 +7,7 @@
     "test": "test"
   },
   "r2d2bzh": {
-    "dockerRegistry": "test-registry/fake",
+    "dockerRegistry": "test-registry:9999/fake",
     "dockerBuildNodejsVersion": "d.b.n",
     "helm": {
       "chart": {

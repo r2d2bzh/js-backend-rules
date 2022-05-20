@@ -10,7 +10,7 @@ const build = {
   },
 };
 
-const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replace(/[^\w./-]/gi, '');
+const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replace(/[^\w./:-]/gi, '');
 
 export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName }) => {
   const shareImageName = `${sanitizeImageName(projectName)}-share:\${VERSION:-dev}`;

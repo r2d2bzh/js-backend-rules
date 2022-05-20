@@ -51,7 +51,7 @@ services:
     depends_on:
       nats:
         condition: service_started
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-a:dev
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-a:dev
     profiles:
     - rel
   service-b:
@@ -85,7 +85,7 @@ services:
         condition: service_started
       nats:
         condition: service_started
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-b:dev
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-b:dev
     profiles:
     - rel
   service-c:
@@ -115,7 +115,7 @@ services:
     depends_on:
       nats:
         condition: service_started
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-c:dev
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-c:dev
     profiles:
     - rel
   service-d:
@@ -145,7 +145,7 @@ services:
     depends_on:
       nats:
         condition: service_started
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-d:dev
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-d:dev
     profiles:
     - rel
   service-e:
@@ -175,7 +175,7 @@ services:
     depends_on:
       nats:
         condition: service_started
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-e:dev
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-e:dev
     profiles:
     - rel
   share:

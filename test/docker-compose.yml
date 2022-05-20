@@ -35,7 +35,7 @@ services:
     ports:
       - 9229
   service-a.rel:
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-a:${VERSION:-dev}
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-a:${VERSION:-dev}
     build:
       context: ./service-a
       args:
@@ -58,7 +58,7 @@ services:
     ports:
       - 9229
   service-b.rel:
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-b:${VERSION:-dev}
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-b:${VERSION:-dev}
     build:
       context: ./service-b
       args:
@@ -81,7 +81,7 @@ services:
     ports:
       - 9229
   service-c.rel:
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-c:${VERSION:-dev}
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-c:${VERSION:-dev}
     build:
       context: ./service-c
       args:
@@ -104,7 +104,7 @@ services:
     ports:
       - 9229
   service-d.rel:
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-d:${VERSION:-dev}
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-d:${VERSION:-dev}
     build:
       context: ./service-d
       args:
@@ -127,7 +127,7 @@ services:
     ports:
       - 9229
   service-e.rel:
-    image: test-registry/fake/r2d2bzh/js-backend-rules/service-e:${VERSION:-dev}
+    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-e:${VERSION:-dev}
     build:
       context: ./service-e
       args:
