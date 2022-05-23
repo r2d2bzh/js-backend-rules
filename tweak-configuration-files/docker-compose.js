@@ -12,15 +12,15 @@ const build = {
 
 const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replace(/[^\w./:-]/gi, '');
 
-export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName }) => {
+export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName, volumeSourceRoot }) => {
   const shareImageName = `${sanitizeImageName(projectName)}-share:\${VERSION:-dev}`;
   const services = Object.fromEntries(
-    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName }))
+    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName, volumeSourceRoot }))
   );
   const testVolumes = [
-    './test:/home/user/dev',
-    './share:/home/user/share',
-    ...serviceDirectories.map((directory) => `./${directory}:/home/user/${directory}`),
+    `${volumeSourceRoot}/test:/home/user/dev`,
+    `${volumeSourceRoot}/share:/home/user/share`,
+    ...serviceDirectories.map((directory) => `${volumeSourceRoot}/${directory}:/home/user/${directory}`),
   ];
   return (config) => ({
     ...config,
@@ -59,6 +59,10 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
           'setting is available in the package.json file of the root project:',
           '{ "r2d2bzh": { "dockerRegistry": ... } }',
           '',
+          'The default path from where volumes are mounted is "." (the compose file path)',
+          'This can also be customized in the package.json file of the root project:',
+          '{ "r2d2bzh": { "volumeSourceRoot": ... } }',
+          '',
           'If you need to customize the compose configuration any further,',
           'please use docker-compose.override.yml',
           '',
@@ -74,7 +78,7 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
 };
 
 const addServiceToConfiguration =
-  ({ releaseImagePath, shareImageName }) =>
+  ({ releaseImagePath, shareImageName, volumeSourceRoot }) =>
   (serviceDirectory) =>
     [
       [
@@ -82,7 +86,10 @@ const addServiceToConfiguration =
         {
           build,
           depends_on: ['nats'],
-          volumes: [`./${serviceDirectory}:/home/user/dev`, './share:/home/user/share'],
+          volumes: [
+            `${volumeSourceRoot}/${serviceDirectory}:/home/user/dev`,
+            `${volumeSourceRoot}/share:/home/user/share`,
+          ],
           command: ['npm', 'start'],
           ports: [9229],
         },

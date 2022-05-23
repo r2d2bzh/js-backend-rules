@@ -41,6 +41,7 @@ export default ({
       serviceDirectories,
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
       projectName: name,
+      volumeSourceRoot: extractValue(['r2d2bzh', 'volumeSourceRoot'])(projectDetails) || '.',
     }),
     addHelmConfig({
       helmChart,

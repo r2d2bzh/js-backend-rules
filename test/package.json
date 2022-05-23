@@ -13,7 +13,8 @@
       "chart": {
         "apiVersion": "v2"
       }
-    }
+    },
+    "volumeSourceRoot": "${WORKSPACE:-.}"
   },
   "scripts": {
     "test": "docker-compose run test",
