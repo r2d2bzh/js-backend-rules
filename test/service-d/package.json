@@ -34,7 +34,7 @@
     "@r2d2bzh/moleculer-healthcheck-middleware": "^1.0.4",
     "@r2d2bzh/moleculer-start-checker-middleware": "^1.0.1",
     "moleculer": "^0.14.21",
-    "nats": "^2.7.0",
+    "nats": "^2.7.1",
     "@r2d2bzh/yac": "^1.0.1"
   },
   "devDependencies": {
