@@ -66,6 +66,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
         },
         esbuildOptions: {
           external: ['avsc', 'protobufjs/minimal', 'thrift'],
+          keepNames: true,
         },
         dependencies: dependencies([
           '@r2d2bzh/moleculer-healthcheck-middleware',

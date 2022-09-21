@@ -33,7 +33,8 @@
       "avsc",
       "protobufjs/minimal",
       "thrift"
-    ]
+    ],
+    "keepNames": true
   },
   "engines": {
     "node": ">=16.0.0"

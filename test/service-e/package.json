@@ -32,7 +32,8 @@
       "avsc",
       "protobufjs/minimal",
       "thrift"
-    ]
+    ],
+    "keepNames": true
   },
   "dependencies": {
     "@r2d2bzh/moleculer-healthcheck-middleware": "^1.0.4",
