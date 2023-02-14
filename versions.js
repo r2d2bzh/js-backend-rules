@@ -8,7 +8,7 @@ export const docker = {
 };
 
 export const npm = {
-  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.5',
+  '@r2d2bzh/moleculer-healthcheck-middleware': '^1.0.6',
   '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.3',
   '@r2d2bzh/yac': '^1.0.3',
   ava: '^5.2.0',
