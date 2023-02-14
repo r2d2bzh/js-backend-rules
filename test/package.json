@@ -17,7 +17,7 @@
     "volumeSourceRoot": "${WORKSPACE:-.}"
   },
   "scripts": {
-    "test": "docker-compose run test",
+    "test": "docker-compose run -T test",
     "lint": "eslint .",
     "release": "release-it",
     "pretest": "docker-compose build test",
@@ -34,6 +34,6 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=18.0.0"
   }
 }

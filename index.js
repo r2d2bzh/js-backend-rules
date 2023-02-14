@@ -132,7 +132,7 @@ const _install = async ({
   await structureProject({ logger, serviceDirectories });
   await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages });
   if (npmInstall) {
-    await dockerNpmInstall(logger)(['_test', ...serviceDirectories]);
+    await dockerNpmInstall(logger)(['test-runner', ...serviceDirectories]);
   }
 };
 

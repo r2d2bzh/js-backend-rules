@@ -119,10 +119,12 @@ const mergeSameType = (original, override) => {
       }
       return merge;
     }
-    case 'Array':
+    case 'Array': {
       return [...new Set([...original, ...override])].sort();
-    default:
+    }
+    default: {
       return override;
+    }
   }
 };
 

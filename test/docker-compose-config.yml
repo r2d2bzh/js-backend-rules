@@ -1,66 +1,52 @@
+name: test
 services:
-  _test:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        GID: 'IDIDIDID'
-        UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
-    depends_on:
-      mongo:
-        condition: service_started
-    ports:
-    - target: 9229
-    volumes:
-    - /home/hostuser/project/test/fake:/fake:rw
-    - /home/hostuser/project/test:/home/user/dev:rw
-    - /home/hostuser/project/service-a:/home/user/service-a:rw
-    - /home/hostuser/project/service-b:/home/user/service-b:rw
-    - /home/hostuser/project/service-c:/home/user/service-c:rw
-    - /home/hostuser/project/service-d:/home/user/service-d:rw
-    - /home/hostuser/project/service-e:/home/user/service-e:rw
-    - /home/hostuser/project/share:/home/user/share:rw
   mongo:
     image: mongo:4.4.6
+    networks:
+      default: null
   nats:
-    image: nats:2.9.0-alpine3.16
+    image: nats:2.9.14-alpine3.17
+    networks:
+      default: null
   service-a:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
     command:
     - npm
     - start
     depends_on:
       nats:
         condition: service_started
+    networks:
+      default: null
     ports:
-    - target: 9229
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/service-a:/home/user/dev:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-  service-a.rel:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        SHARE: test-share:dev
-      context: /home/hostuser/project/service-a
-    depends_on:
-      nats:
-        condition: service_started
-    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-a:dev
-    profiles:
-    - rel
+    - type: bind
+      source: /home/hostuser/project/service-a
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
   service-b:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
     command:
     - npm
     - start
@@ -69,146 +55,182 @@ services:
         condition: service_started
       nats:
         condition: service_started
+    networks:
+      default: null
     ports:
-    - target: 9229
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/service-b:/home/user/dev:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-  service-b.rel:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        SHARE: test-share:dev
-      context: /home/hostuser/project/service-b
-    depends_on:
-      mongo:
-        condition: service_started
-      nats:
-        condition: service_started
-    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-b:dev
-    profiles:
-    - rel
+    - type: bind
+      source: /home/hostuser/project/service-b
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
   service-c:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
     command:
     - npm
     - start
     depends_on:
       nats:
         condition: service_started
+    networks:
+      default: null
     ports:
-    - target: 9229
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/service-c:/home/user/dev:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-  service-c.rel:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        SHARE: test-share:dev
-      context: /home/hostuser/project/service-c
-    depends_on:
-      nats:
-        condition: service_started
-    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-c:dev
-    profiles:
-    - rel
+    - type: bind
+      source: /home/hostuser/project/service-c
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
   service-d:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
     command:
     - npm
     - start
     depends_on:
       nats:
         condition: service_started
+    networks:
+      default: null
     ports:
-    - target: 9229
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/service-d:/home/user/dev:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-  service-d.rel:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        SHARE: test-share:dev
-      context: /home/hostuser/project/service-d
-    depends_on:
-      nats:
-        condition: service_started
-    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-d:dev
-    profiles:
-    - rel
+    - type: bind
+      source: /home/hostuser/project/service-d
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
   service-e:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
     command:
     - npm
     - start
     depends_on:
       nats:
         condition: service_started
+    networks:
+      default: null
     ports:
-    - target: 9229
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/service-e:/home/user/dev:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-  service-e.rel:
+    - type: bind
+      source: /home/hostuser/project/service-e
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
+  test-runner:
     build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
-        SHARE: test-share:dev
-      context: /home/hostuser/project/service-e
-    depends_on:
-      nats:
-        condition: service_started
-    image: test-registry:9999/fake/r2d2bzh/js-backend-rules/service-e:dev
-    profiles:
-    - rel
-  share:
-    build:
-      context: /home/hostuser/project/share
-    image: test-share:dev
-    profiles:
-    - share
-  test:
-    build:
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.4
+        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-      context: /home/hostuser/project/dev
-    command:
-    - cov
     depends_on:
       mongo:
         condition: service_started
-    entrypoint:
-    - npm
-    - run
-    profiles:
-    - test
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 9229
+      protocol: tcp
     volumes:
-    - /home/hostuser/project/test/fake:/fake:rw
-    - /home/hostuser/project/test:/home/user/dev:rw
-    - /home/hostuser/project/service-a:/home/user/service-a:rw
-    - /home/hostuser/project/service-b:/home/user/service-b:rw
-    - /home/hostuser/project/service-c:/home/user/service-c:rw
-    - /home/hostuser/project/service-d:/home/user/service-d:rw
-    - /home/hostuser/project/service-e:/home/user/service-e:rw
-    - /home/hostuser/project/share:/home/user/share:rw
-version: '3.9'
-
+    - type: bind
+      source: /home/hostuser/project/test/fake
+      target: /fake
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/test
+      target: /home/user/dev
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/service-a
+      target: /home/user/service-a
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/service-b
+      target: /home/user/service-b
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/service-c
+      target: /home/user/service-c
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/service-d
+      target: /home/user/service-d
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/service-e
+      target: /home/user/service-e
+      bind:
+        create_host_path: true
+    - type: bind
+      source: /home/hostuser/project/share
+      target: /home/user/share
+      bind:
+        create_host_path: true
+networks:
+  default:
+    name: test_default
+x-mongo-depends:
+  depends_on:
+  - mongo
+x-test-defaults:
+  depends_on:
+  - mongo
+  volumes:
+  - ./test/fake:/fake

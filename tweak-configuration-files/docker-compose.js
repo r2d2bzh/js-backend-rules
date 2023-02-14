@@ -42,7 +42,7 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
             entrypoint: ['npm', 'run'],
             command: ['cov'],
           },
-          _test: {
+          'test-runner': {
             build,
             volumes: testVolumes,
             ports: [9229],

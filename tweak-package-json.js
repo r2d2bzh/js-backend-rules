@@ -28,7 +28,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       lint: 'eslint .',
       pretest: 'docker-compose build test',
       'pretest:debug': 'npm run pretest',
-      test: 'docker-compose run test',
+      test: 'docker-compose run -T test',
       'test:debug': 'docker-compose run --publish 9229 test debug',
       prerelease: 'npm run test',
       release: 'release-it',

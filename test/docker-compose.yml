@@ -158,10 +158,10 @@ services:
       - run
     command:
       - cov
-  _test:
+  test-runner:
     build: *ref_0
     volumes: *ref_1
     ports:
       - 9229
   nats:
-    image: nats:2.9.0-alpine3.16
+    image: nats:2.9.14-alpine3.17

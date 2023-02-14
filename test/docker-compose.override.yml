@@ -20,7 +20,7 @@ services:
   test:
     <<: *test
 
-  _test:
+  test-runner:
     <<: *test
 
   mongo:
