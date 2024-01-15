@@ -13,7 +13,7 @@ endif::[]
 
 [WARNING]
 ====
-This project requires the following minimal engines versions:
+This project requires the following minimal engine versions:
 
 [source,json]
 ----
@@ -43,7 +43,7 @@ To ensure that the rules are enforced, call this executable by issuing `npx r2d2
 * ensure that the rules are enforced over time by launching `r2d2bzh-js-backend-rules` during the `postinstall` step of npm
 * immediately apply all the rules to the whole project
 
-CAUTION: You should preferably commit your project's current content to ensure nothing is loss in the process.
+CAUTION: You should preferably commit your project's current content to ensure nothing is lost in the process.
 
 == Adding a new service
 

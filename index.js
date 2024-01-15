@@ -60,7 +60,7 @@ const cwdToGitParent = async () => {
     },
     {
       type: 'directory',
-    }
+    },
   );
   if (gitParent) {
     process.chdir(gitParent);
@@ -90,7 +90,7 @@ const jsRulesStrings = (logger) =>
 
 const findComponents = async (logPreamble, logger) => {
   const [packages, dockerContexts] = await Promise.all(
-    ['package.json', 'Dockerfile'].map((glob) => findDirectoriesWith(glob))
+    ['package.json', 'Dockerfile'].map((glob) => findDirectoriesWith(glob)),
   );
   return {
     serviceDirectories: packages
@@ -99,15 +99,15 @@ const findComponents = async (logPreamble, logger) => {
         warnPredicate(
           (p) => `${logPreamble} deep service ${p} is discarded`,
           (p) => !p.includes('/'),
-          logger
-        )
+          logger,
+        ),
       )
       .filter(
         warnPredicate(
           (p) => `${logPreamble} ${p} cannot be a service`,
           (p) => !discardedServiceDirectories.has(p),
-          logger
-        )
+          logger,
+        ),
       ),
     subPackages: packages.filter((p) => p !== '.'),
   };
@@ -145,7 +145,7 @@ const structureProject = async ({ logger, serviceDirectories }) => {
         [path('test', '__tests__'), '__tests__'],
         ...serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')]),
       ],
-      logger
+      logger,
     ),
     ensureProjectFiles(
       [
@@ -154,14 +154,14 @@ const structureProject = async ({ logger, serviceDirectories }) => {
           'js-backend-rules.adoc',
         ],
       ],
-      logger
+      logger,
     ),
   ]);
 };
 
 const ensureProjectDirectories = () =>
   Promise.all(
-    ['dev', path('helm', 'templates'), 'share', path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true }))
+    ['dev', path('helm', 'templates'), 'share', path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true })),
   );
 
 const ensurePackageJSONfiles = () => Promise.all(['share', 'test'].map(spawn('npm', 'init', '-y')));
@@ -172,8 +172,8 @@ const ensureProjectItems = (addItem) => (items, logger) =>
       fs
         .unlink(destination)
         .catch((error) => logger.warn(`${destination} was not unlinked (${error.message})`)) // path does not exist or is something we do not want to delete (dir...)
-        .then(() => addItem(source, destination))
-    )
+        .then(() => addItem(source, destination)),
+    ),
   );
 
 const ensureProjectSymlinks = ensureProjectItems(fs.symlink);

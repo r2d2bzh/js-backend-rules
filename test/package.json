@@ -13,8 +13,7 @@
       "chart": {
         "apiVersion": "v2"
       }
-    },
-    "volumeSourceRoot": "${WORKSPACE:-.}"
+    }
   },
   "scripts": {
     "test": "docker-compose run -T test",
@@ -34,6 +33,6 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   }
 }

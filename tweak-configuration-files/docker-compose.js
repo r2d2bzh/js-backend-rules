@@ -10,12 +10,12 @@ const build = {
   },
 };
 
-const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replace(/[^\w./:-]/gi, '');
+const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replaceAll(/[^\w./:-]/gi, '');
 
 export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName, volumeSourceRoot }) => {
   const shareImageName = `${sanitizeImageName(projectName)}-share:\${VERSION:-dev}`;
   const services = Object.fromEntries(
-    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName, volumeSourceRoot }))
+    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName, volumeSourceRoot })),
   );
   const testVolumes = [
     `${volumeSourceRoot}/test:/home/user/dev`,
@@ -79,34 +79,33 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
 
 const addServiceToConfiguration =
   ({ releaseImagePath, shareImageName, volumeSourceRoot }) =>
-  (serviceDirectory) =>
+  (serviceDirectory) => [
     [
-      [
-        serviceDirectory,
-        {
-          build,
-          depends_on: ['nats'],
-          volumes: [
-            `${volumeSourceRoot}/${serviceDirectory}:/home/user/dev`,
-            `${volumeSourceRoot}/share:/home/user/share`,
-          ],
-          command: ['npm', 'start'],
-          ports: [9229],
-        },
-      ],
-      [
-        `${serviceDirectory}.rel`,
-        {
-          image: `${sanitizeImageName(`${releaseImagePath}/${serviceDirectory}`)}:\${VERSION:-dev}`,
-          build: {
-            context: `./${serviceDirectory}`,
-            args: {
-              DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
-              SHARE: shareImageName,
-            },
+      serviceDirectory,
+      {
+        build,
+        depends_on: ['nats'],
+        volumes: [
+          `${volumeSourceRoot}/${serviceDirectory}:/home/user/dev`,
+          `${volumeSourceRoot}/share:/home/user/share`,
+        ],
+        command: ['npm', 'start'],
+        ports: [9229],
+      },
+    ],
+    [
+      `${serviceDirectory}.rel`,
+      {
+        image: `${sanitizeImageName(`${releaseImagePath}/${serviceDirectory}`)}:\${VERSION:-dev}`,
+        build: {
+          context: `./${serviceDirectory}`,
+          args: {
+            DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
+            SHARE: shareImageName,
           },
-          depends_on: ['nats'],
-          profiles: ['rel'],
         },
-      ],
-    ];
+        depends_on: ['nats'],
+        profiles: ['rel'],
+      },
+    ],
+  ];

@@ -9,7 +9,6 @@ import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
 import addDockerComposeConfig from './docker-compose.js';
 import addHelmConfig from './helm.js';
-import addJenkinsConfig from './jenkins.js';
 
 export default ({
   logger,
@@ -35,6 +34,7 @@ export default ({
       serviceDirectories,
       ...extractDBNImagePrefixFrom(projectDetails),
       ...extractDBNImageVersionFrom(projectDetails),
+      ...extractShareDockerImage(projectDetails),
     }),
     addDockerComposeConfig({
       addWarningHeader,
@@ -51,18 +51,23 @@ export default ({
       version,
       description,
     }),
-    addJenkinsConfig({ name, editWarning, serviceDirectories }),
   ]);
 };
 
 const extractDBNImagePrefixFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imagePrefix'],
   'dbnImagePrefix',
-  (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-'
+  (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-',
 );
 
 const extractDBNImageVersionFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imageVersion'],
   'dbnImageVersion',
-  (r) => r || versions.dockerBuildNodeJS
+  (r) => r || versions.dockerBuildNodeJS,
+);
+
+const extractShareDockerImage = extractValueAs(
+  ['r2d2bzh', 'shareDockerImageEnabled'],
+  'shareDockerImageEnabled',
+  (r) => r || false,
 );

@@ -164,4 +164,4 @@ services:
     ports:
       - 9229
   nats:
-    image: nats:2.9.14-alpine3.17
+    image: nats:2.10.9-alpine3.19

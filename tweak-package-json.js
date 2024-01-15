@@ -8,8 +8,8 @@ export default ({ logger, serviceDirectories, subPackages }) =>
       packageTweaks({
         serviceDirectories,
         alienPackages: subPackages.filter((p) => !['test', ...serviceDirectories].includes(p)),
-      })
-    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`)))
+      }),
+    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`))),
   );
 
 const commonPackageOptions = {
@@ -77,7 +77,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
         ]),
         devDependencies: dependencies(['nodemon']),
       },
-    ])
+    ]),
   ),
   ...Object.fromEntries(alienPackages.map((p) => [path(p, 'package.json'), commonPackageOptions])),
 });
