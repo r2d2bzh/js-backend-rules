@@ -145,6 +145,7 @@ const structureProject = async ({ logger, serviceDirectories, rootDockerImage = 
   await ensureProjectDirectories({ rootDockerImage });
   await Promise.all([
     ensurePackageJSONfiles({ rootDockerImage }),
+    ensureProjectConfigFolder({ serviceDirectories }),
     ensureProjectSymlinks(
       [
         [path('test', '__tests__'), '__tests__'],
@@ -172,6 +173,9 @@ const ensureProjectDirectories = ({ rootDockerImage }) =>
       fs.mkdir(p, { recursive: true }),
     ),
   );
+
+const ensureProjectConfigFolder = ({ serviceDirectories }) =>
+  Promise.all(serviceDirectories.map((directory) => fs.mkdir(`${directory}/config`, { recursive: true })));
 
 const ensurePackageJSONfiles = ({ rootDockerImage }) =>
   Promise.all([...(rootDockerImage ? ['share'] : []), 'test'].map(spawn('npm', 'init', '-y')));
