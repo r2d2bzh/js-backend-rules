@@ -11,5 +11,4 @@ hooks:
     - (cd service-c && release-it --ci ${version})
     - (cd service-d && release-it --ci ${version})
     - (cd service-e && release-it --ci ${version})
-    - (cd share && release-it --ci ${version})
     - (cd test && release-it --ci ${version})

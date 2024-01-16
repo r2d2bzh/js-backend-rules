@@ -12,10 +12,19 @@ const build = {
 
 const sanitizeImageName = (imageName) => imageName.replace(/^\/+/, '').replaceAll(/[^\w./:-]/gi, '');
 
-export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projectName, volumeSourceRoot }) => {
+export default ({
+  addWarningHeader,
+  serviceDirectories,
+  releaseImagePath,
+  projectName,
+  volumeSourceRoot,
+  rootDockerImage,
+}) => {
   const shareImageName = `${sanitizeImageName(projectName)}-share:\${VERSION:-dev}`;
   const services = Object.fromEntries(
-    serviceDirectories.flatMap(addServiceToConfiguration({ releaseImagePath, shareImageName, volumeSourceRoot })),
+    serviceDirectories.flatMap(
+      addServiceToConfiguration({ releaseImagePath, shareImageName, volumeSourceRoot, rootDockerImage }),
+    ),
   );
   const testVolumes = [
     `${volumeSourceRoot}/test:/home/user/dev`,
@@ -27,13 +36,17 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
     'docker-compose.yml': {
       configuration: {
         services: {
-          share: {
-            image: shareImageName,
-            build: {
-              context: './share',
-            },
-            profiles: ['share'],
-          },
+          ...(rootDockerImage
+            ? {
+                share: {
+                  image: shareImageName,
+                  build: {
+                    context: './share',
+                  },
+                  profiles: ['share'],
+                },
+              }
+            : {}),
           ...services,
           test: {
             build,
@@ -78,7 +91,7 @@ export default ({ addWarningHeader, serviceDirectories, releaseImagePath, projec
 };
 
 const addServiceToConfiguration =
-  ({ releaseImagePath, shareImageName, volumeSourceRoot }) =>
+  ({ releaseImagePath, shareImageName, volumeSourceRoot, rootDockerImage }) =>
   (serviceDirectory) => [
     [
       serviceDirectory,
@@ -101,7 +114,7 @@ const addServiceToConfiguration =
           context: `./${serviceDirectory}`,
           args: {
             DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
-            SHARE: shareImageName,
+            ...(rootDockerImage ? { SHARE: shareImageName } : {}),
           },
         },
         depends_on: ['nats'],

@@ -18,14 +18,14 @@ The following describes all the facilities provided by {js-backend-rules}[`js-ba
 To start all the *development* services, simply execute `docker-compose up -d` from the command line.
 This will *only* start the development versions of all available services.
 
-You have to execute `docker-compose --profile rel up -d` in order to start the release versions of all services.
+You have to execute `docker-compose --profile rel up -d` to start the release versions of all services.
 
 [CAUTION]
 ====
 `docker-compose up` will *NOT* ensure that your release services images are up to date.
 To ensure this you have to execute `docker-compose --profile rel build` from the command line.
 
-The same applies for development images, but you only need to rebuild these images when bumping the version of the {js-backend-rules}[`@r2d2bzh/js-backend-rules`] dependency.
+The same applies to development images, but you only need to rebuild these images when bumping the version of the {js-backend-rules}[`@r2d2bzh/js-backend-rules`] dependency.
 In this case, simply execute `docker-compose build`.
 ====
 
@@ -33,7 +33,7 @@ To stop all services, execute `docker-compose down`.
 
 ## Unit testing
 
-Execute `npm test` or `npm t` to pass the whole unit tests plan.
+Execute `npm test` or `npm t` to pass the whole unit test plan.
 This will also check for no regression in test coverage.
 
 CAUTION: If you have improved the unit tests coverage, you *MUST* update accordingly the `branches`, `functions`, `lines` and `statements` keys of the `c8` object available in `test/package.json`.

@@ -1,6 +1,6 @@
 // NodeJS version constraint, WARNING:
 // Ensure that docker-build-nodejs uses a compliant NodeJS engine
-export const nodejs = '>=20.0.0';
+export const nodejs = '>=20.11.0';
 
 export const docker = {
   dockerBuildNodeJS: '3.0.0-0',

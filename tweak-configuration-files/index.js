@@ -21,7 +21,12 @@ export default ({
   serviceDirectories,
 }) => {
   const addWarningHeader = addHashedHeader(editWarning);
-  const { name, version, description, r2d2bzh: { helm: { chart: helmChartOverride = {} } = {} } = {} } = projectDetails;
+  const {
+    name,
+    version,
+    description,
+    r2d2bzh: { rootDockerImage = false, helm: { chart: helmChartOverride = {} } = {} } = {},
+  } = projectDetails;
 
   return pipe([
     tweakEslintConfig(),
@@ -34,7 +39,7 @@ export default ({
       serviceDirectories,
       ...extractDBNImagePrefixFrom(projectDetails),
       ...extractDBNImageVersionFrom(projectDetails),
-      ...extractShareDockerImage(projectDetails),
+      rootDockerImage,
     }),
     addDockerComposeConfig({
       addWarningHeader,
@@ -42,6 +47,7 @@ export default ({
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
       projectName: name,
       volumeSourceRoot: extractValue(['r2d2bzh', 'volumeSourceRoot'])(projectDetails) || '.',
+      rootDockerImage,
     }),
     addHelmConfig({
       helmChart,
@@ -64,10 +70,4 @@ const extractDBNImageVersionFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imageVersion'],
   'dbnImageVersion',
   (r) => r || versions.dockerBuildNodeJS,
-);
-
-const extractShareDockerImage = extractValueAs(
-  ['r2d2bzh', 'shareDockerImageEnabled'],
-  'shareDockerImageEnabled',
-  (r) => r || false,
 );

@@ -15,12 +15,6 @@
 # - https://docs.docker.com/compose/extends/#adding-and-overriding-configuration
 # - https://github.com/compose-spec/compose-spec/blob/master/spec.md
 services:
-  share:
-    image: test-share:${VERSION:-dev}
-    build:
-      context: ./share
-    profiles:
-      - share
   service-a:
     build: &ref_0
       context: ./dev
@@ -31,8 +25,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ${WORKSPACE:-.}/service-a:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
+      - ./service-a:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -44,7 +38,6 @@ services:
       context: ./service-a
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -54,8 +47,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ${WORKSPACE:-.}/service-b:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
+      - ./service-b:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -67,7 +60,6 @@ services:
       context: ./service-b
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -77,8 +69,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ${WORKSPACE:-.}/service-c:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
+      - ./service-c:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -90,7 +82,6 @@ services:
       context: ./service-c
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -100,8 +91,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ${WORKSPACE:-.}/service-d:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
+      - ./service-d:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -113,7 +104,6 @@ services:
       context: ./service-d
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -123,8 +113,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ${WORKSPACE:-.}/service-e:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
+      - ./service-e:/home/user/dev
+      - ./share:/home/user/share
     command:
       - npm
       - start
@@ -136,7 +126,6 @@ services:
       context: ./service-e
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -144,13 +133,13 @@ services:
   test:
     build: *ref_0
     volumes: &ref_1
-      - ${WORKSPACE:-.}/test:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
-      - ${WORKSPACE:-.}/service-a:/home/user/service-a
-      - ${WORKSPACE:-.}/service-b:/home/user/service-b
-      - ${WORKSPACE:-.}/service-c:/home/user/service-c
-      - ${WORKSPACE:-.}/service-d:/home/user/service-d
-      - ${WORKSPACE:-.}/service-e:/home/user/service-e
+      - ./test:/home/user/dev
+      - ./share:/home/user/share
+      - ./service-a:/home/user/service-a
+      - ./service-b:/home/user/service-b
+      - ./service-c:/home/user/service-c
+      - ./service-d:/home/user/service-d
+      - ./service-e:/home/user/service-e
     profiles:
       - test
     entrypoint:

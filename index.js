@@ -129,21 +129,28 @@ const _install = async ({
   subPackages,
   npmInstall = true,
 }) => {
-  await structureProject({ logger, serviceDirectories });
-  await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages });
+  const projectDetails = await readJSONFile('package.json');
+  await structureProject({
+    logger,
+    serviceDirectories,
+    rootDockerImage: projectDetails?.r2d2bzh?.rootDockerImage,
+  });
+  await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails });
   if (npmInstall) {
     await dockerNpmInstall(logger)(['test-runner', ...serviceDirectories]);
   }
 };
 
-const structureProject = async ({ logger, serviceDirectories }) => {
-  await ensureProjectDirectories();
+const structureProject = async ({ logger, serviceDirectories, rootDockerImage = false }) => {
+  await ensureProjectDirectories({ rootDockerImage });
   await Promise.all([
-    ensurePackageJSONfiles(),
+    ensurePackageJSONfiles({ rootDockerImage }),
     ensureProjectSymlinks(
       [
         [path('test', '__tests__'), '__tests__'],
-        ...serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')]),
+        ...(rootDockerImage
+          ? serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')])
+          : []),
       ],
       logger,
     ),
@@ -159,12 +166,15 @@ const structureProject = async ({ logger, serviceDirectories }) => {
   ]);
 };
 
-const ensureProjectDirectories = () =>
+const ensureProjectDirectories = ({ rootDockerImage }) =>
   Promise.all(
-    ['dev', path('helm', 'templates'), 'share', path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true })),
+    ['dev', path('helm', 'templates'), ...(rootDockerImage ? ['share'] : []), path('test', '__tests__')].map((p) =>
+      fs.mkdir(p, { recursive: true }),
+    ),
   );
 
-const ensurePackageJSONfiles = () => Promise.all(['share', 'test'].map(spawn('npm', 'init', '-y')));
+const ensurePackageJSONfiles = ({ rootDockerImage }) =>
+  Promise.all([...(rootDockerImage ? ['share'] : []), 'test'].map(spawn('npm', 'init', '-y')));
 
 const ensureProjectItems = (addItem) => (items, logger) =>
   Promise.all(
@@ -180,10 +190,9 @@ const ensureProjectSymlinks = ensureProjectItems(fs.symlink);
 
 const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 
-const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages }) => {
-  const [projectPath, projectDetails, helmChart] = await Promise.all([
+const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails }) => {
+  const [projectPath, helmChart] = await Promise.all([
     getProjectPath(),
-    readJSONFile('package.json'),
     emptyObjectOnException(() => readYAMLFile(path('helm', 'Chart.yaml'))),
     tweakPackageJSON({ logger, serviceDirectories, subPackages }),
   ]);

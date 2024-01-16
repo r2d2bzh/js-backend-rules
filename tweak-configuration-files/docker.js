@@ -4,14 +4,7 @@ import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractValue } from '../utils.js';
 
-export default ({
-  logger,
-  addWarningHeader,
-  serviceDirectories,
-  dbnImagePrefix,
-  dbnImageVersion,
-  shareDockerImageEnabled,
-}) => {
+export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, dbnImageVersion, rootDockerImage }) => {
   const dockerfileCommonFormatters = [
     addWarningHeader,
     addHashedHeader([
@@ -23,6 +16,7 @@ export default ({
       '} } }',
     ]),
   ];
+
   return async (config) => ({
     ...config,
     '.env': {
@@ -40,7 +34,7 @@ export default ({
       ],
       formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
     },
-    ...(shareDockerImageEnabled
+    ...(rootDockerImage
       ? {
           [path('share', 'Dockerfile')]: {
             configuration: ['FROM scratch', 'COPY . /share/'],
@@ -54,7 +48,7 @@ export default ({
       dockerfileCommonFormatters,
       dbnImagePrefix,
       serviceDirectories,
-      shareDockerImageEnabled,
+      rootDockerImage,
     })),
   });
 };
@@ -65,7 +59,7 @@ const dockerConfigurationForServices = async ({
   dockerfileCommonFormatters,
   dbnImagePrefix,
   serviceDirectories,
-  shareDockerImageEnabled,
+  rootDockerImage,
 }) => {
   const servicesConfiguration = await Promise.all(
     serviceDirectories.map(async (context) => {
@@ -74,7 +68,7 @@ const dockerConfigurationForServices = async ({
         [
           path(context, '.dockerignore'),
           {
-            configuration: ['node_modules', 'share'],
+            configuration: rootDockerImage ? ['node_modules', 'share'] : ['node_modules'],
             formatters: [toMultiline, addWarningHeader],
           },
         ],
@@ -83,7 +77,7 @@ const dockerConfigurationForServices = async ({
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
-              ...(shareDockerImageEnabled ? ['ARG SHARE=scratch', `FROM \${SHARE} as share`] : []),
+              ...(rootDockerImage ? ['ARG SHARE=scratch', `FROM \${SHARE} as share`] : []),
               `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
               ...commands('builder'),
               `COPY --chown=user . /project`,
