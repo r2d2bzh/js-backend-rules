@@ -22,6 +22,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -53,8 +54,10 @@ services:
     depends_on:
       mongo:
         condition: service_started
+        required: true
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -86,6 +89,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -117,6 +121,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -148,6 +153,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -176,6 +182,7 @@ services:
     depends_on:
       mongo:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:

@@ -217,11 +217,11 @@ const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirector
 };
 
 const dockerNpmInstall = (logger) => async (services) => {
-  // We cannot operate parallel docker-compose runs for now:
+  // We cannot operate parallel docker compose runs for now:
   // https://github.com/docker/compose/issues/1516
   for (const service of services) {
     try {
-      logger.log(await spawn('docker-compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
+      logger.log(await spawn('docker compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
     } catch (error) {
       logger.error(error.message);
       throw error;

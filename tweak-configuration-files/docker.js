@@ -84,6 +84,7 @@ const dockerConfigurationForServices = async ({
               `RUN /build.sh`,
               `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
               `COPY --chown=user --from=builder /tmp/service /service`,
+              `COPY ./config ./config`,
               ...commands('runtime'),
               `ENTRYPOINT [ "/service" ]`,
             ],

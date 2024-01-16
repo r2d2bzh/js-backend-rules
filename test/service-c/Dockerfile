@@ -13,6 +13,7 @@ COPY --chown=user . /project
 RUN /build.sh
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-runtime:${DOCKER_BUILD_NODEJS_VERSION}
 COPY --chown=user --from=builder /tmp/service /service
+COPY ./config ./config
 COPY fake /fake
 RUN ls /
 ENTRYPOINT [ "/service" ]

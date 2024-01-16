@@ -16,11 +16,11 @@
     }
   },
   "scripts": {
-    "test": "docker-compose run -T test",
+    "test": "docker compose run -T --rm test",
     "lint": "eslint .",
     "release": "release-it",
-    "pretest": "docker-compose build test",
-    "test:debug": "docker-compose run --publish 9229 test debug",
+    "pretest": "docker compose build test",
+    "test:debug": "docker compose run --publish 9229 test debug",
     "custom:script": "this is just to test",
     "r2d2": "r2d2bzh-js-backend-rules",
     "postinstall": "true # postinstall is disabled since js-backend-rules 0.1.2",

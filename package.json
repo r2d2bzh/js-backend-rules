@@ -23,7 +23,7 @@
     "test": "npm run testCWD && npm run testGitParent && npm run testCompose",
     "testCWD": "cd test && ../bin.js --no-npm-install",
     "testGitParent": "cd test/dev && ../../bin.js --no-color --no-npm-install --git-parent",
-    "testCompose": "cd test && docker-compose config | sed \"s/ID: ['\\\"][0-9]*['\\\"]/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
+    "testCompose": "cd test && docker compose config | sed \"s/ID: ['\\\"][0-9]*['\\\"]/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
   },
   "repository": {
     "type": "git",

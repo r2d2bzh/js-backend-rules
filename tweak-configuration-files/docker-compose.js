@@ -77,7 +77,7 @@ export default ({
           '{ "r2d2bzh": { "volumeSourceRoot": ... } }',
           '',
           'If you need to customize the compose configuration any further,',
-          'please use docker-compose.override.yml',
+          'please use docker compose.override.yml',
           '',
           'More details are available here:',
           '- https://docs.docker.com/compose/reference/#specifying-multiple-compose-files',
