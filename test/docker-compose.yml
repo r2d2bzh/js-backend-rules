@@ -25,8 +25,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ./service-a:/home/user/dev
-      - ./share:/home/user/share
+      - ${WORKSPACE:-.}/service-a:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -47,8 +47,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ./service-b:/home/user/dev
-      - ./share:/home/user/share
+      - ${WORKSPACE:-.}/service-b:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -69,8 +69,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ./service-c:/home/user/dev
-      - ./share:/home/user/share
+      - ${WORKSPACE:-.}/service-c:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -91,8 +91,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ./service-d:/home/user/dev
-      - ./share:/home/user/share
+      - ${WORKSPACE:-.}/service-d:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -113,8 +113,8 @@ services:
     depends_on:
       - nats
     volumes:
-      - ./service-e:/home/user/dev
-      - ./share:/home/user/share
+      - ${WORKSPACE:-.}/service-e:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -133,13 +133,13 @@ services:
   test:
     build: *ref_0
     volumes: &ref_1
-      - ./test:/home/user/dev
-      - ./share:/home/user/share
-      - ./service-a:/home/user/service-a
-      - ./service-b:/home/user/service-b
-      - ./service-c:/home/user/service-c
-      - ./service-d:/home/user/service-d
-      - ./service-e:/home/user/service-e
+      - ${WORKSPACE:-.}/test:/home/user/dev
+      - ${WORKSPACE:-.}/share:/home/user/share
+      - ${WORKSPACE:-.}/service-a:/home/user/service-a
+      - ${WORKSPACE:-.}/service-b:/home/user/service-b
+      - ${WORKSPACE:-.}/service-c:/home/user/service-c
+      - ${WORKSPACE:-.}/service-d:/home/user/service-d
+      - ${WORKSPACE:-.}/service-e:/home/user/service-e
     profiles:
       - test
     entrypoint:

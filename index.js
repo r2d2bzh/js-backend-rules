@@ -175,7 +175,12 @@ const ensureProjectDirectories = ({ rootDockerImage }) =>
   );
 
 const ensureProjectConfigFolder = ({ serviceDirectories }) =>
-  Promise.all(serviceDirectories.map((directory) => fs.mkdir(`${directory}/config`, { recursive: true })));
+  Promise.all(
+    serviceDirectories.map(async (directory) => {
+      await fs.mkdir(`${directory}/config`, { recursive: true });
+      return fs.writeFile(`${directory}/config/.gitkeep`, '');
+    }),
+  );
 
 const ensurePackageJSONfiles = ({ rootDockerImage }) =>
   Promise.all([...(rootDockerImage ? ['share'] : []), 'test'].map(spawn('npm', 'init', '-y')));
