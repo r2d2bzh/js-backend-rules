@@ -60,7 +60,7 @@ const cwdToGitParent = async () => {
     },
     {
       type: 'directory',
-    }
+    },
   );
   if (gitParent) {
     process.chdir(gitParent);
@@ -90,7 +90,7 @@ const jsRulesStrings = (logger) =>
 
 const findComponents = async (logPreamble, logger) => {
   const [packages, dockerContexts] = await Promise.all(
-    ['package.json', 'Dockerfile'].map((glob) => findDirectoriesWith(glob))
+    ['package.json', 'Dockerfile'].map((glob) => findDirectoriesWith(glob)),
   );
   return {
     serviceDirectories: packages
@@ -99,15 +99,15 @@ const findComponents = async (logPreamble, logger) => {
         warnPredicate(
           (p) => `${logPreamble} deep service ${p} is discarded`,
           (p) => !p.includes('/'),
-          logger
-        )
+          logger,
+        ),
       )
       .filter(
         warnPredicate(
           (p) => `${logPreamble} ${p} cannot be a service`,
           (p) => !discardedServiceDirectories.has(p),
-          logger
-        )
+          logger,
+        ),
       ),
     subPackages: packages.filter((p) => p !== '.'),
   };
@@ -129,23 +129,31 @@ const _install = async ({
   subPackages,
   npmInstall = true,
 }) => {
-  await structureProject({ logger, serviceDirectories });
-  await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages });
+  const projectDetails = await readJSONFile('package.json');
+  await structureProject({
+    logger,
+    serviceDirectories,
+    rootDockerImage: projectDetails?.r2d2bzh?.rootDockerImage,
+  });
+  await tweakFiles({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails });
   if (npmInstall) {
     await dockerNpmInstall(logger)(['test-runner', ...serviceDirectories]);
   }
 };
 
-const structureProject = async ({ logger, serviceDirectories }) => {
-  await ensureProjectDirectories();
+const structureProject = async ({ logger, serviceDirectories, rootDockerImage = false }) => {
+  await ensureProjectDirectories({ rootDockerImage });
   await Promise.all([
-    ensurePackageJSONfiles(),
+    ensurePackageJSONfiles({ rootDockerImage }),
+    ensureProjectConfigFolder({ serviceDirectories }),
     ensureProjectSymlinks(
       [
         [path('test', '__tests__'), '__tests__'],
-        ...serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')]),
+        ...(rootDockerImage
+          ? serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')])
+          : []),
       ],
-      logger
+      logger,
     ),
     ensureProjectFiles(
       [
@@ -154,17 +162,28 @@ const structureProject = async ({ logger, serviceDirectories }) => {
           'js-backend-rules.adoc',
         ],
       ],
-      logger
+      logger,
     ),
   ]);
 };
 
-const ensureProjectDirectories = () =>
+const ensureProjectDirectories = ({ rootDockerImage }) =>
   Promise.all(
-    ['dev', path('helm', 'templates'), 'share', path('test', '__tests__')].map((p) => fs.mkdir(p, { recursive: true }))
+    ['dev', path('helm', 'templates'), ...(rootDockerImage ? ['share'] : []), path('test', '__tests__')].map((p) =>
+      fs.mkdir(p, { recursive: true }),
+    ),
   );
 
-const ensurePackageJSONfiles = () => Promise.all(['share', 'test'].map(spawn('npm', 'init', '-y')));
+const ensureProjectConfigFolder = ({ serviceDirectories }) =>
+  Promise.all(
+    serviceDirectories.map(async (directory) => {
+      await fs.mkdir(`${directory}/config`, { recursive: true });
+      return fs.writeFile(`${directory}/config/.gitkeep`, '');
+    }),
+  );
+
+const ensurePackageJSONfiles = ({ rootDockerImage }) =>
+  Promise.all([...(rootDockerImage ? ['share'] : []), 'test'].map(spawn('npm', 'init', '-y')));
 
 const ensureProjectItems = (addItem) => (items, logger) =>
   Promise.all(
@@ -172,18 +191,17 @@ const ensureProjectItems = (addItem) => (items, logger) =>
       fs
         .unlink(destination)
         .catch((error) => logger.warn(`${destination} was not unlinked (${error.message})`)) // path does not exist or is something we do not want to delete (dir...)
-        .then(() => addItem(source, destination))
-    )
+        .then(() => addItem(source, destination)),
+    ),
   );
 
 const ensureProjectSymlinks = ensureProjectItems(fs.symlink);
 
 const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 
-const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages }) => {
-  const [projectPath, projectDetails, helmChart] = await Promise.all([
+const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails }) => {
+  const [projectPath, helmChart] = await Promise.all([
     getProjectPath(),
-    readJSONFile('package.json'),
     emptyObjectOnException(() => readYAMLFile(path('helm', 'Chart.yaml'))),
     tweakPackageJSON({ logger, serviceDirectories, subPackages }),
   ]);
@@ -208,11 +226,11 @@ const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirector
 };
 
 const dockerNpmInstall = (logger) => async (services) => {
-  // We cannot operate parallel docker-compose runs for now:
+  // We cannot operate parallel docker compose runs for now:
   // https://github.com/docker/compose/issues/1516
   for (const service of services) {
     try {
-      logger.log(await spawn('docker-compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
+      logger.log(await spawn('docker compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
     } catch (error) {
       logger.error(error.message);
       throw error;

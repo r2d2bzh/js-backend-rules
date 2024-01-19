@@ -8,8 +8,8 @@ export default ({ logger, serviceDirectories, subPackages }) =>
       packageTweaks({
         serviceDirectories,
         alienPackages: subPackages.filter((p) => !['test', ...serviceDirectories].includes(p)),
-      })
-    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`)))
+      }),
+    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`))),
   );
 
 const commonPackageOptions = {
@@ -24,12 +24,11 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
     ...commonPackageOptions,
     scripts: {
       r2d2: 'r2d2bzh-js-backend-rules',
-      postinstall: 'true # postinstall is disabled since js-backend-rules 0.1.2',
       lint: 'eslint .',
-      pretest: 'docker-compose build test',
+      pretest: 'docker compose build test',
       'pretest:debug': 'npm run pretest',
-      test: 'docker-compose run -T test',
-      'test:debug': 'docker-compose run --publish 9229 test debug',
+      test: 'docker compose run -T --rm test',
+      'test:debug': 'docker compose run --publish 9229 test debug',
       prerelease: 'npm run test',
       release: 'release-it',
     },
@@ -53,7 +52,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       exclude: ['.release-it.js', 'index.js', '**/__tests__/**', 'share/**'],
       reporter: ['lcov', 'text'],
     },
-    dependencies: dependencies(['ava', 'c8', 'moleculer', 'uuid']),
+    dependencies: dependencies(['@r2d2bzh/moleculer-test-utils', 'ava', 'c8', 'moleculer', 'uuid']),
   },
   ...Object.fromEntries(
     serviceDirectories.map((directory) => [
@@ -77,7 +76,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
         ]),
         devDependencies: dependencies(['nodemon']),
       },
-    ])
+    ]),
   ),
   ...Object.fromEntries(alienPackages.map((p) => [path(p, 'package.json'), commonPackageOptions])),
 });

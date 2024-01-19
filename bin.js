@@ -34,7 +34,7 @@ yargs(hideBin(process.argv))
           default: false,
         },
       }),
-    install
+    install,
   )
   .command(
     'add <service>',
@@ -45,7 +45,7 @@ yargs(hideBin(process.argv))
       await spawn('npm', 'init', '-y')(service);
       await ensureFile(path(service, 'Dockerfile'));
       await install(options);
-    }
+    },
   )
   .help().argv;
 

@@ -5,7 +5,7 @@ services:
     networks:
       default: null
   nats:
-    image: nats:2.9.14-alpine3.17
+    image: nats:2.10.9-alpine3.19
     networks:
       default: null
   service-a:
@@ -13,7 +13,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -22,6 +22,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -44,7 +45,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -53,8 +54,10 @@ services:
     depends_on:
       mongo:
         condition: service_started
+        required: true
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -77,7 +80,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -86,6 +89,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -108,7 +112,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -117,6 +121,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -139,7 +144,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -148,6 +153,7 @@ services:
     depends_on:
       nats:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:
@@ -170,12 +176,13 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 2.0.6
+        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     depends_on:
       mongo:
         condition: service_started
+        required: true
     networks:
       default: null
     ports:

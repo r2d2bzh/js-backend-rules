@@ -7,12 +7,13 @@
 # } } }
 # For additional builder and runtime commands, add the following in service-d/package.json:
 # { "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }
-# To modify the share image, add the following in service-d/package.json:
-# { "r2d2bzh": { "dockerfileShare": "imageTag" } }
 ARG DOCKER_BUILD_NODEJS_VERSION
-ARG SHARE=scratch
-FROM ${SHARE} as share
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} as builder
 COPY fake /fake
 RUN ls /
+COPY --chown=user . /project
+RUN /build.sh
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-runtime:${DOCKER_BUILD_NODEJS_VERSION}
+COPY --chown=user --from=builder /tmp/service /service
+COPY ./config ./config
+ENTRYPOINT [ "/service" ]

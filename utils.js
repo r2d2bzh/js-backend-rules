@@ -15,7 +15,7 @@ export const spawn =
       childSpawn(exec, arguments_, { cwd, stdio: ['ignore', 'ignore', 'inherit'] }).on('close', (code) => {
         const commandDesc = `'${exec} ${arguments_.join(' ')}' in ${cwd}`;
         return code === 0 ? resolve(`${commandDesc} succeeded`) : reject(new Error(`${commandDesc} failed (${code})`));
-      })
+      }),
     );
 
 export const findDirectoriesWith = async (glob) => {

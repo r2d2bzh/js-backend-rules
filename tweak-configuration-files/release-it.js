@@ -39,5 +39,5 @@ const releaseItConfigurationForSubPackages = ({ addWarningHeader, subPackages })
         },
         formatters: [toYAML, addWarningHeader],
       },
-    ])
+    ]),
   );

@@ -9,39 +9,39 @@ This project is {moleculer}[Moleculer]-based and most of the boilerplate of the 
 Keep in mind that the root `package.json` is *only* used for development tooling and checking purposes.
 This means that before modifying the project, ensure you have run `npm install` or `npm i` at the *root* of the project so that all checking tools and hooks are deployed.
 
-CAUTION: Do *NOT* use `npm` commands directly in sub-directories of this project, these are to be run in the container managing each sub-service: `docker-compose run <service> npm ...`
+CAUTION: Do *NOT* use `npm` commands directly in sub-directories of this project, these are to be run in the container managing each sub-service: `docker compose run <service> npm ...`
 
 The following describes all the facilities provided by {js-backend-rules}[`js-backend-rules`] and how they are intended to be used.
 
 ## Starting and stopping services locally
 
-To start all the *development* services, simply execute `docker-compose up -d` from the command line.
+To start all the *development* services, simply execute `docker compose up -d` from the command line.
 This will *only* start the development versions of all available services.
 
-You have to execute `docker-compose --profile rel up -d` in order to start the release versions of all services.
+You have to execute `docker compose --profile rel up -d` to start the release versions of all services.
 
 [CAUTION]
 ====
-`docker-compose up` will *NOT* ensure that your release services images are up to date.
-To ensure this you have to execute `docker-compose --profile rel build` from the command line.
+`docker compose up` will *NOT* ensure that your release services images are up to date.
+To ensure this you have to execute `docker compose --profile rel build` from the command line.
 
-The same applies for development images, but you only need to rebuild these images when bumping the version of the {js-backend-rules}[`@r2d2bzh/js-backend-rules`] dependency.
-In this case, simply execute `docker-compose build`.
+The same applies to development images, but you only need to rebuild these images when bumping the version of the {js-backend-rules}[`@r2d2bzh/js-backend-rules`] dependency.
+In this case, simply execute `docker compose build`.
 ====
 
-To stop all services, execute `docker-compose down`.
+To stop all services, execute `docker compose down`.
 
 ## Unit testing
 
-Execute `npm test` or `npm t` to pass the whole unit tests plan.
+Execute `npm test` or `npm t` to pass the whole unit test plan.
 This will also check for no regression in test coverage.
 
 CAUTION: If you have improved the unit tests coverage, you *MUST* update accordingly the `branches`, `functions`, `lines` and `statements` keys of the `c8` object available in `test/package.json`.
 
 You can also execute:
 
-* `docker-compose run test` to also pass the whole test plan
-* `npm t nocov` or `docker-compose run test nocov` to pass the whole test plan without checking for unit tests coverage
+* `docker compose run test` to also pass the whole test plan
+* `npm t nocov` or `docker compose run test nocov` to pass the whole test plan without checking for unit tests coverage
 
 This can be used in combination with https://github.com/avajs/ava/blob/main/docs/05-command-line.md[AVA command line options]:
 
@@ -49,7 +49,7 @@ This can be used in combination with https://github.com/avajs/ava/blob/main/docs
 * `npm t nocov \-- -- -m 'test title with or without glob pattern'`
 * `npm t cov \-- -- --verbose`
 
-TIP: You have to insert `--` twice (`-- --`) before AVA options to ensure that they are neither passed to `npm` nor to `docker-compose`.
+TIP: You have to insert `--` twice (`-- --`) before AVA options to ensure that they are neither passed to `npm` nor to `docker compose`.
 
 ## Unit test debugging
 
@@ -57,7 +57,7 @@ If you have to debug one particular test case:
 
 . Insert a https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger[`debugger;` line] at the beginning of the test case to debug
 . Execute `npm run test:debug \\__tests__/<path to the file containing the test case>` from the root of the project (path completion should work)
-. Use `docker-compose ps` to find the host port where the port 9229 is published for the newly started test container
+. Use `docker compose ps` to find the host port where the port 9229 is published for the newly started test container
 . Open `chrome://inspect` in your Chrome browser and open the dedicated Devtools for Node
 . Connect the Chrome Devtools to the port found on step 3
 

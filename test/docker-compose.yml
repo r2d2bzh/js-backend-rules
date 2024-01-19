@@ -8,19 +8,13 @@
 # { "r2d2bzh": { "volumeSourceRoot": ... } }
 #
 # If you need to customize the compose configuration any further,
-# please use docker-compose.override.yml
+# please use docker compose.override.yml
 #
 # More details are available here:
 # - https://docs.docker.com/compose/reference/#specifying-multiple-compose-files
 # - https://docs.docker.com/compose/extends/#adding-and-overriding-configuration
 # - https://github.com/compose-spec/compose-spec/blob/master/spec.md
 services:
-  share:
-    image: test-share:${VERSION:-dev}
-    build:
-      context: ./share
-    profiles:
-      - share
   service-a:
     build: &ref_0
       context: ./dev
@@ -44,7 +38,6 @@ services:
       context: ./service-a
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -67,7 +60,6 @@ services:
       context: ./service-b
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -90,7 +82,6 @@ services:
       context: ./service-c
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -113,7 +104,6 @@ services:
       context: ./service-d
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -136,7 +126,6 @@ services:
       context: ./service-e
       args:
         DOCKER_BUILD_NODEJS_VERSION: ${DOCKER_BUILD_NODEJS_VERSION}
-        SHARE: test-share:${VERSION:-dev}
     depends_on:
       - nats
     profiles:
@@ -164,4 +153,4 @@ services:
     ports:
       - 9229
   nats:
-    image: nats:2.9.14-alpine3.17
+    image: nats:2.10.9-alpine3.19

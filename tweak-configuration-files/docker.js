@@ -4,7 +4,7 @@ import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractValue } from '../utils.js';
 
-export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, dbnImageVersion }) => {
+export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, dbnImageVersion, rootDockerImage }) => {
   const dockerfileCommonFormatters = [
     addWarningHeader,
     addHashedHeader([
@@ -16,6 +16,7 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
       '} } }',
     ]),
   ];
+
   return async (config) => ({
     ...config,
     '.env': {
@@ -33,16 +34,21 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
       ],
       formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
     },
-    [path('share', 'Dockerfile')]: {
-      configuration: ['FROM scratch', 'COPY . /share/'],
-      formatters: [addWarningHeader, toMultiline].reverse(),
-    },
+    ...(rootDockerImage
+      ? {
+          [path('share', 'Dockerfile')]: {
+            configuration: ['FROM scratch', 'COPY . /share/'],
+            formatters: [addWarningHeader, toMultiline].reverse(),
+          },
+        }
+      : {}),
     ...(await dockerConfigurationForServices({
       logger,
       addWarningHeader,
       dockerfileCommonFormatters,
       dbnImagePrefix,
       serviceDirectories,
+      rootDockerImage,
     })),
   });
 };
@@ -53,6 +59,7 @@ const dockerConfigurationForServices = async ({
   dockerfileCommonFormatters,
   dbnImagePrefix,
   serviceDirectories,
+  rootDockerImage,
 }) => {
   const servicesConfiguration = await Promise.all(
     serviceDirectories.map(async (context) => {
@@ -61,7 +68,7 @@ const dockerConfigurationForServices = async ({
         [
           path(context, '.dockerignore'),
           {
-            configuration: ['node_modules', 'share'],
+            configuration: rootDockerImage ? ['node_modules', 'share'] : ['node_modules'],
             formatters: [toMultiline, addWarningHeader],
           },
         ],
@@ -70,27 +77,29 @@ const dockerConfigurationForServices = async ({
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
-              'ARG SHARE=scratch',
-              `FROM \${SHARE} as share`,
+              ...(rootDockerImage ? ['ARG SHARE=scratch', `FROM \${SHARE} as share`] : []),
               `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
               ...commands('builder'),
+              `COPY --chown=user . /project`,
+              `RUN /build.sh`,
               `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
+              `COPY --chown=user --from=builder /tmp/service /service`,
+              `COPY ./config ./config`,
               ...commands('runtime'),
+              `ENTRYPOINT [ "/service" ]`,
             ],
             formatters: [
               ...dockerfileCommonFormatters,
               addHashedHeader([
                 `For additional builder and runtime commands, add the following in ${context}/package.json:`,
                 '{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }',
-                `To modify the share image, add the following in ${context}/package.json:`,
-                '{ "r2d2bzh": { "dockerfileShare": "imageTag" } }',
               ]),
               toMultiline,
             ].reverse(),
           },
         ],
       ];
-    })
+    }),
   );
   return Object.fromEntries(servicesConfiguration.flat());
 };

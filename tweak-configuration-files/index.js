@@ -9,7 +9,6 @@ import addReleaseItConfig from './release-it.js';
 import addDockerConfig from './docker.js';
 import addDockerComposeConfig from './docker-compose.js';
 import addHelmConfig from './helm.js';
-import addJenkinsConfig from './jenkins.js';
 
 export default ({
   logger,
@@ -22,7 +21,12 @@ export default ({
   serviceDirectories,
 }) => {
   const addWarningHeader = addHashedHeader(editWarning);
-  const { name, version, description, r2d2bzh: { helm: { chart: helmChartOverride = {} } = {} } = {} } = projectDetails;
+  const {
+    name,
+    version,
+    description,
+    r2d2bzh: { rootDockerImage = false, helm: { chart: helmChartOverride = {} } = {} } = {},
+  } = projectDetails;
 
   return pipe([
     tweakEslintConfig(),
@@ -35,6 +39,7 @@ export default ({
       serviceDirectories,
       ...extractDBNImagePrefixFrom(projectDetails),
       ...extractDBNImageVersionFrom(projectDetails),
+      rootDockerImage,
     }),
     addDockerComposeConfig({
       addWarningHeader,
@@ -42,6 +47,7 @@ export default ({
       releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
       projectName: name,
       volumeSourceRoot: extractValue(['r2d2bzh', 'volumeSourceRoot'])(projectDetails) || '.',
+      rootDockerImage,
     }),
     addHelmConfig({
       helmChart,
@@ -51,18 +57,17 @@ export default ({
       version,
       description,
     }),
-    addJenkinsConfig({ name, editWarning, serviceDirectories }),
   ]);
 };
 
 const extractDBNImagePrefixFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imagePrefix'],
   'dbnImagePrefix',
-  (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-'
+  (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-',
 );
 
 const extractDBNImageVersionFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imageVersion'],
   'dbnImageVersion',
-  (r) => r || versions.dockerBuildNodeJS
+  (r) => r || versions.dockerBuildNodeJS,
 );
