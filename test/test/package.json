@@ -44,7 +44,8 @@
     "ava": "^6.0.1",
     "c8": "^9.1.0",
     "moleculer": "^0.14.32",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "@r2d2bzh/moleculer-test-utils": "^0.0.5"
   },
   "engines": {
     "node": ">=20.11.0"

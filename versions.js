@@ -3,13 +3,14 @@
 export const nodejs = '>=20.11.0';
 
 export const docker = {
-  dockerBuildNodeJS: '3.0.0-0',
+  dockerBuildNodeJS: '3.0.0',
   nats: '2.10.9-alpine3.19',
 };
 
 export const npm = {
   '@r2d2bzh/moleculer-healthcheck-middleware': '^2.0.0',
   '@r2d2bzh/moleculer-start-checker-middleware': '^1.0.4',
+  '@r2d2bzh/moleculer-test-utils': '^0.0.5',
   '@r2d2bzh/yac': '^1.0.4',
   ava: '^6.0.1',
   c8: '^9.1.0',

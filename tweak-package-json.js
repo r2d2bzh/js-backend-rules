@@ -52,7 +52,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       exclude: ['.release-it.js', 'index.js', '**/__tests__/**', 'share/**'],
       reporter: ['lcov', 'text'],
     },
-    dependencies: dependencies(['ava', 'c8', 'moleculer', 'uuid']),
+    dependencies: dependencies(['@r2d2bzh/moleculer-test-utils', 'ava', 'c8', 'moleculer', 'uuid']),
   },
   ...Object.fromEntries(
     serviceDirectories.map((directory) => [
