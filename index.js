@@ -230,7 +230,7 @@ const dockerNpmInstall = (logger) => async (services) => {
   // https://github.com/docker/compose/issues/1516
   for (const service of services) {
     try {
-      logger.log(await spawn('docker compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
+      logger.log(await spawn('docker', 'compose', 'run', '--rm', '--entrypoint=""', service, 'npm', 'install')());
     } catch (error) {
       logger.error(error.message);
       throw error;
