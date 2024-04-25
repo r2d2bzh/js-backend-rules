@@ -17,8 +17,8 @@ services:
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
-    - npm
-    - start
+      - npm
+      - start
     depends_on:
       nats:
         condition: service_started
@@ -26,20 +26,20 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/service-a
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-a
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
   service-b:
     build:
       context: /home/hostuser/project/dev
@@ -49,8 +49,8 @@ services:
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
-    - npm
-    - start
+      - npm
+      - start
     depends_on:
       mongo:
         condition: service_started
@@ -61,20 +61,20 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/service-b
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-b
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
   service-c:
     build:
       context: /home/hostuser/project/dev
@@ -84,8 +84,8 @@ services:
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
-    - npm
-    - start
+      - npm
+      - start
     depends_on:
       nats:
         condition: service_started
@@ -93,20 +93,20 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/service-c
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-c
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
   service-d:
     build:
       context: /home/hostuser/project/dev
@@ -116,8 +116,8 @@ services:
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
-    - npm
-    - start
+      - npm
+      - start
     depends_on:
       nats:
         condition: service_started
@@ -125,20 +125,20 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/service-d
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-d
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
   service-e:
     build:
       context: /home/hostuser/project/dev
@@ -148,8 +148,8 @@ services:
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
-    - npm
-    - start
+      - npm
+      - start
     depends_on:
       nats:
         condition: service_started
@@ -157,20 +157,20 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/service-e
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-e
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
   test-runner:
     build:
       context: /home/hostuser/project/dev
@@ -186,58 +186,58 @@ services:
     networks:
       default: null
     ports:
-    - mode: ingress
-      target: 9229
-      protocol: tcp
+      - mode: ingress
+        target: 9229
+        protocol: tcp
     volumes:
-    - type: bind
-      source: /home/hostuser/project/test/fake
-      target: /fake
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/test
-      target: /home/user/dev
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/service-a
-      target: /home/user/service-a
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/service-b
-      target: /home/user/service-b
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/service-c
-      target: /home/user/service-c
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/service-d
-      target: /home/user/service-d
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/service-e
-      target: /home/user/service-e
-      bind:
-        create_host_path: true
-    - type: bind
-      source: /home/hostuser/project/share
-      target: /home/user/share
-      bind:
-        create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/test
+        target: /home/user/dev
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/share
+        target: /home/user/share
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-a
+        target: /home/user/service-a
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-b
+        target: /home/user/service-b
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-c
+        target: /home/user/service-c
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-d
+        target: /home/user/service-d
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/service-e
+        target: /home/user/service-e
+        bind:
+          create_host_path: true
+      - type: bind
+        source: /home/hostuser/project/test/fake
+        target: /fake
+        bind:
+          create_host_path: true
 networks:
   default:
     name: test_default
 x-mongo-depends:
   depends_on:
-  - mongo
+    - mongo
 x-test-defaults:
   depends_on:
-  - mongo
+    - mongo
   volumes:
-  - ./test/fake:/fake
+    - ./test/fake:/fake
