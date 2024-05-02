@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { join as path } from 'node:path';
+import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -43,7 +43,7 @@ yargs(hideBin(process.argv))
     async ({ service, ...options }) => {
       await fs.mkdir(service, { recursive: true });
       await spawn('npm', 'init', '-y')(service);
-      await ensureFile(path(service, 'Dockerfile'));
+      await ensureFile(path.join(service, 'Dockerfile'));
       await install(options);
     },
   )

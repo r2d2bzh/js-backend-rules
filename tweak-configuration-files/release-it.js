@@ -1,4 +1,4 @@
-import { join as path } from 'node:path';
+import path from 'node:path';
 import { toYAML } from '@r2d2bzh/js-rules';
 
 export default ({ addWarningHeader, subPackages }) =>
@@ -24,7 +24,7 @@ export default ({ addWarningHeader, subPackages }) =>
 const releaseItConfigurationForSubPackages = ({ addWarningHeader, subPackages }) =>
   Object.fromEntries(
     subPackages.map((packageDirectory) => [
-      path(packageDirectory, '.release-it.yaml'),
+      path.join(packageDirectory, '.release-it.yaml'),
       {
         configuration: {
           npm: {

@@ -1,4 +1,4 @@
-import { join as path } from 'node:path';
+import path from 'node:path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractValue, extractValueAs } from '../utils.js';
 import { docker as versions } from '../versions.js';
@@ -44,7 +44,7 @@ export default ({
     addDockerComposeConfig({
       addWarningHeader,
       serviceDirectories,
-      releaseImagePath: path(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
+      releaseImagePath: path.join(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
       projectName: name,
       volumeSourceRoot: extractValue(['r2d2bzh', 'volumeSourceRoot'])(projectDetails) || '.',
       rootDockerImage,

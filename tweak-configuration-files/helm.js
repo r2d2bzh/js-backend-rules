@@ -1,9 +1,9 @@
-import { join as path } from 'node:path';
+import path from 'node:path';
 import { addHashedHeader, toYAML } from '@r2d2bzh/js-rules';
 
 export default (options) => (config) => ({
   ...config,
-  [path('helm', 'Chart.yaml')]: helmChart(options),
+  [path.join('helm', 'Chart.yaml')]: helmChart(options),
 });
 
 const helmChart = ({ helmChart, helmChartOverride, scaffolderName, name, version, description }) => {

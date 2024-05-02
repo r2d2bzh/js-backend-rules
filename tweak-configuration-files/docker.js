@@ -1,4 +1,4 @@
-import { join as path } from 'node:path';
+import path from 'node:path';
 // eslint-disable-next-line import/no-unresolved
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
@@ -23,11 +23,11 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
       configuration: [`DOCKER_BUILD_NODEJS_VERSION=${dbnImageVersion}`],
       formatters: [toMultiline, addWarningHeader],
     },
-    [path('dev', '.dockerignore')]: {
+    [path.join('dev', '.dockerignore')]: {
       configuration: ['*'],
       formatters: [toMultiline, addWarningHeader],
     },
-    [path('dev', 'Dockerfile')]: {
+    [path.join('dev', 'Dockerfile')]: {
       configuration: [
         'ARG DOCKER_BUILD_NODEJS_VERSION',
         `FROM ${dbnImagePrefix}devenv:\${DOCKER_BUILD_NODEJS_VERSION}`,
@@ -36,7 +36,7 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
     },
     ...(rootDockerImage
       ? {
-          [path('share', 'Dockerfile')]: {
+          [path.join('share', 'Dockerfile')]: {
             configuration: ['FROM scratch', 'COPY . /share/'],
             formatters: [addWarningHeader, toMultiline].reverse(),
           },
@@ -66,14 +66,14 @@ const dockerConfigurationForServices = async ({
       const { commands } = await getCustomSettings(context, logger);
       return [
         [
-          path(context, '.dockerignore'),
+          path.join(context, '.dockerignore'),
           {
             configuration: rootDockerImage ? ['node_modules', 'share'] : ['node_modules'],
             formatters: [toMultiline, addWarningHeader],
           },
         ],
         [
-          path(context, 'Dockerfile'),
+          path.join(context, 'Dockerfile'),
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
@@ -106,12 +106,12 @@ const dockerConfigurationForServices = async ({
 
 const getCustomSettings = async (context, logger) => {
   try {
-    const { commands } = await getCustomSettingsFrom(path(context, 'package.json'));
+    const { commands } = await getCustomSettingsFrom(path.join(context, 'package.json'));
     return {
       commands: (step) => {
         try {
           if (Symbol.iterator in new Object(commands)) {
-            logger.error(`ignored old additional commands syntax, check ${path(context, 'Dockerfile')}`);
+            logger.error(`ignored old additional commands syntax, check ${path.join(context, 'Dockerfile')}`);
             return [];
           }
           // step is not a user input

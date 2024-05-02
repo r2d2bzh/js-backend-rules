@@ -4,5 +4,3 @@ extends:
 settings:
   import/core-modules:
     - ava
-rules:
-  unicorn/import-style: off

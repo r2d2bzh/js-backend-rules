@@ -1,4 +1,4 @@
-import { join as path } from 'node:path';
+import path from 'node:path';
 import { mergeInJSONFile } from './utils.js';
 import { npm as dependenciesVersions, nodejs as minimalNodeJS } from './versions.js';
 
@@ -33,10 +33,10 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       release: 'release-it',
     },
   },
-  [path('test', 'package.json')]: {
+  [path.join('test', 'package.json')]: {
     ...commonPackageOptions,
     scripts: {
-      postinstall: serviceDirectories.map((directory) => `(cd "${path('..', directory)}" && npm i)`).join(' && '),
+      postinstall: serviceDirectories.map((directory) => `(cd "${path.join('..', directory)}" && npm i)`).join(' && '),
       precov: 'npm install',
       cov: 'c8 ava',
       prenocov: 'npm install',
@@ -48,7 +48,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       'check-coverage': true,
       all: true,
       allowExternal: true,
-      src: ['../share', ...serviceDirectories.map((p) => path('..', p))],
+      src: ['../share', ...serviceDirectories.map((p) => path.join('..', p))],
       exclude: ['.release-it.js', 'index.js', '**/__tests__/**', 'share/**'],
       reporter: ['lcov', 'text'],
     },
@@ -56,7 +56,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
   },
   ...Object.fromEntries(
     serviceDirectories.map((directory) => [
-      path(directory, 'package.json'),
+      path.join(directory, 'package.json'),
       {
         ...commonPackageOptions,
         scripts: {
@@ -78,7 +78,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       },
     ]),
   ),
-  ...Object.fromEntries(alienPackages.map((p) => [path(p, 'package.json'), commonPackageOptions])),
+  ...Object.fromEntries(alienPackages.map((p) => [path.join(p, 'package.json'), commonPackageOptions])),
 });
 
 // eslint-disable-next-line security/detect-object-injection

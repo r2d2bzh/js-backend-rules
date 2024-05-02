@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 
 import { promises as fs } from 'node:fs';
-import { join as path, dirname, relative } from 'node:path';
+import path from 'node:path';
 import process from 'node:process';
 import { findUp } from 'find-up';
 import { green, yellow, red } from 'kleur/colors';
@@ -52,7 +52,7 @@ const cwdToGitParent = async () => {
   const gitParent = await findUp(
     async (directory) => {
       try {
-        const gitStat = await fs.stat(path(directory, '.git'));
+        const gitStat = await fs.stat(path.join(directory, '.git'));
         return gitStat.isDirectory() && directory;
       } catch {
         return;
@@ -148,9 +148,9 @@ const structureProject = async ({ logger, serviceDirectories, rootDockerImage = 
     ensureProjectConfigFolder({ serviceDirectories }),
     ensureProjectSymlinks(
       [
-        [path('test', '__tests__'), '__tests__'],
+        [path.join('test', '__tests__'), '__tests__'],
         ...(rootDockerImage
-          ? serviceDirectories.map((directory) => [path('..', 'share'), path(directory, 'share')])
+          ? serviceDirectories.map((directory) => [path.join('..', 'share'), path.join(directory, 'share')])
           : []),
       ],
       logger,
@@ -158,7 +158,10 @@ const structureProject = async ({ logger, serviceDirectories, rootDockerImage = 
     ensureProjectFiles(
       [
         [
-          path(relative(process.cwd(), dirname(new URL(import.meta.url).pathname)), 'js-backend-rules.adoc'),
+          path.join(
+            path.relative(process.cwd(), path.dirname(new URL(import.meta.url).pathname)),
+            'js-backend-rules.adoc',
+          ),
           'js-backend-rules.adoc',
         ],
       ],
@@ -169,8 +172,8 @@ const structureProject = async ({ logger, serviceDirectories, rootDockerImage = 
 
 const ensureProjectDirectories = ({ rootDockerImage }) =>
   Promise.all(
-    ['dev', path('helm', 'templates'), ...(rootDockerImage ? ['share'] : []), path('test', '__tests__')].map((p) =>
-      fs.mkdir(p, { recursive: true }),
+    ['dev', path.join('helm', 'templates'), ...(rootDockerImage ? ['share'] : []), path.join('test', '__tests__')].map(
+      (p) => fs.mkdir(p, { recursive: true }),
     ),
   );
 
@@ -201,8 +204,8 @@ const ensureProjectFiles = ensureProjectItems(fs.copyFile);
 
 const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails }) => {
   const [projectPath, helmChart] = await Promise.all([
-    getProjectPath(),
-    emptyObjectOnException(() => readYAMLFile(path('helm', 'Chart.yaml'))),
+    getProjectPath(','),
+    emptyObjectOnException(() => readYAMLFile(path.join('helm', 'Chart.yaml'))),
     tweakPackageJSON({ logger, serviceDirectories, subPackages }),
   ]);
   await jsRules({
