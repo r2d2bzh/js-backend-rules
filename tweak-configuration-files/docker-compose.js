@@ -100,7 +100,7 @@ const addServiceToConfiguration =
         depends_on: ['nats'],
         volumes: [
           `${volumeSourceRoot}/${serviceDirectory}:/home/user/dev`,
-          `${volumeSourceRoot}/share:/home/user/share`,
+          ...(rootDockerImage ? [`${volumeSourceRoot}/share:/home/user/share`] : []),
         ],
         command: ['npm', 'start'],
         ports: [9229],

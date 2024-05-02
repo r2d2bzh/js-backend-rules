@@ -35,11 +35,6 @@ services:
         target: /home/user/dev
         bind:
           create_host_path: true
-      - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
-        bind:
-          create_host_path: true
   service-b:
     build:
       context: /home/hostuser/project/dev
@@ -70,11 +65,6 @@ services:
         target: /home/user/dev
         bind:
           create_host_path: true
-      - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
-        bind:
-          create_host_path: true
   service-c:
     build:
       context: /home/hostuser/project/dev
@@ -100,11 +90,6 @@ services:
       - type: bind
         source: /home/hostuser/project/service-c
         target: /home/user/dev
-        bind:
-          create_host_path: true
-      - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
         bind:
           create_host_path: true
   service-d:
@@ -134,11 +119,6 @@ services:
         target: /home/user/dev
         bind:
           create_host_path: true
-      - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
-        bind:
-          create_host_path: true
   service-e:
     build:
       context: /home/hostuser/project/dev
@@ -164,11 +144,6 @@ services:
       - type: bind
         source: /home/hostuser/project/service-e
         target: /home/user/dev
-        bind:
-          create_host_path: true
-      - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
         bind:
           create_host_path: true
   test-runner:

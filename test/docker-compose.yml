@@ -26,7 +26,6 @@ services:
       - nats
     volumes:
       - ${WORKSPACE:-.}/service-a:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -48,7 +47,6 @@ services:
       - nats
     volumes:
       - ${WORKSPACE:-.}/service-b:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -70,7 +68,6 @@ services:
       - nats
     volumes:
       - ${WORKSPACE:-.}/service-c:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -92,7 +89,6 @@ services:
       - nats
     volumes:
       - ${WORKSPACE:-.}/service-d:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
@@ -114,7 +110,6 @@ services:
       - nats
     volumes:
       - ${WORKSPACE:-.}/service-e:/home/user/dev
-      - ${WORKSPACE:-.}/share:/home/user/share
     command:
       - npm
       - start
