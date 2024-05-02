@@ -171,11 +171,6 @@ services:
         bind:
           create_host_path: true
       - type: bind
-        source: /home/hostuser/project/share
-        target: /home/user/share
-        bind:
-          create_host_path: true
-      - type: bind
         source: /home/hostuser/project/service-a
         target: /home/user/service-a
         bind:

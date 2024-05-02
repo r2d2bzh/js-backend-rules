@@ -28,7 +28,7 @@ export default ({
   );
   const testVolumes = [
     `${volumeSourceRoot}/test:/home/user/dev`,
-    `${volumeSourceRoot}/share:/home/user/share`,
+    ...(rootDockerImage ? [`${volumeSourceRoot}/share:/home/user/share`] : []),
     ...serviceDirectories.map((directory) => `${volumeSourceRoot}/${directory}:/home/user/${directory}`),
   ];
   return (config) => ({
