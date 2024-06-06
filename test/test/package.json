@@ -36,6 +36,7 @@
       "share/**"
     ],
     "reporter": [
+      "cobertura",
       "lcov",
       "text"
     ]

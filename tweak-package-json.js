@@ -50,7 +50,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       allowExternal: true,
       src: ['../share', ...serviceDirectories.map((p) => path.join('..', p))],
       exclude: ['.release-it.js', 'index.js', '**/__tests__/**', 'share/**'],
-      reporter: ['lcov', 'text'],
+      reporter: ['lcov', 'text', 'cobertura'],
     },
     dependencies: dependencies(['@r2d2bzh/moleculer-test-utils', 'ava', 'c8', 'moleculer', 'uuid']),
   },
