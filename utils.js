@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-non-literal-fs-filename, security/detect-object-injection */
 import { spawn as childSpawn } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
@@ -53,16 +52,18 @@ export const pipe = (functions) => {
 };
 const compose = (g) => (f) => async (x) => f(await g(x));
 
-export const extractValue = (path) => (object) => {
-  let extractedValue = object;
-  for (const field of path) {
-    extractedValue = extractedValue?.[field];
-    if (extractedValue === undefined) {
-      return;
+export const extractValue =
+  (path, defaultValue = '') =>
+  (object) => {
+    let extractedValue = object;
+    for (const field of path) {
+      extractedValue = extractedValue?.[field];
+      if (extractedValue === undefined) {
+        return defaultValue;
+      }
     }
-  }
-  return extractedValue;
-};
+    return extractedValue;
+  };
 
 export const extractValueAs = (path, key, mapper = (v) => v) => {
   const extractValueFrom = extractValue(path);
@@ -86,7 +87,7 @@ export const emptyObjectOnException = async (_function) => {
 export const readYAMLFile = async (path) => {
   try {
     // The purpose of this library is to scaffold based on existing project content
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
+
     const document = await fs.readFile(path);
     return yaml.load(document);
   } catch (error) {

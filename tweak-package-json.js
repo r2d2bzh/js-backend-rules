@@ -1,12 +1,13 @@
 import path from 'node:path';
 import { mergeInJSONFile } from './utils.js';
-import { npm as dependenciesVersions, nodejs as minimalNodeJS } from './versions.js';
+import { npm as dependenciesVersions, nodejs as minimalNodeJS, eslint as devDependencies } from './versions.js';
 
-export default ({ logger, serviceDirectories, subPackages }) =>
+export default ({ logger, serviceDirectories, subPackages, rootDockerImage = false }) =>
   Promise.all(
     Object.entries(
       packageTweaks({
         serviceDirectories,
+        rootDockerImage,
         alienPackages: subPackages.filter((p) => !['test', ...serviceDirectories].includes(p)),
       }),
     ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`))),
@@ -19,7 +20,7 @@ const commonPackageOptions = {
   },
 };
 
-const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
+const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) => ({
   'package.json': {
     ...commonPackageOptions,
     scripts: {
@@ -32,6 +33,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       prerelease: 'npm run test',
       release: 'release-it',
     },
+    devDependencies,
   },
   [path.join('test', 'package.json')]: {
     ...commonPackageOptions,
@@ -48,8 +50,8 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
       'check-coverage': true,
       all: true,
       allowExternal: true,
-      src: ['../share', ...serviceDirectories.map((p) => path.join('..', p))],
-      exclude: ['.release-it.js', 'index.js', '**/__tests__/**', 'share/**'],
+      src: [...(rootDockerImage ? ['../share'] : []), ...serviceDirectories.map((p) => path.join('..', p))],
+      exclude: ['.release-it.js', 'index.js', '**/__tests__/**', ...(rootDockerImage ? ['share/**'] : [])],
       reporter: ['lcov', 'text', 'cobertura'],
     },
     dependencies: dependencies(['@r2d2bzh/moleculer-test-utils', 'ava', 'c8', 'moleculer', 'uuid']),
@@ -64,7 +66,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
           prestart: 'npm i',
         },
         esbuildOptions: {
-          external: ['avsc', 'protobufjs/minimal', 'thrift'],
+          external: ['avsc', 'protobufjs/minimal', 'thrift', 'kafka-node'],
           keepNames: true,
         },
         dependencies: dependencies([
@@ -81,5 +83,4 @@ const packageTweaks = ({ serviceDirectories, alienPackages }) => ({
   ...Object.fromEntries(alienPackages.map((p) => [path.join(p, 'package.json'), commonPackageOptions])),
 });
 
-// eslint-disable-next-line security/detect-object-injection
 const dependencies = (depList) => Object.fromEntries(depList.map((dep) => [dep, dependenciesVersions[dep]]));

@@ -42,14 +42,18 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^1.0.6",
+    "@r2d2bzh/js-rules": "^2.0.2",
     "filehound": "^1.17.6",
     "find-up": "^7.0.0",
     "git-remote-origin-url": "^4.0.0",
     "js-yaml": "^4.1.0",
     "kleur": "^4.1.5",
-    "p-memoize": "^7.1.1",
-    "release-it": "^17.0.1",
-    "yargs": "^17.7.2"
+    "p-memoize": "^8.0.0",
+    "release-it": "^19.0.4",
+    "yargs": "^18.0.0"
+  },
+  "devDependencies": {
+    "@r2d2bzh/eslint-config": "^2.0.1",
+    "eslint": "^9.34.0"
   }
 }

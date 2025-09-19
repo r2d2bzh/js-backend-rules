@@ -1,5 +1,4 @@
 import path from 'node:path';
-// eslint-disable-next-line import/no-unresolved
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
 import { extractValue } from '../utils.js';
@@ -115,7 +114,7 @@ const getCustomSettings = async (context, logger) => {
             return [];
           }
           // step is not a user input
-          // eslint-disable-next-line security/detect-object-injection
+
           const stepCommands = commands?.[step];
           return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
         } catch (error) {

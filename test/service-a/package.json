@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@r2d2bzh/moleculer-healthcheck-middleware": "^2.0.0",
-    "@r2d2bzh/moleculer-start-checker-middleware": "^1.0.4",
-    "moleculer": "^0.14.32",
-    "nats": "^2.18.0",
+    "@r2d2bzh/moleculer-healthcheck-middleware": "^2.2.0",
+    "@r2d2bzh/moleculer-start-checker-middleware": "^1.1.0",
+    "moleculer": "^0.14.35",
+    "nats": "^2.29.3",
     "semver": "^7.3.5",
-    "@r2d2bzh/yac": "^1.0.4"
+    "@r2d2bzh/yac": "^1.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.1.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -26,12 +26,13 @@
   "esbuildOptions": {
     "external": [
       "avsc",
+      "kafka-node",
       "protobufjs/minimal",
       "thrift"
     ],
     "keepNames": true
   },
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=24.7.0"
   }
 }
