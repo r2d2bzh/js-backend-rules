@@ -13,7 +13,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -33,14 +33,13 @@ services:
       - type: bind
         source: /home/hostuser/project/service-a
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
   service-b:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -63,14 +62,13 @@ services:
       - type: bind
         source: /home/hostuser/project/service-b
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
   service-c:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -90,14 +88,13 @@ services:
       - type: bind
         source: /home/hostuser/project/service-c
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
   service-d:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -117,14 +114,13 @@ services:
       - type: bind
         source: /home/hostuser/project/service-d
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
   service-e:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -144,14 +140,13 @@ services:
       - type: bind
         source: /home/hostuser/project/service-e
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
   test-runner:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.0.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     depends_on:
@@ -168,38 +163,31 @@ services:
       - type: bind
         source: /home/hostuser/project/test
         target: /home/user/dev
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/service-a
         target: /home/user/service-a
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/service-b
         target: /home/user/service-b
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/service-c
         target: /home/user/service-c
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/service-d
         target: /home/user/service-d
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/service-e
         target: /home/user/service-e
-        bind:
-          create_host_path: true
+        bind: {}
       - type: bind
         source: /home/hostuser/project/test/fake
         target: /fake
-        bind:
-          create_host_path: true
+        bind: {}
 networks:
   default:
     name: test_default
