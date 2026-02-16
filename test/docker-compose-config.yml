@@ -13,7 +13,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -39,7 +39,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -68,7 +68,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -94,7 +94,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -120,7 +120,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     command:
@@ -146,7 +146,7 @@ services:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.2.0
+        DOCKER_BUILD_NODEJS_VERSION: 3.3.0
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     depends_on:
