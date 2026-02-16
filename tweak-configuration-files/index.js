@@ -2,7 +2,6 @@ import path from 'node:path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
 import { pipe, extractValue, extractValueAs } from '../utils.js';
 import { docker as versions } from '../versions.js';
-import tweakEslintConfig from './eslint.js';
 import addGitConfig from './git.js';
 import addNpmConfig from './npm.js';
 import addReleaseItConfig from './release-it.js';
@@ -28,8 +27,10 @@ export default ({
     r2d2bzh: { rootDockerImage = false, helm: { chart: helmChartOverride = {} } = {} } = {},
   } = projectDetails;
 
+  const releaseImagePath = path.join(extractValue(['r2d2bzh', 'dockerRegistry'], '')(projectDetails), projectPath);
+  const volumeSourceRoot = extractValue(['r2d2bzh', 'volumeSourceRoot'], '.')(projectDetails);
+
   return pipe([
-    tweakEslintConfig(),
     addGitConfig({ addWarningHeader }),
     addNpmConfig({ addWarningHeader }),
     addReleaseItConfig({ addWarningHeader, subPackages }),
@@ -44,9 +45,9 @@ export default ({
     addDockerComposeConfig({
       addWarningHeader,
       serviceDirectories,
-      releaseImagePath: path.join(extractValue(['r2d2bzh', 'dockerRegistry'])(projectDetails) || '', projectPath),
+      releaseImagePath,
       projectName: name,
-      volumeSourceRoot: extractValue(['r2d2bzh', 'volumeSourceRoot'])(projectDetails) || '.',
+      volumeSourceRoot,
       rootDockerImage,
     }),
     addHelmConfig({

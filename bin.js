@@ -6,8 +6,6 @@ import { hideBin } from 'yargs/helpers';
 import { install } from './index.js';
 import { spawn } from './utils.js';
 
-/* eslint-disable security/detect-non-literal-fs-filename */
-
 const commonYargsOptions = {
   'npm-install': {
     describe: 'operate an npm install for test and for each service',

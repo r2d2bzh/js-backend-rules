@@ -3,7 +3,6 @@ x-mongo-depends: &mongo
     - mongo
 
 x-test-defaults: &test
-  <<: *mongo
   volumes:
     - ./test/fake:/fake
   depends_on:
@@ -12,9 +11,6 @@ x-test-defaults: &test
 services:
 
   service-b:
-    <<: *mongo
-
-  service-b.rel:
     <<: *mongo
 
   test:

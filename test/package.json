@@ -34,6 +34,10 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": ">=20.11.0"
+    "node": ">=24.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "@r2d2bzh/eslint-config": "^2.1.0"
   }
 }
