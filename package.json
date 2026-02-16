@@ -1,6 +1,6 @@
 {
   "name": "@r2d2bzh/js-backend-rules",
-  "version": "5.1.2",
+  "version": "5.1.3",
   "description": "enforce r2d2bzh rules for backends developed in javascript",
   "bin": {
     "r2d2bzh-js-backend-rules": "./bin.js"
