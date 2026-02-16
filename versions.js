@@ -9,7 +9,7 @@ export const docker = {
 
 export const eslint = {
   eslint: '^9.34.0',
-  '@r2d2bzh/eslint-config': '^2.0.1',
+  '@r2d2bzh/eslint-config': '^2.1.0',
 };
 
 export const npm = {
@@ -21,6 +21,6 @@ export const npm = {
   c8: '^10.1.3',
   moleculer: '^0.14.35',
   nats: '^2.29.3',
-  nodemon: '^3.1.10',
+  nodemon: '^3.1.11',
   uuid: '^13.0.0',
 };

@@ -12,7 +12,7 @@
     "@r2d2bzh/yac": "^1.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.11"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
