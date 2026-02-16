@@ -8,14 +8,14 @@ export const docker = {
 };
 
 export const eslint = {
-  eslint: '^9.34.0',
+  eslint: '^9.39.2',
   '@r2d2bzh/eslint-config': '^2.1.0',
 };
 
 export const npm = {
   '@r2d2bzh/moleculer-healthcheck-middleware': '^2.2.0',
   '@r2d2bzh/moleculer-start-checker-middleware': '^1.1.0',
-  '@r2d2bzh/moleculer-test-utils': '^1.0.0',
+  '@r2d2bzh/moleculer-test-utils': '^1.2.0',
   '@r2d2bzh/yac': '^1.1.0',
   ava: '^6.4.1',
   c8: '^10.1.3',
