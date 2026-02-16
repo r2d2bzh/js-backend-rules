@@ -3,7 +3,7 @@
 export const nodejs = '>=24.7.0';
 
 export const docker = {
-  dockerBuildNodeJS: '3.3.0',
+  dockerBuildNodeJS: '3.4.0',
   nats: '2.11.9-alpine3.22',
 };
 
