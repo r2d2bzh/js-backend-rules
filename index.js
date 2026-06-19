@@ -1,4 +1,5 @@
-import { promises as fs } from 'node:fs';
+/* eslint-disable security/detect-non-literal-fs-filename */
+import { stat, mkdir, writeFile, unlink, symlink, copyFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { findUp } from 'find-up';
@@ -6,7 +7,7 @@ import { green, yellow, red } from 'kleur/colors';
 import { install as jsRules, readJSONFile, extractPackageDetails } from '@r2d2bzh/js-rules';
 import tweakPackageJSON from './tweak-package-json.js';
 import tweakConfigurationFiles from './tweak-configuration-files/index.js';
-import { emptyObjectOnException, findDirectoriesWith, getProjectPath, readYAMLFile, spawn } from './utils.js';
+import { emptyObjectOnException, findDirectoriesWith, getProjectPath, readYAMLFile, spawn } from './utilities.js';
 
 const discardedServiceDirectories = new Set(['.', 'dev', 'share', 'test']);
 
@@ -50,7 +51,7 @@ const cwdToGitParent = async () => {
   const gitParent = await findUp(
     async (directory) => {
       try {
-        const gitStat = await fs.stat(path.join(directory, '.git'));
+        const gitStat = await stat(path.join(directory, '.git'));
         return gitStat.isDirectory() && directory;
       } catch {
         return;
@@ -141,6 +142,7 @@ const _install = async ({
 
 const structureProject = async ({ logger, serviceDirectories, rootDockerImage = false }) => {
   await ensureProjectDirectories({ rootDockerImage });
+  const projectRelativePath = path.relative(process.cwd(), path.dirname(new URL(import.meta.url).pathname));
   await Promise.all([
     ensurePackageJSONfiles({ rootDockerImage }),
     ensureProjectConfigFolder({ serviceDirectories }),
@@ -153,33 +155,22 @@ const structureProject = async ({ logger, serviceDirectories, rootDockerImage = 
       ],
       logger,
     ),
-    ensureProjectFiles(
-      [
-        [
-          path.join(
-            path.relative(process.cwd(), path.dirname(new URL(import.meta.url).pathname)),
-            'js-backend-rules.adoc',
-          ),
-          'js-backend-rules.adoc',
-        ],
-      ],
-      logger,
-    ),
+    ensureProjectFiles([[path.join(projectRelativePath, 'js-backend-rules.adoc'), 'js-backend-rules.adoc']], logger),
   ]);
 };
 
 const ensureProjectDirectories = ({ rootDockerImage }) =>
   Promise.all(
     ['dev', path.join('helm', 'templates'), ...(rootDockerImage ? ['share'] : []), path.join('test', '__tests__')].map(
-      (p) => fs.mkdir(p, { recursive: true }),
+      (p) => mkdir(p, { recursive: true }),
     ),
   );
 
 const ensureProjectConfigFolder = ({ serviceDirectories }) =>
   Promise.all(
     serviceDirectories.map(async (directory) => {
-      await fs.mkdir(`${directory}/config`, { recursive: true });
-      return fs.writeFile(`${directory}/config/.gitkeep`, '');
+      await mkdir(`${directory}/config`, { recursive: true });
+      return writeFile(`${directory}/config/.gitkeep`, '');
     }),
   );
 
@@ -188,17 +179,20 @@ const ensurePackageJSONfiles = ({ rootDockerImage }) =>
 
 const ensureProjectItems = (addItem) => (items, logger) =>
   Promise.all(
-    items.map(([source, destination]) =>
-      fs
-        .unlink(destination)
-        .catch((error) => logger.warn(`${destination} was not unlinked (${error.message})`)) // path does not exist or is something we do not want to delete (dir...)
-        .then(() => addItem(source, destination)),
-    ),
+    items.map(async ([source, destination]) => {
+      try {
+        await unlink(destination);
+        return addItem(source, destination);
+      } catch (error) {
+        // path does not exist or is something we do not want to delete (dir...)
+        logger.warn(`${destination} was not unlinked (${error.message})`);
+      }
+    }),
   );
 
-const ensureProjectSymlinks = ensureProjectItems(fs.symlink);
+const ensureProjectSymlinks = ensureProjectItems(symlink);
 
-const ensureProjectFiles = ensureProjectItems(fs.copyFile);
+const ensureProjectFiles = ensureProjectItems(copyFile);
 
 const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails }) => {
   const [projectPath, helmChart] = await Promise.all([

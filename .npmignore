@@ -1,4 +1,5 @@
 *
+!/README.adoc
 !/js-backend-rules.adoc
 !/*.js
 !/tweak-configuration-files/*.js

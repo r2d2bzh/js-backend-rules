@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { addHashedHeader } from '@r2d2bzh/js-rules';
-import { pipe, extractValue, extractValueAs } from '../utils.js';
+import { pipe, extractValue, extractValueAs } from '../utilities.js';
 import { docker as versions } from '../versions.js';
 import addGitConfig from './git.js';
 import addNpmConfig from './npm.js';
@@ -24,6 +24,7 @@ export default ({
     name,
     version,
     description,
+    // eslint-disable-next-line unicorn/no-unreadable-object-destructuring
     r2d2bzh: { rootDockerImage = false, helm: { chart: helmChartOverride = {} } = {} } = {},
   } = projectDetails;
 

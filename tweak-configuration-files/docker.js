@@ -1,7 +1,7 @@
 import path from 'node:path';
 import pMemoize from 'p-memoize';
 import { toMultiline, addHashedHeader, readJSONFile } from '@r2d2bzh/js-rules';
-import { extractValue } from '../utils.js';
+import { extractValue } from '../utilities.js';
 
 export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, dbnImageVersion, rootDockerImage }) => {
   const dockerfileCommonFormatters = [
@@ -31,16 +31,14 @@ export default ({ logger, addWarningHeader, serviceDirectories, dbnImagePrefix, 
         'ARG DOCKER_BUILD_NODEJS_VERSION',
         `FROM ${dbnImagePrefix}devenv:\${DOCKER_BUILD_NODEJS_VERSION}`,
       ],
-      formatters: [...dockerfileCommonFormatters, toMultiline].reverse(),
+      formatters: [...dockerfileCommonFormatters, toMultiline].toReversed(),
     },
-    ...(rootDockerImage
-      ? {
-          [path.join('share', 'Dockerfile')]: {
-            configuration: ['FROM scratch', 'COPY . /share/'],
-            formatters: [addWarningHeader, toMultiline].reverse(),
-          },
-        }
-      : {}),
+    ...(rootDockerImage && {
+      [path.join('share', 'Dockerfile')]: {
+        configuration: ['FROM scratch', 'COPY . /share/'],
+        formatters: [addWarningHeader, toMultiline].toReversed(),
+      },
+    }),
     ...(await dockerConfigurationForServices({
       logger,
       addWarningHeader,
@@ -94,7 +92,7 @@ const dockerConfigurationForServices = async ({
                 '{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }',
               ]),
               toMultiline,
-            ].reverse(),
+            ].toReversed(),
           },
         ],
       ];
@@ -109,14 +107,15 @@ const getCustomSettings = async (context, logger) => {
     return {
       commands: (step) => {
         try {
-          if (Symbol.iterator in new Object(commands)) {
+          if (Object.hasOwn(new Object(commands), Symbol.iterator)) {
             logger.error(`ignored old additional commands syntax, check ${path.join(context, 'Dockerfile')}`);
             return [];
           }
           // step is not a user input
 
+          // eslint-disable-next-line security/detect-object-injection
           const stepCommands = commands?.[step];
-          return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
+          return Object.hasOwn(new Object(stepCommands), Symbol.iterator) ? stepCommands : [];
         } catch (error) {
           logger.error(`failed to retrieve additional ${step} Dockerfile commands (${error.message})`);
           return [];

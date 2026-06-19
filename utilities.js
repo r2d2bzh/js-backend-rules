@@ -1,10 +1,12 @@
+/* eslint-disable security/detect-object-injection */
+/* eslint-disable security/detect-non-literal-fs-filename */
 import { spawn as childSpawn } from 'node:child_process';
-import { promises as fs } from 'node:fs';
+import { writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { URL } from 'node:url';
 import FileHound from 'filehound';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
-import yaml from 'js-yaml';
+import { load } from 'js-yaml';
 import { readJSONFile } from '@r2d2bzh/js-rules';
 
 export const spawn =
@@ -31,9 +33,9 @@ export const findDirectoriesWith = async (glob) => {
 
 export const writeJSONFile = async (path, content) => {
   try {
-    await fs.writeFile(path, `${JSON.stringify(content, undefined, 2)}\n`, { encoding: 'utf8' });
+    await writeFile(path, `${JSON.stringify(content, undefined, 2)}\n`, { encoding: 'utf8' });
   } catch (error) {
-    throw new Error(`failed to write JSON to ${path} (${error.message})`);
+    throw new Error(`failed to write JSON to ${path} (${error.message})`, { cause: error });
   }
 };
 
@@ -88,10 +90,10 @@ export const readYAMLFile = async (path) => {
   try {
     // The purpose of this library is to scaffold based on existing project content
 
-    const document = await fs.readFile(path);
-    return yaml.load(document);
+    const document = await readFile(path);
+    return load(document);
   } catch (error) {
-    throw new Error(`failed to extract YAML from ${path} (${error.message})`);
+    throw new Error(`failed to extract YAML from ${path} (${error.message})`, { cause: error });
   }
 };
 
@@ -121,7 +123,7 @@ const mergeSameType = (original, override) => {
       return merge;
     }
     case 'Array': {
-      return [...new Set([...original, ...override])].sort();
+      return [...new Set([...original, ...override])].toSorted((a, b) => a.localeCompare(b));
     }
     default: {
       return override;

@@ -8,19 +8,19 @@ export const docker = {
 };
 
 export const eslint = {
-  eslint: '^9.39.2',
-  '@r2d2bzh/eslint-config': '^2.1.0',
+  eslint: '^10.5.0',
+  '@r2d2bzh/eslint-config': '^3.0.1',
 };
 
 export const npm = {
   '@r2d2bzh/moleculer-healthcheck-middleware': '^2.2.0',
   '@r2d2bzh/moleculer-start-checker-middleware': '^1.1.0',
-  '@r2d2bzh/moleculer-test-utils': '^1.2.0',
+  '@r2d2bzh/moleculer-test-utils': '^1.2.1',
   '@r2d2bzh/yac': '^1.1.0',
-  ava: '^6.4.1',
-  c8: '^10.1.3',
+  ava: '^8.0.1',
+  c8: '^11.0.0',
   moleculer: '^0.14.35',
   nats: '^2.29.3',
-  nodemon: '^3.1.11',
-  uuid: '^13.0.0',
+  nodemon: '^3.1.14',
+  uuid: '^14.0.0',
 };

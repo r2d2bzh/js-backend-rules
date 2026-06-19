@@ -9,8 +9,6 @@
 # { "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }
 ARG DOCKER_BUILD_NODEJS_VERSION
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} as builder
-COPY fake /fake
-RUN ls /
 COPY --chown=user . /project
 RUN /build.sh
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-runtime:${DOCKER_BUILD_NODEJS_VERSION}

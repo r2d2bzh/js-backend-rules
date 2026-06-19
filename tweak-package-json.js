@@ -1,17 +1,16 @@
 import path from 'node:path';
-import { mergeInJSONFile } from './utils.js';
+import { mergeInJSONFile } from './utilities.js';
 import { npm as dependenciesVersions, nodejs as minimalNodeJS, eslint as devDependencies } from './versions.js';
 
-export default ({ logger, serviceDirectories, subPackages, rootDockerImage = false }) =>
-  Promise.all(
-    Object.entries(
-      packageTweaks({
-        serviceDirectories,
-        rootDockerImage,
-        alienPackages: subPackages.filter((p) => !['test', ...serviceDirectories].includes(p)),
-      }),
-    ).map(([pack, tweak]) => mergeInJSONFile(pack, tweak).then(() => logger.log(`${pack} tweaked`))),
+export default ({ logger, serviceDirectories, subPackages, rootDockerImage = false }) => {
+  const alienPackages = subPackages.filter((p) => !['test', ...serviceDirectories].includes(p));
+  return Promise.all(
+    Object.entries(packageTweaks({ serviceDirectories, rootDockerImage, alienPackages })).map(async ([pack, tweak]) => {
+      await mergeInJSONFile(pack, tweak);
+      logger.log(`${pack} tweaked`);
+    }),
   );
+};
 
 const commonPackageOptions = {
   type: 'module',
@@ -26,7 +25,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
     scripts: {
       r2d2: 'r2d2bzh-js-backend-rules',
       lint: 'eslint .',
-      pretest: 'docker compose build test',
+      pretest: 'npm run lint && docker compose build test',
       'pretest:debug': 'npm run pretest',
       test: 'docker compose run -T --rm test',
       'test:debug': 'docker compose run --publish 9229 test debug',
@@ -83,4 +82,5 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
   ...Object.fromEntries(alienPackages.map((p) => [path.join(p, 'package.json'), commonPackageOptions])),
 });
 
+// eslint-disable-next-line security/detect-object-injection
 const dependencies = (depList) => Object.fromEntries(depList.map((dep) => [dep, dependenciesVersions[dep]]));

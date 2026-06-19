@@ -36,17 +36,15 @@ export default ({
     'docker-compose.yml': {
       configuration: {
         services: {
-          ...(rootDockerImage
-            ? {
-                share: {
-                  image: shareImageName,
-                  build: {
-                    context: './share',
-                  },
-                  profiles: ['share'],
-                },
-              }
-            : {}),
+          ...(rootDockerImage && {
+            share: {
+              image: shareImageName,
+              build: {
+                context: './share',
+              },
+              profiles: ['share'],
+            },
+          }),
           ...services,
           test: {
             build,
@@ -85,7 +83,7 @@ export default ({
           '- https://github.com/compose-spec/compose-spec/blob/master/spec.md',
         ]),
         toYAML,
-      ].reverse(),
+      ].toReversed(),
     },
   });
 };
@@ -114,7 +112,7 @@ const addServiceToConfiguration =
           context: `./${serviceDirectory}`,
           args: {
             DOCKER_BUILD_NODEJS_VERSION: '${DOCKER_BUILD_NODEJS_VERSION}',
-            ...(rootDockerImage ? { SHARE: shareImageName } : {}),
+            ...(rootDockerImage && { SHARE: shareImageName }),
           },
         },
         depends_on: ['nats'],

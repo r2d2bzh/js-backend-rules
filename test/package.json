@@ -20,7 +20,7 @@
     "test": "docker compose run -T --rm test",
     "lint": "eslint .",
     "release": "release-it",
-    "pretest": "docker compose build test",
+    "pretest": "npm run lint && docker compose build test",
     "test:debug": "docker compose run --publish 9229 test debug",
     "custom:script": "this is just to test",
     "r2d2": "r2d2bzh-js-backend-rules",
@@ -37,7 +37,7 @@
     "node": ">=24.7.0"
   },
   "devDependencies": {
-    "eslint": "^9.39.2",
-    "@r2d2bzh/eslint-config": "^2.1.0"
+    "eslint": "^10.5.0",
+    "@r2d2bzh/eslint-config": "^3.0.1"
   }
 }

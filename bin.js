@@ -1,10 +1,11 @@
 #!/usr/bin/env node
+/* eslint-disable security/detect-non-literal-fs-filename */
 import path from 'node:path';
-import { promises as fs } from 'node:fs';
+import { mkdir, stat, open } from 'node:fs/promises';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { install } from './index.js';
-import { spawn } from './utils.js';
+import { spawn } from './utilities.js';
 
 const commonYargsOptions = {
   'npm-install': {
@@ -39,7 +40,7 @@ yargs(hideBin(process.argv))
     'add a new service folder and re-apply all the rules',
     (yargs) => yargs.options(commonYargsOptions),
     async ({ service, ...options }) => {
-      await fs.mkdir(service, { recursive: true });
+      await mkdir(service, { recursive: true });
       await spawn('npm', 'init', '-y')(service);
       await ensureFile(path.join(service, 'Dockerfile'));
       await install(options);
@@ -49,10 +50,10 @@ yargs(hideBin(process.argv))
 
 const ensureFile = async (file) => {
   try {
-    await fs.stat(file);
+    await stat(file);
   } catch (error) {
     if (error.code === 'ENOENT') {
-      const fh = await fs.open(file, 'w');
+      const fh = await open(file, 'w');
       await fh.close();
     } else {
       throw error;
