@@ -5,7 +5,7 @@ services:
     networks:
       default: null
   nats:
-    image: nats:2.11.9-alpine3.22
+    image: nats:2.14.2-alpine3.22
     networks:
       default: null
   service-a:

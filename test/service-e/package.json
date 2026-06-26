@@ -17,7 +17,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec \"node --inspect=0.0.0.0:9229\" .",
+    "start": "nodemon --exec \"tsx --inspect=0.0.0.0:9229 index.ts\"",
     "prestart": "npm i"
   },
   "keywords": [],
@@ -37,11 +37,11 @@
     "keepNames": true
   },
   "dependencies": {
-    "@r2d2bzh/moleculer-healthcheck-middleware": "^2.2.0",
-    "@r2d2bzh/moleculer-start-checker-middleware": "^1.1.0",
+    "@r2d2bzh/moleculer-healthcheck-middleware": "^2.3.0",
+    "@r2d2bzh/moleculer-start-checker-middleware": "^1.2.1",
     "moleculer": "^0.14.35",
     "nats": "^2.29.3",
-    "@r2d2bzh/yac": "^1.1.0"
+    "@r2d2bzh/yac": "^1.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

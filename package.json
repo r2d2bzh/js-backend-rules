@@ -25,10 +25,6 @@
     "testGitParent": "cd test/dev && ../../bin.js --no-color --no-npm-install --git-parent",
     "testCompose": "cd test && docker compose config | sed \"s/ID: ['\\\"][0-9]*['\\\"]/ID: 'IDIDIDID'/; s#$PWD#/home/hostuser/project#g\" > docker-compose-config.yml"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/r2d2bzh/js-backend-rules.git"
-  },
   "keywords": [
     "r2d2bzh",
     "javascript",
@@ -37,19 +33,23 @@
   ],
   "author": "r2d2bzh",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r2d2bzh/js-backend-rules.git"
+  },
   "bugs": {
     "url": "https://github.com/r2d2bzh/js-backend-rules/issues"
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^2.0.2",
+    "@r2d2bzh/js-rules": "^3.0.0",
     "filehound": "^1.17.6",
-    "find-up": "^7.0.0",
+    "find-up": "^8.0.0",
     "git-remote-origin-url": "^4.0.0",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^5.1.0",
     "kleur": "^4.1.5",
     "p-memoize": "^8.0.0",
-    "release-it": "^20.2.0",
+    "release-it": "^20.2.1",
     "yargs": "^18.0.0"
   },
   "devDependencies": {

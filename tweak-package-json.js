@@ -61,7 +61,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
       {
         ...commonPackageOptions,
         scripts: {
-          start: 'nodemon --exec "node --inspect=0.0.0.0:9229" .',
+          start: 'nodemon --exec "tsx --inspect=0.0.0.0:9229 index.ts"',
           prestart: 'npm i',
         },
         esbuildOptions: {
