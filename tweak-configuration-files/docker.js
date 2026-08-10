@@ -107,7 +107,8 @@ const getCustomSettings = async (context, logger) => {
     return {
       commands: (step) => {
         try {
-          if (Object.hasOwn(new Object(commands), Symbol.iterator)) {
+          // eslint-disable-next-line unicorn/no-computed-property-existence-check
+          if (Symbol.iterator in new Object(commands)) {
             logger.error(`ignored old additional commands syntax, check ${path.join(context, 'Dockerfile')}`);
             return [];
           }
@@ -115,7 +116,8 @@ const getCustomSettings = async (context, logger) => {
 
           // eslint-disable-next-line security/detect-object-injection
           const stepCommands = commands?.[step];
-          return Object.hasOwn(new Object(stepCommands), Symbol.iterator) ? stepCommands : [];
+          // eslint-disable-next-line unicorn/no-computed-property-existence-check
+          return Symbol.iterator in new Object(stepCommands) ? stepCommands : [];
         } catch (error) {
           logger.error(`failed to retrieve additional ${step} Dockerfile commands (${error.message})`);
           return [];

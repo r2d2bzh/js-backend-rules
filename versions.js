@@ -18,7 +18,7 @@ export const npm = {
   '@r2d2bzh/moleculer-test-utils': '^1.3.0',
   '@r2d2bzh/yac': '^1.2.0',
   ava: '^8.0.1',
-  c8: '^11.0.0',
+  c8: '^12.0.0',
   moleculer: '^0.14.35',
   nats: '^2.29.3',
   nodemon: '^3.1.14',
