@@ -1,2 +1,5 @@
 npm:
   publish: false
+github:
+  # Creating the GitHub release triggers the npm publication workflow
+  release: true
