@@ -61,7 +61,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
       {
         ...commonPackageOptions,
         scripts: {
-          start: 'nodemon --exec "tsx --inspect=0.0.0.0:9229 index.ts"',
+          start: 'node --watch --import tsx --inspect=0.0.0.0:9229 .',
           prestart: 'npm i',
         },
         esbuildOptions: {
@@ -75,7 +75,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
           'moleculer',
           'nats',
         ]),
-        devDependencies: dependencies(['nodemon']),
+        devDependencies: dependencies(['tsx']),
       },
     ]),
   ),

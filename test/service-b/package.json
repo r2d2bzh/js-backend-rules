@@ -17,11 +17,12 @@
     "@r2d2bzh/yac": "^1.2.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.15"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec \"tsx --inspect=0.0.0.0:9229 index.ts\"",
+    "start": "node --watch --import tsx --inspect=0.0.0.0:9229 .",
     "prestart": "npm i"
   },
   "keywords": [],

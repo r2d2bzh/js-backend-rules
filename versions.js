@@ -21,6 +21,6 @@ export const npm = {
   c8: '^12.0.0',
   moleculer: '^0.14.35',
   nats: '^2.29.3',
-  nodemon: '^3.1.14',
+  tsx: '^4.23.15',
   uuid: '^14.0.2',
 };
