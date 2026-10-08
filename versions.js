@@ -1,14 +1,14 @@
 // NodeJS version constraint, WARNING:
 // Ensure that docker-build-nodejs uses a compliant NodeJS engine
-export const nodejs = '>=24.7.0';
+export const nodejs = '>=26.10.0';
 
 export const docker = {
-  dockerBuildNodeJS: '3.4.0',
-  nats: '2.14.2-alpine3.22',
+  dockerBuildNodeJS: '4.0.0-0',
+  nats: '2.14.7-alpine3.22',
 };
 
 export const eslint = {
-  eslint: '^10.5.0',
+  eslint: '^10.12.0',
   '@r2d2bzh/eslint-config': '^3.0.1',
 };
 
@@ -22,5 +22,5 @@ export const npm = {
   moleculer: '^0.14.35',
   nats: '^2.29.3',
   nodemon: '^3.1.14',
-  uuid: '^14.0.1',
+  uuid: '^14.0.2',
 };

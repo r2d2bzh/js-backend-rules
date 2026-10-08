@@ -38,6 +38,6 @@
     "keepNames": true
   },
   "engines": {
-    "node": ">=24.7.0"
+    "node": ">=26.10.0"
   }
 }

@@ -133,4 +133,4 @@ services:
     ports:
       - 9229
   nats:
-    image: nats:2.14.2-alpine3.22
+    image: nats:2.14.7-alpine3.22

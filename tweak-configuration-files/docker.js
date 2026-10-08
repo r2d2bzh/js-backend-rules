@@ -74,13 +74,13 @@ const dockerConfigurationForServices = async ({
           {
             configuration: [
               'ARG DOCKER_BUILD_NODEJS_VERSION',
-              ...(rootDockerImage ? ['ARG SHARE=scratch', `FROM \${SHARE} as share`] : []),
-              `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} as builder`,
+              ...(rootDockerImage ? ['ARG SHARE=scratch', `FROM \${SHARE} AS share`] : []),
+              `FROM ${dbnImagePrefix}builder:\${DOCKER_BUILD_NODEJS_VERSION} AS builder`,
               ...commands('builder'),
               `COPY --chown=user . /project`,
               `RUN /build.sh`,
               `FROM ${dbnImagePrefix}runtime:\${DOCKER_BUILD_NODEJS_VERSION}`,
-              `COPY --chown=user --from=builder /tmp/service /service`,
+              `COPY --from=builder /tmp/service /service`,
               `COPY ./config ./config`,
               ...commands('runtime'),
               `ENTRYPOINT [ "/service" ]`,

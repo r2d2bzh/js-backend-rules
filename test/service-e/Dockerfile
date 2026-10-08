@@ -2,13 +2,13 @@
 # The location from where docker-build-nodejs images are pulled,can be set in the package.json file of the root project:,{ "r2d2bzh": { "dockerBuildNodeJS": {,  "imagePrefix": ...,,  "imageVersion": ...,,} } }
 # For additional builder and runtime commands, add the following in service-e/package.json:,{ "r2d2bzh": { "dockerfileCommands": { "builder": [ ... ], "runtime": [ ... ] } } }
 ARG DOCKER_BUILD_NODEJS_VERSION
-FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} as builder
+FROM ghcr.io/r2d2bzh/docker-build-nodejs-builder:${DOCKER_BUILD_NODEJS_VERSION} AS builder
 COPY fake /builder
 RUN ls /
 COPY --chown=user . /project
 RUN /build.sh
 FROM ghcr.io/r2d2bzh/docker-build-nodejs-runtime:${DOCKER_BUILD_NODEJS_VERSION}
-COPY --chown=user --from=builder /tmp/service /service
+COPY --from=builder /tmp/service /service
 COPY ./config ./config
 COPY fake /runtime
 RUN ls /
