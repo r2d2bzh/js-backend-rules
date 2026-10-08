@@ -8,7 +8,9 @@
   },
   "r2d2bzh": {
     "dockerRegistry": "test-registry:9999/fake",
-    "dockerBuildNodejsVersion": "d.b.n",
+    "dockerBuildNodeJS": {
+      "imageVersion": "d.b.n"
+    },
     "helm": {
       "chart": {
         "apiVersion": "v2"
