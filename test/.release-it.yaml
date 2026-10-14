@@ -3,7 +3,9 @@ npm:
   publish: false
 hooks:
   before:bump:
-    - sed -i -e 's/${latestVersion}/${version}/g' helm/Chart.yaml
+    - >-
+      sed -i -E 's/^(version|appVersion): ${latestVersion}$/\1: ${version}/'
+      helm/Chart.yaml
     - (cd alien && release-it --ci ${version})
     - (cd deep/deep-service && release-it --ci ${version})
     - (cd service-a && release-it --ci ${version})

@@ -11,7 +11,8 @@ export default ({ addWarningHeader, subPackages }) =>
         },
         hooks: {
           'before:bump': [
-            "sed -i -e 's/${latestVersion}/${version}/g' helm/Chart.yaml",
+            // Only the top-level version fields are bumped, the version of a chart dependency may be the same
+            "sed -i -E 's/^(version|appVersion): ${latestVersion}$/\\1: ${version}/' helm/Chart.yaml",
             ...subPackages.map((pack) => `(cd ${pack} && release-it --ci \${version})`),
           ],
         },
