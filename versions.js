@@ -7,9 +7,11 @@ export const docker = {
   nats: '2.14.8-alpine3.22',
 };
 
-export const eslint = {
+// Tools required by the root package.json scripts of the generated projects
+export const rootDevelopmentDependencies = {
   eslint: '^10.12.0',
   '@r2d2bzh/eslint-config': '^4.0.0',
+  'release-it': '^21.1.1',
 };
 
 export const npm = {

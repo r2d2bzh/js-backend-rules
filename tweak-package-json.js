@@ -1,6 +1,10 @@
 import path from 'node:path';
 import { mergeInJSONFile } from './utilities.js';
-import { npm as dependenciesVersions, nodejs as minimalNodeJS, eslint as devDependencies } from './versions.js';
+import {
+  npm as dependenciesVersions,
+  nodejs as minimalNodeJS,
+  rootDevelopmentDependencies as devDependencies,
+} from './versions.js';
 
 export default ({ logger, serviceDirectories, subPackages, rootDockerImage = false }) => {
   const alienPackages = subPackages.filter((p) => !['test', ...serviceDirectories].includes(p));
