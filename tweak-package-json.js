@@ -1,6 +1,10 @@
 import path from 'node:path';
 import { mergeInJSONFile } from './utilities.js';
-import { npm as dependenciesVersions, nodejs as minimalNodeJS, eslint as devDependencies } from './versions.js';
+import {
+  npm as dependenciesVersions,
+  nodejs as minimalNodeJS,
+  rootDevelopmentDependencies as devDependencies,
+} from './versions.js';
 
 export default ({ logger, serviceDirectories, subPackages, rootDockerImage = false }) => {
   const alienPackages = subPackages.filter((p) => !['test', ...serviceDirectories].includes(p));
@@ -61,7 +65,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
       {
         ...commonPackageOptions,
         scripts: {
-          start: 'nodemon --exec "tsx --inspect=0.0.0.0:9229 index.ts"',
+          start: 'node --watch --import tsx --inspect=0.0.0.0:9229 .',
           prestart: 'npm i',
         },
         esbuildOptions: {
@@ -75,7 +79,7 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
           'moleculer',
           'nats',
         ]),
-        devDependencies: dependencies(['nodemon']),
+        devDependencies: dependencies(['tsx']),
       },
     ]),
   ),
@@ -83,4 +87,4 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
 });
 
 // eslint-disable-next-line security/detect-object-injection
-const dependencies = (depList) => Object.fromEntries(depList.map((dep) => [dep, dependenciesVersions[dep]]));
+const dependencies = (names) => Object.fromEntries(names.map((name) => [name, dependenciesVersions[name]]));

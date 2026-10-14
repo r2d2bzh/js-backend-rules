@@ -3,5 +3,5 @@
 
 
 # tag::commands[]
-npx --no-install r2d2bzh-js-rules isWIP || npx --no-install eslint . && npm test
+npx --no-install r2d2bzh-js-rules isWIP || npx --no-install eslint . && npm test && for TS_DIR in $(find . -maxdepth 2 -type f -name tsconfig.json); do (cd $(dirname "$TS_DIR") &&  npx --no-install tsc --noEmit;) done
 # end::commands[]

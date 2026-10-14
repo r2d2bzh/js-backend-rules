@@ -1,10 +1,9 @@
 /* eslint-disable security/detect-object-injection */
 /* eslint-disable security/detect-non-literal-fs-filename */
 import { spawn as childSpawn } from 'node:child_process';
-import { writeFile, readFile } from 'node:fs/promises';
+import { glob, writeFile, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { URL } from 'node:url';
-import FileHound from 'filehound';
 import gitRemoteOriginUrl from 'git-remote-origin-url';
 import { load } from 'js-yaml';
 import { readJSONFile } from '@r2d2bzh/js-rules';
@@ -19,16 +18,14 @@ export const spawn =
       }),
     );
 
-export const findDirectoriesWith = async (glob) => {
-  const findGlobNotInNodeModules = await FileHound.create()
-    .path('.')
-    .discard('(^|.*/)node_modules/.*')
-    // The following rule is currently needed because of share symbolic links that are followed by filehound:
-    // https://github.com/nspragg/filehound/issues/77#issuecomment-1106130404
-    .discard('.*/share/.*')
-    .match(glob)
-    .find();
-  return findGlobNotInNodeModules.map((p) => path.dirname(p));
+// Only the root share directory is scanned, services share directories are links to it
+const isDiscardedDirectory = (directory) =>
+  path.basename(directory) === 'node_modules' || (path.basename(directory) === 'share' && directory !== 'share');
+
+export const findDirectoriesWith = async (fileName) => {
+  const files = await Array.fromAsync(glob(`**/${fileName}`, { exclude: isDiscardedDirectory }));
+  // Sorted to keep the generated configuration files stable
+  return files.map((file) => path.dirname(file)).toSorted((a, b) => a.localeCompare(b));
 };
 
 export const writeJSONFile = async (path, content) => {

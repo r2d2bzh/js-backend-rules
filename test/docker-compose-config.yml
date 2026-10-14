@@ -5,160 +5,145 @@ services:
     networks:
       default: null
   nats:
-    image: nats:2.14.2-alpine3.22
+    image: nats:2.14.8-alpine3.22
     networks:
       default: null
   service-a:
-    build:
-      context: /home/hostuser/project/dev
-      dockerfile: Dockerfile
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
-        GID: 'IDIDIDID'
-        UID: 'IDIDIDID'
     command:
       - npm
       - start
-    depends_on:
-      nats:
-        condition: service_started
-        required: true
     networks:
       default: null
-    ports:
-      - mode: ingress
-        target: 9229
-        protocol: tcp
     volumes:
       - type: bind
         source: /home/hostuser/project/service-a
         target: /home/user/dev
         bind: {}
-  service-b:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
-    command:
-      - npm
-      - start
     depends_on:
-      mongo:
-        condition: service_started
-        required: true
       nats:
         condition: service_started
         required: true
-    networks:
-      default: null
     ports:
       - mode: ingress
         target: 9229
         protocol: tcp
+  service-b:
+    command:
+      - npm
+      - start
+    networks:
+      default: null
     volumes:
       - type: bind
         source: /home/hostuser/project/service-b
         target: /home/user/dev
         bind: {}
-  service-c:
     build:
       context: /home/hostuser/project/dev
       dockerfile: Dockerfile
       args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
-        GID: 'IDIDIDID'
-        UID: 'IDIDIDID'
-    command:
-      - npm
-      - start
-    depends_on:
-      nats:
-        condition: service_started
-        required: true
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 9229
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /home/hostuser/project/service-c
-        target: /home/user/dev
-        bind: {}
-  service-d:
-    build:
-      context: /home/hostuser/project/dev
-      dockerfile: Dockerfile
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
-        GID: 'IDIDIDID'
-        UID: 'IDIDIDID'
-    command:
-      - npm
-      - start
-    depends_on:
-      nats:
-        condition: service_started
-        required: true
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 9229
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /home/hostuser/project/service-d
-        target: /home/user/dev
-        bind: {}
-  service-e:
-    build:
-      context: /home/hostuser/project/dev
-      dockerfile: Dockerfile
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
-        GID: 'IDIDIDID'
-        UID: 'IDIDIDID'
-    command:
-      - npm
-      - start
-    depends_on:
-      nats:
-        condition: service_started
-        required: true
-    networks:
-      default: null
-    ports:
-      - mode: ingress
-        target: 9229
-        protocol: tcp
-    volumes:
-      - type: bind
-        source: /home/hostuser/project/service-e
-        target: /home/user/dev
-        bind: {}
-  test-runner:
-    build:
-      context: /home/hostuser/project/dev
-      dockerfile: Dockerfile
-      args:
-        DOCKER_BUILD_NODEJS_VERSION: 3.4.0
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
         GID: 'IDIDIDID'
         UID: 'IDIDIDID'
     depends_on:
       mongo:
         condition: service_started
         required: true
-    networks:
-      default: null
+      nats:
+        condition: service_started
+        required: true
     ports:
       - mode: ingress
         target: 9229
         protocol: tcp
+  service-c:
+    command:
+      - npm
+      - start
+    networks:
+      default: null
+    volumes:
+      - type: bind
+        source: /home/hostuser/project/service-c
+        target: /home/user/dev
+        bind: {}
+    build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+    depends_on:
+      nats:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+        target: 9229
+        protocol: tcp
+  service-d:
+    command:
+      - npm
+      - start
+    networks:
+      default: null
+    volumes:
+      - type: bind
+        source: /home/hostuser/project/service-d
+        target: /home/user/dev
+        bind: {}
+    build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+    depends_on:
+      nats:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+        target: 9229
+        protocol: tcp
+  service-e:
+    command:
+      - npm
+      - start
+    networks:
+      default: null
+    volumes:
+      - type: bind
+        source: /home/hostuser/project/service-e
+        target: /home/user/dev
+        bind: {}
+    build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+    depends_on:
+      nats:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+        target: 9229
+        protocol: tcp
+  test-runner:
+    networks:
+      default: null
     volumes:
       - type: bind
         source: /home/hostuser/project/test
@@ -188,6 +173,21 @@ services:
         source: /home/hostuser/project/test/fake
         target: /fake
         bind: {}
+    build:
+      context: /home/hostuser/project/dev
+      dockerfile: Dockerfile
+      args:
+        DOCKER_BUILD_NODEJS_VERSION: d.b.n
+        GID: 'IDIDIDID'
+        UID: 'IDIDIDID'
+    depends_on:
+      mongo:
+        condition: service_started
+        required: true
+    ports:
+      - mode: ingress
+        target: 9229
+        protocol: tcp
 networks:
   default:
     name: test_default

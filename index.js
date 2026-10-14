@@ -142,7 +142,7 @@ const _install = async ({
 
 const structureProject = async ({ logger, serviceDirectories, rootDockerImage = false }) => {
   await ensureProjectDirectories({ rootDockerImage });
-  const projectRelativePath = path.relative(process.cwd(), path.dirname(new URL(import.meta.url).pathname));
+  const projectRelativePath = path.relative(process.cwd(), import.meta.dirname);
   await Promise.all([
     ensurePackageJSONfiles({ rootDockerImage }),
     ensureProjectConfigFolder({ serviceDirectories }),
@@ -182,11 +182,14 @@ const ensureProjectItems = (addItem) => (items, logger) =>
     items.map(async ([source, destination]) => {
       try {
         await unlink(destination);
-        return addItem(source, destination);
       } catch (error) {
-        // path does not exist or is something we do not want to delete (dir...)
-        logger.warn(`${destination} was not unlinked (${error.message})`);
+        // A missing item is created, anything else that cannot be unlinked (a directory...) is kept
+        if (error.code !== 'ENOENT') {
+          logger.warn(`${destination} was not unlinked (${error.message})`);
+          return;
+        }
       }
+      return addItem(source, destination);
     }),
   );
 
@@ -196,9 +199,14 @@ const ensureProjectFiles = ensureProjectItems(copyFile);
 
 const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirectories, subPackages, projectDetails }) => {
   const [projectPath, helmChart] = await Promise.all([
-    getProjectPath(','),
+    getProjectPath(),
     emptyObjectOnException(() => readYAMLFile(path.join('helm', 'Chart.yaml'))),
-    tweakPackageJSON({ logger, serviceDirectories, subPackages }),
+    tweakPackageJSON({
+      logger,
+      serviceDirectories,
+      subPackages,
+      rootDockerImage: projectDetails?.r2d2bzh?.rootDockerImage,
+    }),
   ]);
   await jsRules({
     logger,
@@ -213,10 +221,6 @@ const tweakFiles = async ({ logger, editWarning, scaffolderName, serviceDirector
       subPackages,
       serviceDirectories,
     }),
-    resultLogger: {
-      log: () => {},
-      error: () => {},
-    },
   });
 };
 

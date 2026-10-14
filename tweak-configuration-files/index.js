@@ -65,6 +65,8 @@ export default ({
 const extractDBNImagePrefixFrom = extractValueAs(
   ['r2d2bzh', 'dockerBuildNodeJS', 'imagePrefix'],
   'dbnImagePrefix',
+  // A missing value is extracted as an empty string, which a default parameter would not replace
+  // eslint-disable-next-line unicorn/prefer-default-parameters
   (r) => r || 'ghcr.io/r2d2bzh/docker-build-nodejs-',
 );
 
