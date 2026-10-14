@@ -83,4 +83,4 @@ const packageTweaks = ({ serviceDirectories, alienPackages, rootDockerImage }) =
 });
 
 // eslint-disable-next-line security/detect-object-injection
-const dependencies = (depList) => Object.fromEntries(depList.map((dep) => [dep, dependenciesVersions[dep]]));
+const dependencies = (names) => Object.fromEntries(names.map((name) => [name, dependenciesVersions[name]]));

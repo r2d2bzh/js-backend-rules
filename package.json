@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/r2d2bzh/js-backend-rules#readme",
   "dependencies": {
-    "@r2d2bzh/js-rules": "^3.0.2",
+    "@r2d2bzh/js-rules": "^3.0.3",
     "find-up": "^8.0.0",
     "git-remote-origin-url": "^4.0.0",
     "js-yaml": "^5.4.3",
@@ -52,7 +52,7 @@
     "yargs": "^18.2.0"
   },
   "devDependencies": {
-    "@r2d2bzh/eslint-config": "^3.0.1",
+    "@r2d2bzh/eslint-config": "^4.0.0",
     "eslint": "^10.12.0"
   }
 }
